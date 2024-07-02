@@ -34,6 +34,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import nie.translator.rtranslator.access.AccessActivity;
@@ -590,6 +591,32 @@ public class Global extends Application implements DefaultLifecycleObserver {
         android.util.Log.i("memory", "Total memory: " + totalMemory);
         return totalMemory / 1000000L;
     }
+
+    /**
+     * Returns the available internal memory space in MB
+     */
+    public long getAvailableInternalMemorySize() {
+        File internalFilesDir = this.getFilesDir();
+        if(internalFilesDir != null) {
+            long freeMBInternal = new File(internalFilesDir.getAbsoluteFile().toString()).getFreeSpace() / 1000000L;
+            return freeMBInternal;
+        }
+        return -1;
+    }
+
+    /**
+     * Returns the available external memory space in MB
+     */
+    public long getAvailableExternalMemorySize() {
+        File externalFilesDir = this.getExternalFilesDir(null);
+        if(externalFilesDir != null) {
+            long freeMBExternal = new File(externalFilesDir.getAbsoluteFile().toString()).getFreeSpace() / 1000000L;
+            return freeMBExternal;
+        }
+        return -1;
+    }
+
+
 
     public boolean isNetworkOnWifi() {
         WifiManager wifi_m = (WifiManager) getSystemService(Context.WIFI_SERVICE);

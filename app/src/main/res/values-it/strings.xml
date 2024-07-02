@@ -31,6 +31,7 @@
     <string name="conversation">conversazione</string>
     <string name="connection">connessione</string>
     <string name="translate">Traduci</string>
+    <string name="fix">correggi</string>
 
     <string name="notification_channel_name">notifica uso in background</string>
 
@@ -85,10 +86,11 @@
     <string name="error_privacy_unchecked">Devi aver letto la privacy policy per usare l\'app</string>
     <string name="error_missing_username">Inserire un nome</string>
     <string name="error_wrong_username">Il testo contiene caratteri non ammessi, sono ammessi solo i seguenti caratteri: </string>
-    <string name="error_models_loading">C\'è stato un errore nel caricamento dei file dei modelli di rete neurale per la traduzione e il riconoscimento vocale, provare a riavviare l\'app, se il problema persiste allora ripristinarla.</string>
+    <string name="error_models_loading">C\'è stato un errore nel caricamento dei file dei modelli di rete neurale per la traduzione e il riconoscimento vocale, probabilmente qualche file è danneggiato, provare a riavviare l\'app, se il problema persiste allora premere il pulsante "correggi" e solo i file danneggiati verranno riscaricati.</string>
     <string name="error_download">Errore nel download, assicurati di avere una connessione a internet e riprova:</string>
     <string name="error_transfer">Errore nel trasferimento del file scaricato dalla memoria esterna a quella interna, assicurati di non aver rimosso una scheda SD o altri dispositivi di archiviazione esterni e riprova tenendo aperta l\'app:</string>
     <string name="error_ram">Il tuo dispositivo ha meno di 6GB di RAM, per funzionare l\'app ha bisogno di almeno 6GB di RAM, puoi provare lo stesso a usarla, ma molto probabilmente crasherà.</string>
+    <string name="error_storage">Spazio di archiviazione basso, il download potrebbe fallire</string>
 
     <string name="title_graph">DOLLARI (USD) SPESI OGNI ORA</string>
 
@@ -118,6 +120,7 @@
     <string name="description_notice">RTranslator usa <a href="https://openai.com/index/whisper/">OpenAi Whisper</a> per il riconoscimento vocale e <a href="https://ai.meta.com/research/no-language-left-behind/">Meta NLLB</a> per la traduzione, questi modelli richiedono abbastanza potenza e almeno 6GB di RAM per essere eseguiti, quindi assicurati di usare uno smartphone moderno per evitare rallentamenti o crash. Per più info su RTranslator visita il progetto GitHub dell\'app <a href="https://github.com/niedev/RTranslator">qui</a></string>
     <string name="description_download">Download di %1$s in corso</string>
     <string name="description_transfer">Trasferimento di %1$s nella memoria interna</string>
+    <string name="description_integrity_check">Verifica dell\'integrità di %1$s</string>
 
     <string name="preference_header_language">Lingua</string>
     <string name="preference_header_output">Output</string>

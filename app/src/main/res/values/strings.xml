@@ -33,6 +33,7 @@
     <string name="conversation">conversation</string>
     <string name="connection">connection</string>
     <string name="translate">Translate</string>
+    <string name="fix">fix</string>
 
     <string name="notification_channel_name">use in background notification</string>
 
@@ -87,10 +88,11 @@
     <string name="error_privacy_unchecked">You must have read the privacy policy to use the app</string>
     <string name="error_missing_username">Insert a name</string>
     <string name="error_wrong_username">The text contains illegal characters, only the following characters are allowed: </string>
-    <string name="error_models_loading">There was an error loading the files of the models for translation and speech recognition, try restarting the app, if the problem persists then reset it.</string>
+    <string name="error_models_loading">There was an error loading the files of the models for translation and speech recognition, probably some files are corrupted, try restarting the app, if the problem persists then press the fix button and only the corrupted files will be re-downloaded.</string>
     <string name="error_download">Error in the download, please ensure you have internet connection and retry:</string>
     <string name="error_transfer">Error in the transfer of the downloaded file from external to internal memory, please ensure you have not removed an sd card or other external storage devices and retry keeping the app open:</string>
     <string name="error_ram">Your device has less than 6GB of RAM, the app needs at least 6GB of RAM to work, you can still try to use it, but it will most likely crash.</string>
+    <string name="error_storage">Low storage space, the download may fail</string>
 
     <string name="title_graph">DOLLARS (USD) SPENT EVERY HOUR</string>
 
@@ -121,6 +123,7 @@
     <string name="description_notice">RTranslator uses <a href="https://openai.com/index/whisper/">OpenAi\'s Whisper</a> for speech recognition and <a href="https://ai.meta.com/research/no-language-left-behind/">Meta\'s NLLB</a> for translations, these models require quite a bit of power and at least 6GB of RAM to run, so make sure you\'re using a modern smartphone to avoid slowdowns or crashes. For more info on RTranslator visit the GitHub project of the app <a href="https://github.com/niedev/RTranslator">here</a></string>
     <string name="description_download">Downloading %1$s</string>
     <string name="description_transfer">Transferring %1$s in internal memory</string>
+    <string name="description_integrity_check">Checking integrity of %1$s</string>
 
     <string name="preference_header_language">Language</string>
     <string name="preference_header_output">Output</string>

@@ -53,11 +53,11 @@ public class AccessActivity extends GeneralActivity {
 
     @Override
     protected void onStart() {
-        super.onStart();
         Global global = (Global) getApplication();
         if(global != null){
             global.setAccessActivity(this);
         }
+        super.onStart();  //called here because otherwise the onStart of the DownloadFragment is called before this onStart, and this could cause problems.
     }
 
     @Override

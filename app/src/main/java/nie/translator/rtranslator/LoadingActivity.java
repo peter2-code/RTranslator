@@ -16,8 +16,10 @@
 
 package nie.translator.rtranslator;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -194,6 +196,14 @@ public class LoadingActivity extends GeneralActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(LoadingActivity.this);
                     //builder.setCancelable(true);
                     builder.setMessage(R.string.error_models_loading);
+                    builder.setPositiveButton(R.string.fix, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(global != null){
+                                restartDownload();
+                            }
+                        }
+                    });
                     builder.setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -222,6 +232,32 @@ public class LoadingActivity extends GeneralActivity {
                 }
             }
         });
+    }
+
+
+    private void restartDownload(){
+        //we reset all the download shared preferences
+        SharedPreferences sharedPreferences = getSharedPreferences("default", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor;
+        editor = sharedPreferences.edit();
+        editor.putLong("currentDownloadId", -1);
+        editor.apply();
+        editor = sharedPreferences.edit();
+        editor.putString("lastDownloadSuccess", "");
+        editor.apply();
+        editor = sharedPreferences.edit();
+        editor.putString("lastTransferSuccess", "");
+        editor.apply();
+        editor = sharedPreferences.edit();
+        editor.putString("lastTransferFailure", "");
+        editor.apply();
+        //we restart the download (only the corrupted files will be re-downloaded)
+        global.setFirstStart(true);
+        Intent intent = new Intent(LoadingActivity.this, AccessActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();
     }
 
     private void onFailure(int[] reasons, long value) {
