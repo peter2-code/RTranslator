@@ -189,8 +189,28 @@ public class Recorder {
     public void dismiss() {
         if (mLastVoiceHeardMillis != Long.MAX_VALUE) {
             mLastVoiceHeardMillis = Long.MAX_VALUE;
-            mCallback.onVoiceEnd();
+            //mCallback.onVoiceEnd();
         }
+    }
+
+    public void end() {
+        //convert the relevant portion of the circular mBuffer to a normal array
+        int voiceLength = getMBufferRangeSize(startVoiceIndex, tailIndex);
+        float[] data = new float[voiceLength];
+        int circularIndex = startVoiceIndex;
+        for(int i=0; i<voiceLength; i++){
+            data[i] = mBuffer[circularIndex];
+            if (circularIndex < mBuffer.length-1){
+                circularIndex++;
+            }else{
+                circularIndex = 0;
+            }
+        }
+        mCallback.onVoice(data, voiceLength);
+        //reset relevant variables
+        startVoiceIndex = 0;  //is not necessary
+        mLastVoiceHeardMillis = Long.MAX_VALUE;
+        mCallback.onVoiceEnd();
     }
 
     public void destroy(){
@@ -302,83 +322,63 @@ public class Recorder {
                 }
             }
         }
+    }
 
-        private void end() {
-            //convert the relevant portion of the circular mBuffer to a normal array
-            int voiceLength = getMBufferRangeSize(startVoiceIndex, tailIndex);
-            float[] data = new float[voiceLength];
-            int circularIndex = startVoiceIndex;
-            for(int i=0; i<voiceLength; i++){
-                data[i] = mBuffer[circularIndex];
-                if (circularIndex < mBuffer.length-1){
-                    circularIndex++;
-                }else{
-                    circularIndex = 0;
-                }
-            }
-            mCallback.onVoice(data, voiceLength);
-            //reset relevant variables
-            startVoiceIndex = 0;  //is not necessary
-            mLastVoiceHeardMillis = Long.MAX_VALUE;
-            mCallback.onVoiceEnd();
+    private int getMBufferSize(){
+        return getMBufferRangeSize(headIndex, tailIndex);
+    }
+
+    private int getMBufferRangeSize(int begin, int end){
+        if(begin <= end){
+            return end - begin;
+        }else{    //(begin > end)
+            return (mBuffer.length-begin) + end;
         }
+    }
 
-        private int getMBufferSize(){
-            return getMBufferRangeSize(headIndex, tailIndex);
-        }
-
-        private int getMBufferRangeSize(int begin, int end){
-            if(begin <= end){
-                return end - begin;
-            }else{    //(begin > end)
-                return (mBuffer.length-begin) + end;
+    private boolean isHearingVoice(byte[] buffer, int size) {   //old method to measure threshold (not used)
+        for (int i = 0; i < size - 1; i += 2) {
+            // The buffer has LINEAR16 (2 bytes) in little endian.
+            // Therefore, to take the integer value at position i, we convert the (i+1)-th byte into an integer (positive),
+            // shift it to the left by 8 bits and add to it the absolute integer value of the i-th byte
+            int s = buffer[i + 1];
+            if (s < 0) s *= -1;
+            s <<= 8;
+            s += Math.abs(buffer[i]);
+            //if the value is grater than the threshold the method returns true
+            int amplitudeThreshold = global.getAmplitudeThreshold();
+            if (s > amplitudeThreshold) {
+                return true;
             }
         }
+        return false;
+    }
 
-        private boolean isHearingVoice(byte[] buffer, int size) {   //old method to measure threshold (not used)
-            for (int i = 0; i < size - 1; i += 2) {
-                // The buffer has LINEAR16 (2 bytes) in little endian.
-                // Therefore, to take the integer value at position i, we convert the (i+1)-th byte into an integer (positive),
-                // shift it to the left by 8 bits and add to it the absolute integer value of the i-th byte
-                int s = buffer[i + 1];
-                if (s < 0) s *= -1;
-                s <<= 8;
-                s += Math.abs(buffer[i]);
-                //if the value is grater than the threshold the method returns true
-                int amplitudeThreshold = global.getAmplitudeThreshold();
-                if (s > amplitudeThreshold) {
-                    return true;
-                }
+    private boolean isHearingVoice(float[] buffer, int begin, int end) {
+        // We iterate circlularly the mBuffer from the begin index to the end index, and if one of the values exceed the threshold the method returns true.
+        // Also The range with the old ENCODING_PCM_16BIT was [-32768, 32767], while now with the new ENCODING_PCM_FLOAT it is [-1, 1],
+        // so to convert the values of the new range into those of the old range (the threshold is based on the old values) I have to multiply them by 32767.
+        int numberOfThreshold = 15;
+        int count = begin;
+        while (count != end){
+            float s = Math.abs(buffer[count]) * 32767;
+            int amplitudeThreshold = global.getAmplitudeThreshold();
+            if (s > amplitudeThreshold) {
+                numberOfThreshold--;
+                //return true;
             }
+            if (count < buffer.length-1){
+                count++;
+            }else{
+                count = 0;
+            }
+        }
+        if(numberOfThreshold <= 0){
+            return true;
+        }else{
             return false;
         }
-
-        private boolean isHearingVoice(float[] buffer, int begin, int end) {
-            // We iterate circlularly the mBuffer from the begin index to the end index, and if one of the values exceed the threshold the method returns true.
-            // Also The range with the old ENCODING_PCM_16BIT was [-32768, 32767], while now with the new ENCODING_PCM_FLOAT it is [-1, 1],
-            // so to convert the values of the new range into those of the old range (the threshold is based on the old values) I have to multiply them by 32767.
-            int numberOfThreshold = 15;
-            int count = begin;
-            while (count != end){
-                float s = Math.abs(buffer[count]) * 32767;
-                int amplitudeThreshold = global.getAmplitudeThreshold();
-                if (s > amplitudeThreshold) {
-                    numberOfThreshold--;
-                    //return true;
-                }
-                if (count < buffer.length-1){
-                    count++;
-                }else{
-                    count = 0;
-                }
-            }
-            if(numberOfThreshold <= 0){
-                return true;
-            }else{
-                return false;
-            }
-            //return false;
-        }
+        //return false;
     }
 
     public boolean isOnHeadsetSco(){

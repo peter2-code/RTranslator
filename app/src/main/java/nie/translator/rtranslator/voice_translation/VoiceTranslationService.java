@@ -222,6 +222,12 @@ public abstract class VoiceTranslationService extends GeneralService {
         }
     }
 
+    public void endVoice(){
+        if(mVoiceRecorder != null){
+            mVoiceRecorder.end();
+        }
+    }
+
     protected int getVoiceRecorderSampleRate() {
         if (mVoiceRecorder != null) {
             return mVoiceRecorder.getSampleRate();
@@ -383,6 +389,7 @@ public abstract class VoiceTranslationService extends GeneralService {
                 case STOP_MIC:
                     if (data.getBoolean("permanent")) {
                         isMicMute = true;
+                        endVoice();
                     }
                     stopVoiceRecorder();
                     return true;
