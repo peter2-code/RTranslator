@@ -80,6 +80,8 @@
 
     <string name="title_graph">每小時花費的美元 (USD)</string>
 
+    <string name="home_walkietalkie_mode">對講機模式</string>
+    <string name="home_conversation_mode">對話模式</string>
     <string name="title_fragment_conversation">對話</string>
     <string name="title_fragment_walkie_talkie">對講機</string>
     <string name="title_fragment_notice">通知</string>

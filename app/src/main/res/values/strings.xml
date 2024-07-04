@@ -96,6 +96,8 @@
 
     <string name="title_graph">DOLLARS (USD) SPENT EVERY HOUR</string>
 
+    <string name="home_walkietalkie_mode">WalkieTalkie Mode</string>
+    <string name="home_conversation_mode">Conversation Mode</string>
     <string name="title_fragment_conversation">Conversation</string>
     <string name="title_fragment_walkie_talkie">WalkieTalkie</string>
     <string name="title_fragment_notice">Notice</string>
