@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="mic">对话模式正在运行...</string>
+    <string name="mic">麦克风</string>
     <string name="btHeadset">蓝牙耳机</string>
     <string name="exit">退出</string>
     <string name="retry">重试</string>
