@@ -605,16 +605,16 @@ public class VoiceTranslationActivity extends GeneralActivity {
         // creation of the notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelID);
         if (clickAction == CONVERSATION_FRAGMENT) {
-            builder.setContentTitle("Conversation")
-                    .setContentText("Conversation mode is running...")
+            builder.setContentTitle(getString(R.string.conversation_mode))
+                    .setContentText(getString(R.string.conversation_mode_running))
                     .setContentIntent(resultPendingIntent)
                     .setSmallIcon(R.drawable.mic_icon)
                     .setOngoing(true)
                     .setChannelId(channelID)
                     .build();
         } else {
-            builder.setContentTitle("WalkieTalkie")
-                    .setContentText("WalkieTalkie mode is running...")
+            builder.setContentTitle(getString(R.string.walkietalkie_mode))
+                    .setContentText(getString(R.string.walkietalkie_mode_running))
                     .setContentIntent(resultPendingIntent)
                     .setSmallIcon(R.drawable.mic_icon)
                     .setOngoing(true)

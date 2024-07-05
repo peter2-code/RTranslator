@@ -141,4 +141,8 @@
     <string name="preference_description_tts">Impostazioni di sistema del tts, un eventuale cambio del motore predefinito sarà applicato solo dopo il riavvio dell\'app</string>
     <string name="preference_description_speech_timeout">Seleziona il tempo che deve trascorrere dopo aver smesso di parlare per inviare il testo trascritto</string>
     <string name="preference_description_prev_voice_duration">Seleziona la durata della registrazione precedente a quando si inizia a parlare che verrà inclusa nel riconoscimento vocale</string>
+    <string name="conversation_mode" >Modalità Conversazione</string>
+    <string name="conversation_mode_running" >La modalità conversazione è in esecuzione...</string>
+    <string name="walkietalkie_mode" >Modalità WalkieTalkie</string>
+    <string name="walkietalkie_mode_running" >La modalità WalkieTalkie è in esecuzione...</string>
 </resources>
