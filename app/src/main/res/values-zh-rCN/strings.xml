@@ -129,6 +129,10 @@
     <string name="preference_description_tts">TTS 的系统设定，优先引擎的变更将仅在重新启动应用程序后生效</string>
     <string name="preference_description_speech_timeout">选择您停止说话后发送转录文字的时间</string>
     <string name="preference_description_prev_voice_duration">选择开始说话前的录音长度，将包括在语音识别中</string>
+    <string name="conversation_mode" >对话模式</string>
+    <string name="conversation_mode_running" >对话模式正在运行...</string>
+    <string name="walkietalkie_mode" >对讲机模式</string>
+    <string name="walkietalkie_mode_running" >对讲机模式正在运行...</string>
 
 </resources>
 
