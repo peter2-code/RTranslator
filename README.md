@@ -128,6 +128,7 @@ In case you will donate, or just live a star, thank you :heart:
 
 <h3>Bugs and problems</h3>
 I remind you that the app is still in beta. The bugs found are the following:
+
 - Sometimes the Bluetooth connection drops.
 
 If you have found any bug please report it by opening an issue, or by writing an email to contact.niedev@gmail.com
