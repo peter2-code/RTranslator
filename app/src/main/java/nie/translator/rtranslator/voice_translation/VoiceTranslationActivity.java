@@ -605,7 +605,7 @@ public class VoiceTranslationActivity extends GeneralActivity {
         // creation of the notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelID);
         if (clickAction == CONVERSATION_FRAGMENT) {
-            builder.setContentTitle(getString(R.string.conversation_mode))
+            builder.setContentTitle(getString(R.string.title_fragment_conversation))
                     .setContentText(getString(R.string.conversation_mode_running))
                     .setContentIntent(resultPendingIntent)
                     .setSmallIcon(R.drawable.mic_icon)
@@ -613,7 +613,7 @@ public class VoiceTranslationActivity extends GeneralActivity {
                     .setChannelId(channelID)
                     .build();
         } else {
-            builder.setContentTitle(getString(R.string.walkietalkie_mode))
+            builder.setContentTitle(getString(R.string.title_fragment_walkie_talkie))
                     .setContentText(getString(R.string.walkietalkie_mode_running))
                     .setContentIntent(resultPendingIntent)
                     .setSmallIcon(R.drawable.mic_icon)
