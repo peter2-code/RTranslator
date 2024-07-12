@@ -148,5 +148,6 @@
     <string name="conversation_mode_running" >Conversation mode is running...</string>
     <string name="walkietalkie_mode" >WalkieTalkie</string>
     <string name="walkietalkie_mode_running" >WalkieTalkie mode is running...</string>
+    <string name="title_image_selector">user image</string>
 
 </resources>

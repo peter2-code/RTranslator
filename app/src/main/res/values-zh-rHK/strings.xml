@@ -133,5 +133,6 @@
     <string name="conversation_mode_running" >對話模式正在運行...</string>
     <string name="walkietalkie_mode" >對講機模式</string>
     <string name="walkietalkie_mode_running" >對講機模式正在運行...</string>
+    <string name="title_image_selector">用户頭像</string>
 
 </resources>

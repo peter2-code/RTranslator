@@ -145,4 +145,5 @@
     <string name="conversation_mode_running" >La modalità conversazione è in esecuzione...</string>
     <string name="walkietalkie_mode" >Modalità WalkieTalkie</string>
     <string name="walkietalkie_mode_running" >La modalità WalkieTalkie è in esecuzione...</string>
+    <string name="title_image_selector">immagine utente</string>
 </resources>
