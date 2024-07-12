@@ -168,7 +168,7 @@ public class GalleryImageSelector {
             Bitmap image = null;
             File tempFile = getTempCroppedFile();
 
-            if (tempFile.exists()) {
+            if (tempFile != null && tempFile.exists()) {
                 String path = tempFile.getAbsolutePath();
 
                 image = BitmapFactory.decodeFile(path);
@@ -344,7 +344,7 @@ public class GalleryImageSelector {
         if (!file.exists()) {
             try {
                 file.createNewFile();
-            } catch (IOException ignored) {
+            } catch (IOException e) {
             }
         }
         return file.getAbsoluteFile();
