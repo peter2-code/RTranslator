@@ -76,7 +76,7 @@ To install the app, download the latest version of the app apk file from https:/
 
 <a href='https://github.com/niedev/RTranslator/releases'><img alt='Get it on GitHub' src='https://github.com/niedev/RTranslator/blob/v2.00/images/get_it_on_github.png' style="width: 180px; height: 58px;" /></a>
 
-On the first launch, you will need to download the models for translation and speech recognition (1.2GB) and once done you can start translating.
+On the first launch, RTranslator will automatically download the models for translation and speech recognition (1.2GB) and once done you can start translating.
 
 The initial download will get the models from GitHub, however <a href="https://www.reddit.com/r/China/comments/v8fv0p/why_is_github_so_slow_in_china_recently/">in some regions GitHub is very slow</a>, those who have problems of this kind can download the models separately from a computer (or in general in whatever way they prefer) and insert them manually into the app following <a href="https://github.com/niedev/RTranslator/blob/v2.00/Sideloading.md">this guide</a>.
 <br /><br />
