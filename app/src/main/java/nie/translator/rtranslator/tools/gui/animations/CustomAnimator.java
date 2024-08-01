@@ -43,11 +43,15 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toolbar;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kyleduo.switchbutton.SwitchButton;
 import nie.translator.rtranslator.R;
 import nie.translator.rtranslator.tools.Tools;
@@ -55,6 +59,7 @@ import nie.translator.rtranslator.tools.gui.ButtonKeyboard;
 import nie.translator.rtranslator.tools.gui.ButtonMic;
 import nie.translator.rtranslator.tools.gui.GuiTools;
 import nie.translator.rtranslator.voice_translation.VoiceTranslationActivity;
+import nie.translator.rtranslator.voice_translation._text_translation.TranslationFragment;
 
 public class CustomAnimator {
     private final float iconSizeInDp=24;
@@ -255,6 +260,233 @@ public class CustomAnimator {
         Animator animatorColor=createAnimatorColor(buttonMic.getDrawable(),initialColor,finalColor,duration);
         animatorColor.start();
     }
+
+
+    public Animator animateTranslationButtonsCompress(final VoiceTranslationActivity activity, TranslationFragment translationFragment, FloatingActionButton walkieTalkieButton, TextView walkieTalkieText, FloatingActionButton conversationButton, TextView conversationText, MaterialButton walkieTalkieButtonSmall, MaterialButton conversationButtonSmall, Listener listener){
+        int duration = activity.getResources().getInteger(R.integer.durationStandard);
+        int durationShort = activity.getResources().getInteger(R.integer.durationShort);
+        int durationInstant = 0;
+
+        int textActionButtonHeight = walkieTalkieText.getHeight();
+        int textActionButtonBottomMargin = ((ConstraintLayout.LayoutParams) walkieTalkieText.getLayoutParams()).bottomMargin;
+        int actionButtonHeight = walkieTalkieButton.getHeight();
+        int translateButtonHeight = translationFragment.getTranslateButtonHeight();
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) walkieTalkieButton.getLayoutParams();
+        int actionButtonTopMargin = layoutParams.topMargin;
+        int actionButtonBottomMargin = layoutParams.bottomMargin;
+
+        walkieTalkieButton.setClickable(false);
+        conversationButton.setClickable(false);
+
+        Animator animationDisappear = createAnimatorAlpha(new View[]{walkieTalkieButton, walkieTalkieText, conversationButton, conversationText}, walkieTalkieButton.getAlpha(), 0, durationInstant);
+
+        Animator animationTextMargin = createAnimatorBottomMargin(new View[]{walkieTalkieText, conversationText}, textActionButtonBottomMargin, Tools.convertDpToPixels(activity,6), durationShort);
+        Animator animationButtonBottomMargin = createAnimatorBottomMargin(new View[]{walkieTalkieButton, conversationButton}, actionButtonBottomMargin, 0, durationShort);
+        Animator animationButtonTopMargin = createAnimatorTopMargin(new View[]{walkieTalkieButton, conversationButton}, actionButtonTopMargin, Tools.convertDpToPixels(activity,8), durationShort);
+        Animator animationButtonHeight = createAnimatorHeight(new View[]{walkieTalkieButton, conversationButton}, actionButtonHeight, translateButtonHeight, durationShort);
+        Animator animationTextHeight = createAnimatorHeight(new View[]{walkieTalkieText, conversationText}, textActionButtonHeight, Tools.convertDpToPixels(activity,2), durationShort);   //we should set final size to 2dp because too small size causes UI problems
+
+        Animator animationAppear = createAnimatorAlpha(new View[]{walkieTalkieButtonSmall, conversationButtonSmall}, walkieTalkieButtonSmall.getAlpha(), 1, duration);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(animationTextMargin).after(animationDisappear);
+        animatorSet.play(animationTextMargin).with(animationButtonBottomMargin).with(animationButtonTopMargin).with(animationButtonHeight).with(animationTextHeight);
+        animatorSet.play(animationAppear).after(animationTextMargin);
+
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(@NonNull Animator animation) {
+                if(listener != null){
+                    listener.onAnimationStart();
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(@NonNull Animator animation) {
+                walkieTalkieButtonSmall.setClickable(true);
+                conversationButtonSmall.setClickable(true);
+                if(listener != null){
+                    listener.onAnimationEnd();
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(@NonNull Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(@NonNull Animator animation) {
+
+            }
+        });
+        animatorSet.start();
+        return animatorSet;
+    }
+
+    public Animator animateTranslationButtonsEnlarge(final VoiceTranslationActivity activity, TranslationFragment translationFragment, FloatingActionButton walkieTalkieButton, TextView walkieTalkieText, FloatingActionButton conversationButton, TextView conversationText, MaterialButton walkieTalkieButtonSmall, MaterialButton conversationButtonSmall, Listener listener){
+        int duration = activity.getResources().getInteger(R.integer.durationStandard);
+        int durationShort = activity.getResources().getInteger(R.integer.durationShort);
+        int durationInstant = 0;
+
+        int textActionButtonHeightInit = walkieTalkieText.getHeight();
+        int textActionButtonBottomMarginInit = ((ConstraintLayout.LayoutParams) walkieTalkieText.getLayoutParams()).bottomMargin;
+        int actionButtonHeightInit = walkieTalkieButton.getHeight();
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) walkieTalkieButton.getLayoutParams();
+        int actionButtonTopMarginInit = layoutParams.topMargin;
+        int actionButtonBottomMarginInit = layoutParams.bottomMargin;
+
+        int textActionButtonHeight = translationFragment.getTextActionButtonHeight();
+        int textActionButtonBottomMargin = translationFragment.getTextActionButtonBottomMargin();
+        int actionButtonHeight = translationFragment.getActionButtonHeight();
+        int actionButtonTopMargin = translationFragment.getActionButtonTopMargin();
+        int actionButtonBottomMargin = translationFragment.getActionButtonBottomMargin();
+
+        walkieTalkieButtonSmall.setClickable(false);
+        conversationButtonSmall.setClickable(false);
+
+        Animator animationDisappear = createAnimatorAlpha(new View[]{walkieTalkieButtonSmall, conversationButtonSmall}, walkieTalkieButtonSmall.getAlpha(), 0, durationInstant);
+
+        Animator animationTextMargin = createAnimatorBottomMargin(new View[]{walkieTalkieText, conversationText}, textActionButtonBottomMarginInit, textActionButtonBottomMargin, durationShort);
+        Animator animationButtonBottomMargin = createAnimatorBottomMargin(new View[]{walkieTalkieButton, conversationButton}, actionButtonBottomMarginInit, actionButtonBottomMargin, durationShort);
+        Animator animationButtonTopMargin = createAnimatorTopMargin(new View[]{walkieTalkieButton, conversationButton}, actionButtonTopMarginInit, actionButtonTopMargin, durationShort);
+        Animator animationButtonHeight = createAnimatorHeight(new View[]{walkieTalkieButton, conversationButton}, actionButtonHeightInit, actionButtonHeight, durationShort);
+        Animator animationTextHeight = createAnimatorHeight(new View[]{walkieTalkieText, conversationText}, textActionButtonHeightInit, textActionButtonHeight, durationShort);
+
+        Animator animationAppear = createAnimatorAlpha(new View[]{walkieTalkieButton, walkieTalkieText, conversationButton, conversationText}, walkieTalkieButton.getAlpha(), 1, duration);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(animationTextMargin).after(animationDisappear);
+        animatorSet.play(animationTextMargin).with(animationButtonBottomMargin).with(animationButtonTopMargin).with(animationButtonHeight).with(animationTextHeight);
+        animatorSet.play(animationAppear).after(animationTextMargin);
+
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(@NonNull Animator animation) {
+                if(listener != null){
+                    listener.onAnimationStart();
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(@NonNull Animator animation) {
+                walkieTalkieButton.setClickable(true);
+                conversationButton.setClickable(true);
+                if(listener != null){
+                    listener.onAnimationEnd();
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(@NonNull Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(@NonNull Animator animation) {
+
+            }
+        });
+        animatorSet.start();
+        return animatorSet;
+    }
+
+    public Animator animateCompressActionBar(final VoiceTranslationActivity activity, ConstraintLayout toolbarContainer, TextView title, AppCompatImageButton settingsButton, AppCompatImageButton settingsButtonReduced, AppCompatImageButton backButton, Listener listener){
+        int duration = activity.getResources().getInteger(R.integer.durationStandard);
+        int durationShort = activity.getResources().getInteger(R.integer.durationShort);
+
+        settingsButton.setClickable(false);
+
+        Animator animatorToolbar = createAnimatorHeight(toolbarContainer, toolbarContainer.getHeight(), Tools.convertDpToPixels(activity,2), duration);
+        Animator animatorTranslation = createAnimatorTranslationY(new View[]{title, settingsButton}, (int) title.getTranslationY(), -Tools.convertDpToPixels(activity,56), duration);
+
+        Animator animationAppear = createAnimatorAlpha(new View[]{settingsButtonReduced, backButton}, settingsButtonReduced.getAlpha(), 1, duration);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(animatorToolbar).with(animatorTranslation)/*.with(animationAppear)*/;
+        animatorSet.play(animationAppear).after(600).after(animatorToolbar);
+
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(@NonNull Animator animation) {
+                if(listener != null){
+                    listener.onAnimationStart();
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(@NonNull Animator animation) {
+                settingsButtonReduced.setClickable(true);
+                backButton.setClickable(true);
+                if(listener != null){
+                    listener.onAnimationEnd();
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(@NonNull Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(@NonNull Animator animation) {
+
+            }
+        });
+        animatorSet.start();
+        return animatorSet;
+    }
+
+    public Animator animateEnlargeActionBar(final VoiceTranslationActivity activity, ConstraintLayout toolbarContainer, TextView title, AppCompatImageButton settingsButton, AppCompatImageButton settingsButtonReduced, AppCompatImageButton backButton, Listener listener){
+        int duration = activity.getResources().getInteger(R.integer.durationStandard);
+        int durationShort = activity.getResources().getInteger(R.integer.durationShort);
+
+        settingsButtonReduced.setClickable(false);
+        backButton.setClickable(false);
+        settingsButton.setAlpha((float) 0);
+
+        Animator animationDisappear = createAnimatorAlpha(new View[]{settingsButtonReduced, backButton}, settingsButtonReduced.getAlpha(), 0, duration);
+
+        Animator animatorToolbar = createAnimatorHeight(toolbarContainer, toolbarContainer.getHeight(), Tools.convertDpToPixels(activity,56), duration);
+        Animator animatorTranslation = createAnimatorTranslationY(new View[]{title, settingsButton}, (int) title.getTranslationY(), 0, duration);
+
+        Animator animationAppear = createAnimatorAlpha(settingsButton, settingsButton.getAlpha(), 1, duration);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        //animatorSet.play(animatorToolbar).after(animationDisappear);
+        animatorSet.play(animatorToolbar).with(animatorTranslation).with(animationDisappear);
+        animatorSet.play(animationAppear).after(700).after(animatorToolbar);
+
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(@NonNull Animator animation) {
+                if(listener != null){
+                    listener.onAnimationStart();
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(@NonNull Animator animation) {
+                settingsButton.setClickable(true);
+                if(listener != null){
+                    listener.onAnimationEnd();
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(@NonNull Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(@NonNull Animator animation) {
+
+            }
+        });
+        animatorSet.start();
+        return animatorSet;
+    }
+
 
     public void animateGenerateEditText(final VoiceTranslationActivity activity, final ButtonKeyboard buttonKeyboard, final ButtonMic buttonMic, final EditText editText, final Listener listener){
         Point point= new Point();
@@ -685,6 +917,23 @@ public class CustomAnimator {
         return animator;
     }
 
+    private Animator createAnimatorBottomMargin(final View[] views, int initialPixels, final int finalPixels, int duration){
+        ValueAnimator animator= ValueAnimator.ofInt(initialPixels,finalPixels);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                for (View view: views) {
+                    ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) view.getLayoutParams();
+                    layoutParams.bottomMargin=(int)valueAnimator.getAnimatedValue();
+                    view.setLayoutParams(layoutParams);
+                }
+            }
+        });
+        animator.setDuration(duration);
+
+        return animator;
+    }
+
     private Animator createAnimatorTopMargin(final View view, int initialPixels, int finalPixels, int duration){
         ValueAnimator animator= ValueAnimator.ofInt(initialPixels,finalPixels);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -700,10 +949,47 @@ public class CustomAnimator {
         return animator;
     }
 
+    private Animator createAnimatorTopMargin(final View[] views, int initialPixels, int finalPixels, int duration){
+        ValueAnimator animator= ValueAnimator.ofInt(initialPixels,finalPixels);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                for (View view: views) {
+                    ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) view.getLayoutParams();
+                    layoutParams.topMargin = (int) valueAnimator.getAnimatedValue();
+                    view.setLayoutParams(layoutParams);
+                }
+            }
+        });
+        animator.setDuration(duration);
+
+        return animator;
+    }
+
     public Animator createAnimatorElevation(View view, int initialPixels, int finalPixels, int duration){
         Animator animationBottomMargin = ObjectAnimator.ofFloat(view, "elevation", initialPixels, finalPixels);
         animationBottomMargin.setDuration(duration);
         return animationBottomMargin;
+    }
+
+    public Animator createAnimatorTranslationY(View view, int initialPixels, int finalPixels, int duration){
+        Animator animationBottomMargin = ObjectAnimator.ofFloat(view, "translationY", initialPixels, finalPixels);
+        animationBottomMargin.setDuration(duration);
+        return animationBottomMargin;
+    }
+
+    public Animator createAnimatorTranslationY(View[] views, int initialPixels, int finalPixels, int duration){
+        ValueAnimator animation = ValueAnimator.ofFloat(initialPixels, finalPixels);
+        animation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(@NonNull ValueAnimator animation) {
+                for (View view : views) {
+                    view.setTranslationY((float) animation.getAnimatedValue());
+                }
+            }
+        });
+        animation.setDuration(duration);
+        return animation;
     }
 
     public Animator createAnimatorWidth(final View view, int initialPixels, int finalPixels, int duration){
@@ -736,6 +1022,23 @@ public class CustomAnimator {
         return animator;
     }
 
+    public Animator createAnimatorHeight(final View[] views, int initialPixels, int finalPixels, int duration){
+        ValueAnimator animator= ValueAnimator.ofInt(initialPixels,finalPixels);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                for (View view: views) {
+                    ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+                    layoutParams.height = (int) valueAnimator.getAnimatedValue();
+                    view.setLayoutParams(layoutParams);
+                }
+            }
+        });
+        animator.setDuration(duration);
+
+        return animator;
+    }
+
     public Animator createAnimatorSize(final View view, int initialWidthInPixels, int initialHeightInPixels, int finalWidthInPixels, int finalHeightInPixels, int duration){
         AnimatorSet animatorSet= new AnimatorSet();
         Animator animatorWidth=createAnimatorWidth(view, initialWidthInPixels, finalWidthInPixels, duration);
@@ -754,8 +1057,22 @@ public class CustomAnimator {
         return animatorSet;
     }
 
-    public Animator createAnimatorAlpha(View view,float initialValue, float finalValue, int duration){
+    public Animator createAnimatorAlpha(View view, float initialValue, float finalValue, int duration){
         Animator animation = ObjectAnimator.ofFloat(view, "alpha", initialValue, finalValue);
+        animation.setDuration(duration);
+        return animation;
+    }
+
+    public Animator createAnimatorAlpha(View[] views, float initialValue, float finalValue, int duration){
+        ValueAnimator animation = ValueAnimator.ofFloat(initialValue, finalValue);
+        animation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(@NonNull ValueAnimator animation) {
+                for (View view : views) {
+                    view.setAlpha((float) animation.getAnimatedValue());
+                }
+            }
+        });
         animation.setDuration(duration);
         return animation;
     }
