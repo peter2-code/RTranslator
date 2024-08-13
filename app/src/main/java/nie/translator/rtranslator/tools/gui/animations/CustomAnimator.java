@@ -31,6 +31,7 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -262,7 +263,7 @@ public class CustomAnimator {
     }
 
 
-    public Animator animateTranslationButtonsCompress(final VoiceTranslationActivity activity, TranslationFragment translationFragment, FloatingActionButton walkieTalkieButton, TextView walkieTalkieText, FloatingActionButton conversationButton, TextView conversationText, MaterialButton walkieTalkieButtonSmall, MaterialButton conversationButtonSmall, Listener listener){
+    public Animator animateTranslationButtonsCompress(final VoiceTranslationActivity activity, TranslationFragment translationFragment, FloatingActionButton walkieTalkieButton, TextView walkieTalkieText, FloatingActionButton conversationButton, TextView conversationText, FloatingActionButton walkieTalkieButtonSmall, FloatingActionButton conversationButtonSmall, boolean hideActionButtons, Listener listener){
         int duration = activity.getResources().getInteger(R.integer.durationStandard);
         int durationShort = activity.getResources().getInteger(R.integer.durationShort);
         int durationInstant = 0;
@@ -291,7 +292,11 @@ public class CustomAnimator {
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.play(animationTextMargin).after(animationDisappear);
         animatorSet.play(animationTextMargin).with(animationButtonBottomMargin).with(animationButtonTopMargin).with(animationButtonHeight).with(animationTextHeight);
-        animatorSet.play(animationAppear).after(animationTextMargin);
+        if(!hideActionButtons) {
+            animatorSet.play(animationAppear).after(animationTextMargin);
+        }
+
+        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
 
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
@@ -324,7 +329,7 @@ public class CustomAnimator {
         return animatorSet;
     }
 
-    public Animator animateTranslationButtonsEnlarge(final VoiceTranslationActivity activity, TranslationFragment translationFragment, FloatingActionButton walkieTalkieButton, TextView walkieTalkieText, FloatingActionButton conversationButton, TextView conversationText, MaterialButton walkieTalkieButtonSmall, MaterialButton conversationButtonSmall, Listener listener){
+    public Animator animateTranslationButtonsEnlarge(final VoiceTranslationActivity activity, TranslationFragment translationFragment, FloatingActionButton walkieTalkieButton, TextView walkieTalkieText, FloatingActionButton conversationButton, TextView conversationText, FloatingActionButton walkieTalkieButtonSmall, FloatingActionButton conversationButtonSmall, Listener listener){
         int duration = activity.getResources().getInteger(R.integer.durationStandard);
         int durationShort = activity.getResources().getInteger(R.integer.durationShort);
         int durationInstant = 0;
@@ -359,6 +364,8 @@ public class CustomAnimator {
         animatorSet.play(animationTextMargin).after(animationDisappear);
         animatorSet.play(animationTextMargin).with(animationButtonBottomMargin).with(animationButtonTopMargin).with(animationButtonHeight).with(animationTextHeight);
         animatorSet.play(animationAppear).after(animationTextMargin);
+
+        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
 
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
@@ -405,6 +412,8 @@ public class CustomAnimator {
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.play(animatorToolbar).with(animatorTranslation)/*.with(animationAppear)*/;
         animatorSet.play(animationAppear).after(600).after(animatorToolbar);
+
+        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
 
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
@@ -457,6 +466,8 @@ public class CustomAnimator {
         animatorSet.play(animatorToolbar).with(animatorTranslation).with(animationDisappear);
         animatorSet.play(animationAppear).after(700).after(animatorToolbar);
 
+        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(@NonNull Animator animation) {
@@ -485,6 +496,124 @@ public class CustomAnimator {
         });
         animatorSet.start();
         return animatorSet;
+    }
+
+    public Animator animateInputAppearance(final VoiceTranslationActivity activity, FloatingActionButton ttsInputButton, FloatingActionButton copyInputButton, Listener listener){
+        int duration = activity.getResources().getInteger(R.integer.durationStandard);
+
+        ttsInputButton.setVisibility(View.VISIBLE);
+        copyInputButton.setVisibility(View.VISIBLE);
+
+        final Animator animationAppearance = createAnimatorAlpha(new View[]{ttsInputButton, copyInputButton}, ttsInputButton.getAlpha(), 1, duration);
+
+        animationAppearance.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                if (listener != null) {
+                    listener.onAnimationStart();
+                }
+            }
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                if (listener != null) {
+                    listener.onAnimationEnd();
+                }
+            }
+            @Override
+            public void onAnimationCancel(Animator animator) {}
+            @Override
+            public void onAnimationRepeat(Animator animator) {}
+        });
+        animationAppearance.start();
+        return animationAppearance;
+    }
+
+    public Animator animateOutputAppearance(final VoiceTranslationActivity activity, ConstraintLayout outputContainer, View lineSeparator, Listener listener){
+        int duration = activity.getResources().getInteger(R.integer.durationStandard);
+
+        outputContainer.setVisibility(View.VISIBLE);
+        lineSeparator.setVisibility(View.VISIBLE);
+
+        final Animator animationAppearance = createAnimatorAlpha(new View[]{outputContainer, lineSeparator}, outputContainer.getAlpha(), 1, duration);
+
+        animationAppearance.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                if (listener != null) {
+                    listener.onAnimationStart();
+                }
+            }
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                if (listener != null) {
+                    listener.onAnimationEnd();
+                }
+            }
+            @Override
+            public void onAnimationCancel(Animator animator) {}
+            @Override
+            public void onAnimationRepeat(Animator animator) {}
+        });
+        animationAppearance.start();
+        return animationAppearance;
+    }
+
+    public Animator animateInputDisappearance(final VoiceTranslationActivity activity, FloatingActionButton ttsInputButton, FloatingActionButton copyInputButton, Listener listener){
+        int duration = activity.getResources().getInteger(R.integer.durationStandard);
+
+        final Animator animationAppearance = createAnimatorAlpha(new View[]{ttsInputButton, copyInputButton}, ttsInputButton.getAlpha(), 0, duration);
+
+        animationAppearance.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                if (listener != null) {
+                    listener.onAnimationStart();
+                }
+            }
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                ttsInputButton.setVisibility(View.INVISIBLE);
+                copyInputButton.setVisibility(View.INVISIBLE);
+                if (listener != null) {
+                    listener.onAnimationEnd();
+                }
+            }
+            @Override
+            public void onAnimationCancel(Animator animator) {}
+            @Override
+            public void onAnimationRepeat(Animator animator) {}
+        });
+        animationAppearance.start();
+        return animationAppearance;
+    }
+
+    public Animator animateOutputDisappearance(final VoiceTranslationActivity activity, ConstraintLayout outputContainer, View lineSeparator, Listener listener){
+        int duration = activity.getResources().getInteger(R.integer.durationStandard);
+
+        final Animator animationAppearance = createAnimatorAlpha(new View[]{outputContainer, lineSeparator}, outputContainer.getAlpha(), 0, duration);
+
+        animationAppearance.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                if (listener != null) {
+                    listener.onAnimationStart();
+                }
+            }
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                outputContainer.setVisibility(View.INVISIBLE);
+                lineSeparator.setVisibility(View.INVISIBLE);
+                if (listener != null) {
+                    listener.onAnimationEnd();
+                }
+            }
+            @Override
+            public void onAnimationCancel(Animator animator) {}
+            @Override
+            public void onAnimationRepeat(Animator animator) {}
+        });
+        animationAppearance.start();
+        return animationAppearance;
     }
 
 

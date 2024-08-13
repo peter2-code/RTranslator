@@ -144,7 +144,6 @@ public abstract class VoiceTranslationService extends GeneralService {
             public void onError(String s) {
             }
         };
-
         initializeTTS();
     }
 

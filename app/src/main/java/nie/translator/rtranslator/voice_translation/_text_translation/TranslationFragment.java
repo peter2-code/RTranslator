@@ -1,27 +1,27 @@
 package nie.translator.rtranslator.voice_translation._text_translation;
 
-import static androidx.core.content.ContextCompat.getSystemService;
+import static android.content.Context.CLIPBOARD_SERVICE;
 
 import android.animation.Animator;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -46,6 +46,7 @@ import nie.translator.rtranslator.bluetooth.Message;
 import nie.translator.rtranslator.settings.SettingsActivity;
 import nie.translator.rtranslator.tools.CustomLocale;
 import nie.translator.rtranslator.tools.ErrorCodes;
+import nie.translator.rtranslator.tools.TTS;
 import nie.translator.rtranslator.tools.Tools;
 import nie.translator.rtranslator.tools.gui.AnimatedTextView;
 import nie.translator.rtranslator.tools.gui.GuiTools;
@@ -56,18 +57,21 @@ import nie.translator.rtranslator.voice_translation.VoiceTranslationActivity;
 import nie.translator.rtranslator.voice_translation.neural_networks.translation.Translator;
 
 public class TranslationFragment extends Fragment {
+    public static final int BEAM_SIZE = 1;
     private VoiceTranslationActivity activity;
     private Global global;
     private Translator.TranslateListener translateListener;
     private TextWatcher inputTextListener;
     private TextWatcher outputTextListener;
+    private TTS tts;
+    private UtteranceProgressListener ttsListener;
 
     //TranslatorFragment's GUI
     private MaterialButton translateButton;
     private FloatingActionButton walkieTalkieButton;
     private FloatingActionButton conversationButton;
-    private MaterialButton walkieTalkieButtonSmall;
-    private MaterialButton conversationButtonSmall;
+    private FloatingActionButton walkieTalkieButtonSmall;
+    private FloatingActionButton conversationButtonSmall;
     private TextView walkieTalkieButtonText;
     private TextView conversationButtonText;
     private EditText inputText;
@@ -81,12 +85,21 @@ public class TranslationFragment extends Fragment {
     private AppCompatImageButton settingsButton;
     private AppCompatImageButton settingsButtonReduced;
     private AppCompatImageButton backButton;
+    private FloatingActionButton copyInputButton;
+    private FloatingActionButton copyOutputButton;
+    private FloatingActionButton ttsInputButton;
+    private FloatingActionButton ttsOutputButton;
+    private ConstraintLayout outputContainer;
     private CustomAnimator animator = new CustomAnimator();
     private Animator colorAnimator = null;
     private int activatedColor = R.color.primary;
     private int deactivatedColor = R.color.gray;
     private boolean isKeyboardShowing = false;
+    private boolean isScreenReduced = false;
+    private boolean isInputEmpty = true;
+    private boolean isOutputEmpty = true;
     ViewTreeObserver.OnGlobalLayoutListener layoutListener;
+    private static final int REDUCED_GUI_THRESHOLD_DP = 550;
 
     //languageListDialog
     private LanguageListAdapter listView;
@@ -94,7 +107,6 @@ public class TranslationFragment extends Fragment {
     private ProgressBar progressBar;
     private ImageButton reloadButton;
     private AlertDialog dialog;
-    public static final int BEAM_SIZE = 1;
 
     //animations
     private int textActionButtonHeight;
@@ -107,6 +119,10 @@ public class TranslationFragment extends Fragment {
     private Animator animationKeyboardButton;
     @Nullable
     private Animator animationKeyboardTop;
+    @Nullable
+    private Animator animationInput;
+    @Nullable
+    private Animator animationOutput;
 
 
     @Override
@@ -141,48 +157,14 @@ public class TranslationFragment extends Fragment {
         settingsButton = view.findViewById(R.id.settingsButton);
         settingsButtonReduced = view.findViewById(R.id.settingsButton2);
         backButton = view.findViewById(R.id.backButton);
-        //we set the listener for the keyboard opening
-        // ContentView is the root view of the layout of this activity/fragment
-        layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if(translateButtonHeight == 0){
-                    //we set the animations parameters
-                    textActionButtonHeight = walkieTalkieButtonText.getHeight();
-                    textActionButtonBottomMargin = ((ConstraintLayout.LayoutParams) walkieTalkieButtonText.getLayoutParams()).bottomMargin;
-                    actionButtonHeight = walkieTalkieButton.getHeight();
-                    translateButtonHeight = translateButton.getHeight();
-                    ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) walkieTalkieButton.getLayoutParams();
-                    actionButtonTopMargin = layoutParams.topMargin;
-                    actionButtonBottomMargin = layoutParams.bottomMargin;
-                } else {  //we start detecting keyboard only when the view is rendered (we use the translateButtonHeight to detect that)
-                    Rect r = new Rect();
-                    view.getWindowVisibleDisplayFrame(r);
-                    int screenHeight = view.getRootView().getHeight();
-
-                    // r.bottom is the bottom position of the window of the fragment (number of pixels from the top of the screen).
-                    // keyboardHeight is the difference between screenHeight (pixels from top to bottom of the screen) and r.button (pixels from the top of the screen and the bottom of the window of the Fragment).
-                    int keyboardHeight = screenHeight - r.bottom;
-
-                    Log.d("keyboard", "keypadHeight = " + keyboardHeight);
-
-                    if (keyboardHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keyboard height.
-                        // keyboard is opened
-                        if (!isKeyboardShowing) {
-                            isKeyboardShowing = true;
-                            onKeyboardVisibilityChanged(true);
-                        }
-                    } else {
-                        // keyboard is closed
-                        if (isKeyboardShowing) {
-                            isKeyboardShowing = false;
-                            onKeyboardVisibilityChanged(false);
-                        }
-                    }
-                }
-            }
-        };
-        view.getViewTreeObserver().addOnGlobalLayoutListener(layoutListener);
+        copyInputButton = view.findViewById(R.id.copyButtonInput);
+        copyOutputButton = view.findViewById(R.id.copyButtonOutput);
+        ttsInputButton = view.findViewById(R.id.ttsButtonInput);
+        ttsOutputButton = view.findViewById(R.id.ttsButtonOutput);
+        outputContainer = view.findViewById(R.id.outputContainer);
+        //we set the initial tag for the tts buttons
+        ttsInputButton.setTag(R.drawable.sound_icon);
+        ttsOutputButton.setTag(R.drawable.sound_icon);
     }
 
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -298,6 +280,42 @@ public class TranslationFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isKeyboardShowing) {  //da fare: decidere come gestire meglio questo caso, dato che non è detto che la tastiera venga sempre rilevata per bene, quindi questo codice potrebbe funzionare male
+                    activity.onBackPressed();
+                }else {
+                    View view = activity.getCurrentFocus();
+                    if (view != null) {
+                        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
+                }
+            }
+        });
+        copyInputButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = inputText.getText().toString();
+                if(!text.isEmpty()){
+                    ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("text", text);
+                    clipboard.setPrimaryClip(clip);
+                }
+            }
+        });
+        copyOutputButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = outputText.getText().toString();
+                if(!text.isEmpty()){
+                    ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("text", text);
+                    clipboard.setPrimaryClip(clip);
+                }
+            }
+        });
     }
 
     public void onStart() {
@@ -305,12 +323,61 @@ public class TranslationFragment extends Fragment {
         GuiMessage lastInputText = global.getTranslator().getLastInputText();
         GuiMessage lastOutputText = global.getTranslator().getLastOutputText();
 
+        inputTextListener = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(global.getTranslator() != null){
+                    global.getTranslator().setLastInputText(new GuiMessage(new Message(global, s.toString()), true, true));
+                }
+                if(isInputEmpty != s.toString().isEmpty()){  //the input editText transitioned from empty to not empty or vice versa
+                    isInputEmpty = s.toString().isEmpty();
+                    if(animationInput != null){
+                        animationInput.cancel();
+                    }
+                    if(!s.toString().isEmpty()) {
+                        animationInput = animator.animateInputAppearance(activity, ttsInputButton, copyInputButton, new CustomAnimator.Listener() {
+                            @Override
+                            public void onAnimationEnd() {
+                                super.onAnimationEnd();
+                                animationInput = null;
+                            }
+                        });
+                    }else{
+                        animationInput = animator.animateInputDisappearance(activity, ttsInputButton, copyInputButton, new CustomAnimator.Listener() {
+                            @Override
+                            public void onAnimationEnd() {
+                                super.onAnimationEnd();
+                                animationInput = null;
+                            }
+                        });
+                    }
+                }
+            }
+        };
+        inputText.addTextChangedListener(inputTextListener);
+        inputText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //we start the compress animations
+                /*if (!isKeyboardShowing) {
+                    isKeyboardShowing = true;
+                    onKeyboardVisibilityChanged(true);
+                }*/
+            }
+        });
+
         outputTextListener = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if(lineSeparator.getVisibility() != View.VISIBLE){
-                    lineSeparator.setVisibility(View.VISIBLE);
-                }
+
             }
 
             @Override
@@ -320,7 +387,29 @@ public class TranslationFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                if(isOutputEmpty != s.toString().isEmpty()){  //the output editText transitioned from empty to not empty or vice versa
+                    isOutputEmpty = s.toString().isEmpty();
+                    if(animationOutput != null){
+                        animationOutput.cancel();
+                    }
+                    if(!s.toString().isEmpty()) {
+                        animationOutput = animator.animateOutputAppearance(activity, outputContainer, lineSeparator, new CustomAnimator.Listener() {
+                            @Override
+                            public void onAnimationEnd() {
+                                super.onAnimationEnd();
+                                animationOutput = null;
+                            }
+                        });
+                    }else{
+                        animationOutput = animator.animateOutputDisappearance(activity, outputContainer, lineSeparator, new CustomAnimator.Listener() {
+                            @Override
+                            public void onAnimationEnd() {
+                                super.onAnimationEnd();
+                                animationOutput = null;
+                            }
+                        });
+                    }
+                }
             }
         };
         outputText.addTextChangedListener(outputTextListener);
@@ -364,45 +453,191 @@ public class TranslationFragment extends Fragment {
                 });
             }
         });
-        inputTextListener = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(global.getTranslator() != null){
-                    global.getTranslator().setLastInputText(new GuiMessage(new Message(global, s.toString()), true, true));
-                }
-            }
-        };
-        inputText.addTextChangedListener(inputTextListener);
-        inputText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //we start the compress animations
-                /*if (!isKeyboardShowing) {
-                    isKeyboardShowing = true;
-                    onKeyboardVisibilityChanged(true);
-                }*/
-            }
-        });
-        //we set the option to not compress ui when the keyboard is shown
-        //activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        //activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         //we restore the translation button state based on the translation status
         if(global.getTranslator().isTranslating()){
             deactivateTranslationButton();
         }else{
             activateTranslationButton();
         }
+        //we set some buttons to not clickable (it is done here as well as in the xml because android set clickable to true when we set an onClickListener)
+        backButton.setClickable(false);
+        settingsButtonReduced.setClickable(false);
+        walkieTalkieButtonSmall.setClickable(false);
+        conversationButtonSmall.setClickable(false);
+        //we set the listener for the keyboard opening
+        layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if(translateButtonHeight == 0){
+                    //we set the animations parameters
+                    textActionButtonHeight = walkieTalkieButtonText.getHeight();
+                    textActionButtonBottomMargin = ((ConstraintLayout.LayoutParams) walkieTalkieButtonText.getLayoutParams()).bottomMargin;
+                    actionButtonHeight = walkieTalkieButton.getHeight();
+                    translateButtonHeight = translateButton.getHeight();
+                    ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) walkieTalkieButton.getLayoutParams();
+                    actionButtonTopMargin = layoutParams.topMargin;
+                    actionButtonBottomMargin = layoutParams.bottomMargin;
+                } else if(getView() != null) {  //we start detecting keyboard only when the view is rendered (we use the translateButtonHeight to detect that)
+                    int screenHeight = getView().getRootView().getHeight();
+                    int screenHeightDp = (int) Tools.convertPixelsToDp(activity, screenHeight);
+
+                    if(screenHeightDp < REDUCED_GUI_THRESHOLD_DP){
+                        //screen is reduced
+                        if(!isScreenReduced){
+                            isScreenReduced = true;
+                            onScreenSizeChanged(true);
+                        }
+                    }else{
+                        //screen is not reduced
+                        if(isScreenReduced){
+                            isScreenReduced = false;
+                            onScreenSizeChanged(false);
+                        }
+                    }
+                    // r.bottom is the bottom position of the window of the fragment (number of pixels from the top of the screen).
+                    // keyboardHeight is the difference between screenHeight (pixels from top to bottom of the screen) and r.button (pixels from the top of the screen and the bottom of the window of the Fragment).
+                    Rect r = new Rect();
+                    getView().getWindowVisibleDisplayFrame(r);
+                    int keyboardHeight = screenHeight - r.bottom;
+
+                    Log.d("keyboard", "keypadHeight = " + keyboardHeight);
+
+                    if (keyboardHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keyboard height.
+                        // keyboard is opened
+                        if (!isKeyboardShowing) {
+                            isKeyboardShowing = true;
+                            onKeyboardVisibilityChanged(true);
+                        }
+                    } else {
+                        // keyboard is closed
+                        if (isKeyboardShowing) {
+                            isKeyboardShowing = false;
+                            onKeyboardVisibilityChanged(false);
+                        }
+                    }
+                }
+            }
+        };
+        if(getView() != null) {
+            getView().getViewTreeObserver().addOnGlobalLayoutListener(layoutListener);
+        }
+
+        // tts initialization
+        ttsListener = new UtteranceProgressListener() {
+            @Override
+            public void onStart(String s) {
+            }
+
+            @Override
+            public void onDone(String s) {
+                if(((int) ttsInputButton.getTag()) == R.drawable.stop_icon){
+                    ttsInputButton.setImageResource(R.drawable.sound_icon);
+                    ttsInputButton.setTag(R.drawable.sound_icon);
+                }
+                if(((int) ttsOutputButton.getTag()) == R.drawable.stop_icon){
+                    ttsOutputButton.setImageResource(R.drawable.sound_icon);
+                    ttsOutputButton.setTag(R.drawable.sound_icon);
+                }
+            }
+
+            @Override
+            public void onError(String s) {
+            }
+        };
+        initializeTTS();
+
+        ttsInputButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(((int) ttsInputButton.getTag()) == R.drawable.stop_icon){
+                    tts.stop();
+                    ttsListener.onDone("");  //we call this to make eventual visual updates to the tts buttons (stop() doesn't call onDone automatically)
+                }else {
+                    global.getFirstLanguage(true, new Global.GetLocaleListener() {
+                        @Override
+                        public void onSuccess(CustomLocale firstLanguage) {
+                            global.getTTSLanguages(true, new Global.GetLocalesListListener() {
+                                @Override
+                                public void onSuccess(ArrayList<CustomLocale> ttsLanguages) {
+                                    if (CustomLocale.containsLanguage(ttsLanguages, firstLanguage)) { // check if the language can be speak
+                                        tts.stop();
+                                        ttsListener.onDone("");  //we call this to make eventual visual updates to the tts buttons (stop() doesn't call onDone automatically)
+                                        speak(inputText.getText().toString(), firstLanguage);
+                                        ttsInputButton.setImageResource(R.drawable.stop_icon);
+                                        ttsInputButton.setTag(R.drawable.stop_icon);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(int[] reasons, long value) {
+                                    //we do nothing
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(int[] reasons, long value) {
+                            //we do nothing
+                        }
+                    });
+                }
+            }
+        });
+
+        ttsOutputButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(((int) ttsOutputButton.getTag()) == R.drawable.stop_icon){
+                    tts.stop();
+                    ttsListener.onDone("");  //we call this to make eventual visual updates to the tts buttons (stop() doesn't call onDone automatically)
+                }else {
+                    global.getSecondLanguage(true, new Global.GetLocaleListener() {
+                        @Override
+                        public void onSuccess(CustomLocale secondLanguage) {
+                            global.getTTSLanguages(true, new Global.GetLocalesListListener() {
+                                @Override
+                                public void onSuccess(ArrayList<CustomLocale> ttsLanguages) {
+                                    if (CustomLocale.containsLanguage(ttsLanguages, secondLanguage)) { // check if the language can be speak
+                                        tts.stop();
+                                        ttsListener.onDone("");  //we call this to make eventual visual updates to the tts buttons (stop() doesn't call onDone automatically)
+                                        speak(outputText.getText().toString(), secondLanguage);
+                                        ttsOutputButton.setImageResource(R.drawable.stop_icon);
+                                        ttsOutputButton.setTag(R.drawable.stop_icon);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(int[] reasons, long value) {
+                                    //we do nothing
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(int[] reasons, long value) {
+                            //we do nothing
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void onKeyboardVisibilityChanged(boolean opened) {
+        if(!isScreenReduced) {
+            changeGuiCompression(opened, true);
+        }
+    }
+
+    private void onScreenSizeChanged(boolean reduced){
+        if(!reduced && isKeyboardShowing){
+            changeGuiCompression(true, true);
+        } else {
+            changeGuiCompression(reduced, false);
+        }
+    }
+
+    private void changeGuiCompression(boolean compress, boolean hideActionButtons){
         if(activity != null) {
             if (animationKeyboardButton != null) {
                 animationKeyboardButton.cancel();
@@ -410,8 +645,8 @@ public class TranslationFragment extends Fragment {
             if(animationKeyboardTop != null){
                 animationKeyboardTop.cancel();
             }
-            if (opened) {
-                animationKeyboardButton = animator.animateTranslationButtonsCompress(activity, this, walkieTalkieButton, walkieTalkieButtonText, conversationButton, conversationButtonText, walkieTalkieButtonSmall, conversationButtonSmall, new CustomAnimator.Listener() {
+            if (compress) {
+                animationKeyboardButton = animator.animateTranslationButtonsCompress(activity, this, walkieTalkieButton, walkieTalkieButtonText, conversationButton, conversationButtonText, walkieTalkieButtonSmall, conversationButtonSmall, hideActionButtons, new CustomAnimator.Listener() {
                     @Override
                     public void onAnimationEnd() {
                         super.onAnimationEnd();
@@ -440,6 +675,34 @@ public class TranslationFragment extends Fragment {
                         animationKeyboardTop = null;
                     }
                 });
+            }
+        }
+    }
+
+    private void initializeTTS() {
+        tts = new TTS(activity, new TTS.InitListener() {  // tts initialization (to be improved, automatic package installation)
+            @Override
+            public void onInit() {
+                if(tts != null) {
+                    tts.setOnUtteranceProgressListener(ttsListener);
+                }
+            }
+
+            @Override
+            public void onError(int reason) {
+                tts = null;
+                //notifyError(new int[]{reason}, -1);
+            }
+        });
+    }
+
+    public void speak(String text, CustomLocale language) {
+        if (tts != null && tts.isActive()) {
+            if (tts.getVoice() != null && language.equals(new CustomLocale(tts.getVoice().getLocale()))) {
+                tts.speak(text, TextToSpeech.QUEUE_ADD, null, "c01");
+            } else {
+                tts.setLanguage(language, activity);
+                tts.speak(text, TextToSpeech.QUEUE_ADD, null, "c01");
             }
         }
     }
@@ -607,6 +870,9 @@ public class TranslationFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        if(getView() != null) {
+            getView().getViewTreeObserver().removeOnGlobalLayoutListener(layoutListener);
+        }
         firstLanguageSelector.setOnClickListener(null);
         secondLanguageSelector.setOnClickListener(null);
         invertLanguagesButton.setOnClickListener(null);
@@ -614,14 +880,6 @@ public class TranslationFragment extends Fragment {
         outputText.removeTextChangedListener(outputTextListener);
         //we detach the translate listener
         global.getTranslator().removeCallback(translateListener);
-    }
-
-    @Override
-    public void onDestroyView() {
-        if(getView() != null) {
-            getView().getViewTreeObserver().addOnGlobalLayoutListener(layoutListener);
-        }
-        super.onDestroyView();
     }
 
     private void setFirstLanguage(CustomLocale language) {
