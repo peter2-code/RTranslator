@@ -22,46 +22,66 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+
 import nie.translator.rtranslator.R;
 import nie.translator.rtranslator.tools.gui.animations.CustomAnimator;
 import nie.translator.rtranslator.voice_translation.VoiceTranslationActivity;
-import nie.translator.rtranslator.voice_translation.VoiceTranslationFragment;
+import nie.translator.rtranslator.voice_translation._conversation_mode._conversation.main.ConversationMainFragment;
 
 
 public class ButtonMic extends DeactivableButton {
+    public static final int SIZE_DEACTIVATED_DP = 56;
+    public static final int SIZE_NORMAL_DP = 66;
+    public static final int SIZE_LISTENING_DP = 76;
     public static final int STATE_NORMAL = 0;
     public static final int STATE_RETURN = 1;
     public static final int STATE_SEND = 2;
     private boolean isMute = false;
     private int state = STATE_NORMAL;
+    private boolean isListening = false;
     private TextView micInput;
     private EditText editText;
+    @Nullable
     private MicrophoneComunicable fragment;
     private Context context;
     private CustomAnimator animator = new CustomAnimator();
+    private ButtonMicColor currentColor;
+    public static ButtonMicColor colorActivated;
+    public static ButtonMicColor colorMutedActivated;
+    public static ButtonMicColor colorDeactivated;
+    public static ButtonMicColor colorMutedDeactivated;
+
 
     public ButtonMic(Context context) {
         super(context);
         this.context = context;
-        deactivatedColor = GuiTools.getColorStateList(context, R.color.gray);
-        activatedColor = GuiTools.getColorStateList(context, R.color.primary);
+        colorActivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.white), GuiTools.getColorStateList(context,R.color.primary));
+        colorMutedActivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.primary_very_dark), GuiTools.getColorStateList(context,R.color.primary_very_lite));
+        colorDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.white), GuiTools.getColorStateList(context,R.color.gray));
+        colorMutedDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.very_very_dark_gray), GuiTools.getColorStateList(context,R.color.very_very_light_gray));
     }
 
     public ButtonMic(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        deactivatedColor = GuiTools.getColorStateList(context, R.color.gray);
-        activatedColor = GuiTools.getColorStateList(context, R.color.primary);
+        colorActivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.white), GuiTools.getColorStateList(context,R.color.primary));
+        colorMutedActivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.primary_very_dark), GuiTools.getColorStateList(context,R.color.primary_very_lite));
+        colorDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.white), GuiTools.getColorStateList(context,R.color.gray));
+        colorMutedDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.very_very_dark_gray), GuiTools.getColorStateList(context,R.color.very_very_light_gray));
     }
 
     public ButtonMic(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
-        deactivatedColor = GuiTools.getColorStateList(context, R.color.gray);
-        activatedColor = GuiTools.getColorStateList(context, R.color.primary);
+        colorActivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.white), GuiTools.getColorStateList(context,R.color.primary));
+        colorMutedActivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.primary_very_dark), GuiTools.getColorStateList(context,R.color.primary_very_lite));
+        colorDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.white), GuiTools.getColorStateList(context,R.color.gray));
+        colorMutedDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.very_very_dark_gray), GuiTools.getColorStateList(context,R.color.very_very_light_gray));
     }
 
-    public void deleteEditText(VoiceTranslationActivity activity, final VoiceTranslationFragment fragment, final ButtonKeyboard buttonKeyboard, final EditText editText) {
+    public void deleteEditText(VoiceTranslationActivity activity, final ConversationMainFragment fragment, final ButtonKeyboard buttonKeyboard, final EditText editText) {
         animator.animateDeleteEditText(activity, this, buttonKeyboard, editText, new CustomAnimator.Listener() {
             @Override
             public void onAnimationStart() {
@@ -87,7 +107,7 @@ public class ButtonMic extends DeactivableButton {
 
         if (state == STATE_NORMAL) {
             if (oldState == STATE_RETURN) {
-                if (!isMute && activationStatus == ACTIVATED) {
+                if (!isMute && activationStatus == ACTIVATED && fragment != null) {
                     fragment.startMicrophone(false);
                 }
                 if (micInput != null) {
@@ -99,7 +119,7 @@ public class ButtonMic extends DeactivableButton {
                 }
             } else if (oldState == STATE_SEND) {
                 // in this case first we switch to the microphone icon with the animation and then we start the animation to delete the editText
-                if (!isMute && activationStatus == ACTIVATED) {
+                if (!isMute && activationStatus == ACTIVATED && fragment != null) {
                     fragment.startMicrophone(false);
                 }
                 editText.setText(""); // do it without activating the listener
@@ -121,7 +141,9 @@ public class ButtonMic extends DeactivableButton {
             }
         } else if (state == STATE_RETURN) {
             if (oldState == STATE_NORMAL) {
-                fragment.stopMicrophone(false);
+                if(fragment != null) {
+                    fragment.stopMicrophone(false);
+                }
                 if (micInput != null) {
                     // micInput appearance animation (TextView under mic) and microphone enlargement
                     animator.animateMicToIcon(context, this, micInput);
@@ -158,34 +180,39 @@ public class ButtonMic extends DeactivableButton {
     }
 
     public void setMute(boolean mute) {
+        boolean oldMute = isMute;
         isMute = mute;
         if (state == STATE_NORMAL) {
             if (mute) {
-                setImageDrawable(getDrawable(R.drawable.mic_mute));
+                animator.animateMute(context, this);
+                currentColor = colorMutedActivated;  //da fare: controllare se questo codice viene eseguito solo quando il buttonMic è attivo
             } else {
-                setImageDrawable(getDrawable(R.drawable.mic));
+                animator.animateUnmute(context, this);
+                currentColor = colorActivated;  //da fare: controllare se questo codice viene eseguito solo quando il buttonMic è attivo
             }
         }
     }
 
     public void onVoiceStarted() {
         if (!isMute && activationStatus == ACTIVATED) {  // see if it makes sense to keep this check
-            animator.animateOnVoiceStart(this);
+            isListening = true;
+            animator.animateOnVoiceStart(context,this);
         }
     }
 
     public void onVoiceEnded() {
-        if (!isMute && activationStatus == ACTIVATED) {   // see if it makes sense to keep this check
-            animator.animateOnVoiceEnd(this);
+        if (!isMute) {   // see if it makes sense to keep this check
+            isListening = false;
+            animator.animateOnVoiceEnd(context, this);
         }
     }
 
     @Override
     public void activate(boolean start) {
         super.activate(start);
-        animator.createAnimatorColor(getDrawable(), color.getDefaultColor(), activatedColor.getDefaultColor(), getResources().getInteger(R.integer.durationShort) * 2).start();
-        color = activatedColor;
-        if (start) {
+        animator.animateActivation(context, this);
+        currentColor = isMute ? colorMutedActivated : colorActivated;
+        if (start && fragment != null) {
             fragment.startMicrophone(false);
         }
     }
@@ -194,38 +221,53 @@ public class ButtonMic extends DeactivableButton {
     public void deactivate(int reason) {
         super.deactivate(reason);
         switch (reason) {
-            case DEACTIVATED_FOR_CREDIT_EXHAUSTED:
-            case DEACTIVATED_FOR_MISSING_OR_WRONG_KEYFILE:
             case DEACTIVATED_FOR_MISSING_MIC_PERMISSION:
-                setImageDrawable(getDrawable(R.drawable.mic));
-                animator.createAnimatorColor(getDrawable(), color.getDefaultColor(), deactivatedColor.getDefaultColor(), getResources().getInteger(R.integer.durationShort) * 2).start();
-                color = deactivatedColor;
-                fragment.stopMicrophone(false);
+                //setImageDrawable(getDrawable(R.drawable.mic));
+                animator.animateDeactivation(context, this);
+                currentColor = isMute ? colorMutedDeactivated : colorDeactivated;
+                if(fragment != null) {
+                    fragment.stopMicrophone(false);
+                }
                 break;
             case DEACTIVATED:
-                if (color == null) {  //for differentiating the deactivate at the start of WalkieTalkie mode (color == null) from the one caused by programmatic stop of mic
-                    color = deactivatedColor;
-                    setImageDrawable(getDrawable(R.drawable.mic));
+                if (currentColor == null) {  //for differentiating the deactivate at the start of WalkieTalkie mode (color == null) from the one caused by programmatic stop of mic
+                    currentColor = isMute ? colorMutedDeactivated : colorDeactivated;
+                    //setImageDrawable(getDrawable(R.drawable.mic));
                 } else {
-                    setImageDrawable(getDrawable(R.drawable.mic));
-                    animator.createAnimatorColor(getDrawable(), color.getDefaultColor(), deactivatedColor.getDefaultColor(), getResources().getInteger(R.integer.durationShort) * 2).start();
-                    color = deactivatedColor;
+                    //setImageDrawable(getDrawable(R.drawable.mic));
+                    animator.animateDeactivation(context, this);
+                    currentColor = isMute ? colorMutedDeactivated : colorDeactivated;
                 }
                 break;
         }
     }
 
-    public void setFragment(MicrophoneComunicable fragment) {
+    public void setFragment(@Nullable MicrophoneComunicable fragment) {
         this.fragment = fragment;
     }
 
     public Drawable getDrawable(int id) {
         Drawable drawable = getResources().getDrawable(id, null);
-        drawable.setTintList(color);
+        drawable.setTintList(currentColor.iconColor);
         return drawable;
     }
 
-    public ColorStateList getColor(){
-        return color;
+    public ButtonMicColor getCurrentColor(){
+        return currentColor;
+    }
+
+    public boolean isListening() {
+        return isListening;
+    }
+
+
+    public static class ButtonMicColor {
+        public ColorStateList iconColor;
+        public ColorStateList backgroundColor;
+
+        public ButtonMicColor(ColorStateList iconColor, ColorStateList backgroundColor){
+            this.iconColor = iconColor;
+            this.backgroundColor = backgroundColor;
+        }
     }
 }

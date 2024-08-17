@@ -221,8 +221,8 @@ public abstract class VoiceTranslationService extends GeneralService {
         }
     }
 
-    public void endVoice(){
-        if(mVoiceRecorder != null){
+    public void endVoice() {
+        if(mVoiceRecorder != null) {
             mVoiceRecorder.end();
         }
     }

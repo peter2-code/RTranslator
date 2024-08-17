@@ -24,6 +24,7 @@ import nie.translator.rtranslator.tools.Tools;
 import nie.translator.rtranslator.tools.gui.animations.CustomAnimator;
 import nie.translator.rtranslator.voice_translation.VoiceTranslationActivity;
 import nie.translator.rtranslator.voice_translation.VoiceTranslationFragment;
+import nie.translator.rtranslator.voice_translation._conversation_mode._conversation.main.ConversationMainFragment;
 
 public class ButtonKeyboard extends DeactivableButton {
     private Context context;
@@ -44,7 +45,7 @@ public class ButtonKeyboard extends DeactivableButton {
         this.context=context;
     }
 
-    public void generateEditText(VoiceTranslationActivity activity, final VoiceTranslationFragment voiceTranslationFragment, final ButtonMic buttonMic, final EditText editText, boolean animated){
+    public void generateEditText(VoiceTranslationActivity activity, final ConversationMainFragment voiceTranslationFragment, final ButtonMic buttonMic, final EditText editText, boolean animated){
         if(animated) {
             animator.animateGenerateEditText(activity, this, buttonMic, editText, new CustomAnimator.Listener() {
                 @Override

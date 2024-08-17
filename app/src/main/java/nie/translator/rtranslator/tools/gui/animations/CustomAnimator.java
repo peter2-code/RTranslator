@@ -31,20 +31,19 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -229,39 +228,119 @@ public class CustomAnimator {
         animatorSet.start();
     }
 
-    public void animateOnVoiceStart(final ButtonMic buttonMic){
-        int duration=buttonMic.getResources().getInteger(R.integer.durationShort);
+    public void animateOnVoiceStart(Context context, final ButtonMic buttonMic){
+        int duration=buttonMic.getResources().getInteger(R.integer.durationStandard);
+        int finalSizeInPixels = Tools.convertDpToPixels(context, ButtonMic.SIZE_LISTENING_DP);
 
         // enlargement animation
-        /*buttonMic.setImageDrawable(buttonMic.getDrawable(R.drawable.enlargable_from_voice_mic));
-        ((AnimatedVectorDrawable)buttonMic.getDrawable()).start();*/
-        final Animation enlargeAnimation=AnimationUtils.loadAnimation(buttonMic.getContext(),R.anim.partial_enlarge_icon);
-        enlargeAnimation.setDuration(duration);
-        buttonMic.startAnimation(enlargeAnimation);
-
-        // change color animation
-        int initialColor=GuiTools.getColor(buttonMic.getContext(),R.color.primary);
-        int finalColor=GuiTools.getColor(buttonMic.getContext(),R.color.accent);
-        Animator animatorColor=createAnimatorColor(buttonMic.getDrawable(),initialColor,finalColor,duration);
-        animatorColor.start();
+        Animator enlargeAnimation = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), finalSizeInPixels, finalSizeInPixels, duration);
+        enlargeAnimation.setInterpolator(new DecelerateInterpolator());
+        enlargeAnimation.start();
     }
 
-    public void animateOnVoiceEnd(final ButtonMic buttonMic){
-        int duration=buttonMic.getResources().getInteger(R.integer.durationShort);
-        //dwindle animation
-        /*buttonMic.setImageDrawable(buttonMic.getDrawable(R.drawable.dwindable_from_voice_mic));
-        ((AnimatedVectorDrawable)buttonMic.getDrawable()).start();*/
-        final Animation enlargeAnimation=AnimationUtils.loadAnimation(buttonMic.getContext(),R.anim.partial_dwindle_icon);
-        enlargeAnimation.setDuration(duration);
-        buttonMic.startAnimation(enlargeAnimation);
+    public void animateOnVoiceEnd(Context context, final ButtonMic buttonMic){
+        int duration=buttonMic.getResources().getInteger(R.integer.durationStandard);
+        int finalSizeInPixels = Tools.convertDpToPixels(context, ButtonMic.SIZE_NORMAL_DP);
 
-        // change color animation
-        int initialColor=GuiTools.getColor(buttonMic.getContext(),R.color.accent);
-        int finalColor=GuiTools.getColor(buttonMic.getContext(),R.color.primary);
-        Animator animatorColor=createAnimatorColor(buttonMic.getDrawable(),initialColor,finalColor,duration);
-        animatorColor.start();
+        //reduce animation
+        Animator reduceAnimation = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), finalSizeInPixels, finalSizeInPixels, duration);
+        reduceAnimation.setInterpolator(new DecelerateInterpolator());
+        reduceAnimation.start();
     }
 
+    public void animateMute(Context context, final ButtonMic buttonMic){
+        int duration=buttonMic.getResources().getInteger(R.integer.durationStandard);
+        int finalSizeInPixels = Tools.convertDpToPixels(context, ButtonMic.SIZE_DEACTIVATED_DP);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+
+        //reduce animation
+        Animator reduceAnimation = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), finalSizeInPixels, finalSizeInPixels, duration);
+
+        // change color of icon animation
+        int initialColorIcon = GuiTools.getColor(buttonMic.getContext(),R.color.white);
+        int finalColorIcon = GuiTools.getColor(buttonMic.getContext(),R.color.primary_very_dark);
+        Animator animatorIconColor = createAnimatorColor(buttonMic.getDrawable(), initialColorIcon, finalColorIcon, duration);
+
+        // change color of background animation
+        int initialColor = GuiTools.getColor(buttonMic.getContext(),R.color.primary);
+        int finalColor = GuiTools.getColor(buttonMic.getContext(),R.color.primary_very_lite);
+        Animator animatorBackgroundColor = createAnimatorColor(buttonMic.getBackground(), initialColor, finalColor, duration);
+
+        animatorSet.play(reduceAnimation).with(animatorIconColor).with(animatorBackgroundColor);
+        animatorSet.start();
+    }
+
+    public void animateUnmute(Context context, final ButtonMic buttonMic){
+        int duration=buttonMic.getResources().getInteger(R.integer.durationStandard);
+        int finalSizeInPixels = Tools.convertDpToPixels(context, ButtonMic.SIZE_NORMAL_DP);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+
+        //enlarge animation
+        Animator enlargeAnimation = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), finalSizeInPixels, finalSizeInPixels, duration);
+
+        // change color of icon animation
+        int initialColorIcon = GuiTools.getColor(buttonMic.getContext(),R.color.primary_very_dark);
+        int finalColorIcon = GuiTools.getColor(buttonMic.getContext(),R.color.white);
+        Animator animatorIconColor = createAnimatorColor(buttonMic.getDrawable(), initialColorIcon, finalColorIcon, duration);
+
+        // change color of background animation
+        int initialColor = GuiTools.getColor(buttonMic.getContext(),R.color.primary_very_lite);
+        int finalColor = GuiTools.getColor(buttonMic.getContext(),R.color.primary);
+        Animator animatorBackgroundColor = createAnimatorColor(buttonMic.getBackground(), initialColor, finalColor, duration);
+
+        animatorSet.play(enlargeAnimation).with(animatorIconColor).with(animatorBackgroundColor);
+        animatorSet.start();
+    }
+
+    public void animateDeactivation(Context context, final ButtonMic buttonMic){
+        int duration = buttonMic.getResources().getInteger(R.integer.durationStandard);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        int finalColorIcon;
+        int finalColorBackground;
+        if(buttonMic.isMute()){
+            finalColorIcon = ButtonMic.colorMutedDeactivated.iconColor.getDefaultColor();
+            finalColorBackground = ButtonMic.colorMutedDeactivated.backgroundColor.getDefaultColor();
+        }else{
+            finalColorIcon = ButtonMic.colorDeactivated.iconColor.getDefaultColor();
+            finalColorBackground = ButtonMic.colorDeactivated.backgroundColor.getDefaultColor();
+        }
+
+        // change color of icon animation
+        Animator animatorIconColor = createAnimatorColor(buttonMic.getDrawable(), buttonMic.getCurrentColor().iconColor.getDefaultColor(), finalColorIcon, duration);
+
+        // change color of background animation
+        Animator animatorBackgroundColor = createAnimatorColor(buttonMic.getBackground(), buttonMic.getCurrentColor().backgroundColor.getDefaultColor(), finalColorBackground, duration);
+
+        animatorSet.play(animatorIconColor).with(animatorBackgroundColor);
+        animatorSet.start();
+    }
+
+    public void animateActivation(Context context, final ButtonMic buttonMic){
+        int duration = buttonMic.getResources().getInteger(R.integer.durationStandard);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        int finalColorIcon;
+        int finalColorBackground;
+        if(buttonMic.isMute()){
+            finalColorIcon = ButtonMic.colorMutedActivated.iconColor.getDefaultColor();
+            finalColorBackground = ButtonMic.colorMutedActivated.backgroundColor.getDefaultColor();
+        }else{
+            finalColorIcon = ButtonMic.colorActivated.iconColor.getDefaultColor();
+            finalColorBackground = ButtonMic.colorActivated.backgroundColor.getDefaultColor();
+        }
+
+        // change color of icon animation
+        Animator animatorIconColor = createAnimatorColor(buttonMic.getDrawable(), buttonMic.getCurrentColor().iconColor.getDefaultColor(), finalColorIcon, duration);
+
+        // change color of background animation
+        Animator animatorBackgroundColor = createAnimatorColor(buttonMic.getBackground(), buttonMic.getCurrentColor().backgroundColor.getDefaultColor(), finalColorBackground, duration);
+
+        animatorSet.play(animatorIconColor).with(animatorBackgroundColor);
+        animatorSet.start();
+    }
 
     public Animator animateTranslationButtonsCompress(final VoiceTranslationActivity activity, TranslationFragment translationFragment, FloatingActionButton walkieTalkieButton, TextView walkieTalkieText, FloatingActionButton conversationButton, TextView conversationText, FloatingActionButton walkieTalkieButtonSmall, FloatingActionButton conversationButtonSmall, boolean hideActionButtons, Listener listener){
         int duration = activity.getResources().getInteger(R.integer.durationStandard);
@@ -1184,6 +1263,21 @@ public class CustomAnimator {
         animatorSet.play(animatorWidth).with(animatorHeight);
 
         return animatorSet;
+    }
+
+    public Animator createAnimatorScale(final View view, int initialPixels, int finalPixels, int duration){
+        ValueAnimator animator= ValueAnimator.ofInt(initialPixels,finalPixels);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+                layoutParams.height=(int)valueAnimator.getAnimatedValue();
+                view.setLayoutParams(layoutParams);
+            }
+        });
+        animator.setDuration(duration);
+
+        return animator;
     }
 
     public Animator createAnimatorAlpha(View view, float initialValue, float finalValue, int duration){

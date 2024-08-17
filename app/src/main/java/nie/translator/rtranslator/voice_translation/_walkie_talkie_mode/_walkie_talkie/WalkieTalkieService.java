@@ -34,13 +34,14 @@ import nie.translator.rtranslator.bluetooth.Peer;
 import nie.translator.rtranslator.voice_translation.neural_networks.NeuralNetworkApiResult;
 import nie.translator.rtranslator.voice_translation.neural_networks.translation.Translator;
 import nie.translator.rtranslator.voice_translation.neural_networks.voice.Recognizer;
+import nie.translator.rtranslator.voice_translation.neural_networks.voice.RecognizerListener;
 import nie.translator.rtranslator.voice_translation.neural_networks.voice.RecognizerMultiListener;
 import nie.translator.rtranslator.voice_translation.neural_networks.voice.Recorder;
 
 
 public class WalkieTalkieService extends VoiceTranslationService {
     //properties
-    public static final int SPEECH_BEAM_SIZE = 2;
+    public static final int SPEECH_BEAM_SIZE = 1;
     public static final int TRANSLATOR_BEAM_SIZE = 1;
 
     // commands
@@ -48,11 +49,17 @@ public class WalkieTalkieService extends VoiceTranslationService {
     public static final int CHANGE_SECOND_LANGUAGE = 23;
     public static final int GET_FIRST_LANGUAGE = 24;
     public static final int GET_SECOND_LANGUAGE = 25;
-
+    public static final int START_MANUAL_RECOGNITION = 26;
+    public static final int STOP_MANUAL_RECOGNITION = 27;
+    public static final int START_RECOGNIZING_FIRST_LANGUAGE = 28;
+    public static final int STOP_RECOGNIZING_FIRST_LANGUAGE = 29;
+    public static final int START_RECOGNIZING_SECOND_LANGUAGE = 30;
+    public static final int STOP_RECOGNIZING_SECOND_LANGUAGE = 31;
     // callbacks
     public static final int ON_FIRST_LANGUAGE = 22;
     public static final int ON_SECOND_LANGUAGE = 23;
     private RecognizerMultiListener speechRecognizerCallback;
+    private RecognizerListener speechRecognizerSingleCallback;
 
     // objects
     private Translator translator;
@@ -61,6 +68,9 @@ public class WalkieTalkieService extends VoiceTranslationService {
     private CustomLocale secondLanguage;
     private Translator.TranslateListener firstResultTranslateListener;
     private Translator.TranslateListener secondResultTranslateListener;
+    private boolean isMicAutomatic = true;
+    private boolean manualRecognizingFirstLanguage = false;
+    private boolean manualRecognizingSecondLanguage = false;
 
 
     @Override
@@ -123,6 +133,34 @@ public class WalkieTalkieService extends VoiceTranslationService {
                                     });
                                 }
                                 break;
+                            case START_MANUAL_RECOGNITION:
+                                isMicAutomatic = false;
+                                mVoiceRecorder.setManualMode(true);
+                                break;
+                            case STOP_MANUAL_RECOGNITION:
+                                isMicAutomatic = true;
+                                mVoiceRecorder.setManualMode(false);
+                                break;
+                            case START_RECOGNIZING_FIRST_LANGUAGE:
+                                if(!manualRecognizingSecondLanguage && !isMicAutomatic) {
+                                    manualRecognizingFirstLanguage = true;
+                                    mVoiceRecorder.startRecording();
+                                }
+                                break;
+                            case STOP_RECOGNIZING_FIRST_LANGUAGE:
+                                mVoiceRecorder.stopRecording();
+                                //manualRecognizingFirstLanguage = false;
+                                break;
+                            case START_RECOGNIZING_SECOND_LANGUAGE:
+                                if(!manualRecognizingFirstLanguage && !isMicAutomatic) {
+                                    manualRecognizingSecondLanguage = true;
+                                    mVoiceRecorder.startRecording();
+                                }
+                                break;
+                            case STOP_RECOGNIZING_SECOND_LANGUAGE:
+                                mVoiceRecorder.stopRecording();
+                                //manualRecognizingSecondLanguage = false;
+                                break;
                         }
                     }
                 }
@@ -140,11 +178,23 @@ public class WalkieTalkieService extends VoiceTranslationService {
             @Override
             public void onVoice(@NonNull float[] data, int size) {
                 super.onVoice(data,size);
-                //we stop speech recognition
-                stopVoiceRecorder();
-                notifyMicProgrammaticallyStopped();   // we notify the client
-                // we start the speech recognition in both languages
-                speechRecognizer.recognize(data, SPEECH_BEAM_SIZE, firstLanguage.getCode(), secondLanguage.getCode());
+                if(manualRecognizingFirstLanguage){
+                    notifyMicProgrammaticallyStopped();   // we notify the client
+                    // we start the speech recognition in only the first language
+                    speechRecognizer.recognize(data, SPEECH_BEAM_SIZE, firstLanguage.getCode());
+
+                } else if (manualRecognizingSecondLanguage) {
+                    notifyMicProgrammaticallyStopped();   // we notify the client
+                    // we start the speech recognition in only the second language
+                    speechRecognizer.recognize(data, SPEECH_BEAM_SIZE, secondLanguage.getCode());
+
+                }else if(isMicAutomatic) {
+                    //we stop speech recognition
+                    stopVoiceRecorder();
+                    notifyMicProgrammaticallyStopped();   // we notify the client
+                    // we start the speech recognition in both languages
+                    speechRecognizer.recognize(data, SPEECH_BEAM_SIZE, firstLanguage.getCode(), secondLanguage.getCode());
+                }
             }
 
             @Override
@@ -164,9 +214,27 @@ public class WalkieTalkieService extends VoiceTranslationService {
 
             @Override
             public void onError(int[] reasons, long value) {
-
                 //we restart the mic here
                 startVoiceRecorder();
+                notifyMicProgrammaticallyStarted();
+            }
+        };
+        speechRecognizerSingleCallback = new RecognizerListener() {
+            @Override
+            public void onSpeechRecognizedResult(String text, String languageCode, double confidenceScore, boolean isFinal) {
+                if(manualRecognizingFirstLanguage){
+                    translate(text, firstLanguage, secondLanguage, TRANSLATOR_BEAM_SIZE, false, firstResultTranslateListener);
+                } else if (manualRecognizingSecondLanguage) {
+                    translate(text, secondLanguage, firstLanguage, TRANSLATOR_BEAM_SIZE, false, secondResultTranslateListener);
+                }
+                manualRecognizingFirstLanguage = false;
+                manualRecognizingSecondLanguage = false;
+            }
+
+            @Override
+            public void onError(int[] reasons, long value) {
+                manualRecognizingFirstLanguage = false;
+                manualRecognizingSecondLanguage = false;
                 notifyMicProgrammaticallyStarted();
             }
         };
@@ -265,8 +333,9 @@ public class WalkieTalkieService extends VoiceTranslationService {
         secondLanguage = (CustomLocale) intent.getSerializableExtra("secondLanguage");
 
         if(finalFirstLanguage==null || finalSecondLanguage==null ) {  //se è il primo avvio
-            //we attach the speech recognition callback
+            //we attach the speech recognition callbacks
             speechRecognizer.addMultiCallback(speechRecognizerCallback);
+            speechRecognizer.addCallback(speechRecognizerSingleCallback);
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -275,6 +344,7 @@ public class WalkieTalkieService extends VoiceTranslationService {
     public void onDestroy() {
         //disconnect speechRecognizerCallback
         speechRecognizer.removeMultiCallback(speechRecognizerCallback);
+        speechRecognizer.removeCallback(speechRecognizerSingleCallback);
         super.onDestroy();
     }
 
@@ -402,6 +472,42 @@ public class WalkieTalkieService extends VoiceTranslationService {
             Bundle bundle = new Bundle();
             bundle.putInt("command", WalkieTalkieService.CHANGE_SECOND_LANGUAGE);
             bundle.putSerializable("language", language);
+            super.sendToService(bundle);
+        }
+
+        public void startManualRecognition() {
+            Bundle bundle = new Bundle();
+            bundle.putInt("command", START_MANUAL_RECOGNITION);
+            super.sendToService(bundle);
+        }
+
+        public void stopManualRecognition() {
+            Bundle bundle = new Bundle();
+            bundle.putInt("command", STOP_MANUAL_RECOGNITION);
+            super.sendToService(bundle);
+        }
+
+        public void startRecognizingFirstLanguage() {
+            Bundle bundle = new Bundle();
+            bundle.putInt("command", START_RECOGNIZING_FIRST_LANGUAGE);
+            super.sendToService(bundle);
+        }
+
+        public void stopRecognizingFirstLanguage() {
+            Bundle bundle = new Bundle();
+            bundle.putInt("command", STOP_RECOGNIZING_FIRST_LANGUAGE);
+            super.sendToService(bundle);
+        }
+
+        public void startRecognizingSecondLanguage() {
+            Bundle bundle = new Bundle();
+            bundle.putInt("command", START_RECOGNIZING_SECOND_LANGUAGE);
+            super.sendToService(bundle);
+        }
+
+        public void stopRecognizingSecondLanguage() {
+            Bundle bundle = new Bundle();
+            bundle.putInt("command", STOP_RECOGNIZING_SECOND_LANGUAGE);
             super.sendToService(bundle);
         }
     }

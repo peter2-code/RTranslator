@@ -48,6 +48,7 @@ import nie.translator.rtranslator.voice_translation._conversation_mode._conversa
 public class Recorder {
     private final Global global;
     private boolean isRecording;
+    private boolean isManualMode = false;
     public static final int[] SAMPLE_RATE_CANDIDATES = new int[]{16000};
     private static final int CHANNEL = AudioFormat.CHANNEL_IN_MONO;
     private static final int ENCODING = AudioFormat.ENCODING_PCM_FLOAT;   //original: AudioFormat.ENCODING_PCM_16BIT
@@ -265,6 +266,28 @@ public class Recorder {
         return null;
     }
 
+    public boolean isManualMode() {
+        return isManualMode;
+    }
+
+    public void setManualMode(boolean manualMode) {
+        if(isManualMode != manualMode) {
+            isManualMode = manualMode;
+            if(isManualMode){
+                stop();
+            }
+        }
+    }
+
+    public void startRecording(){
+        start();
+    }
+
+    public void stopRecording(){
+        end();
+        stop();
+    }
+
     /**
      * Continuously processes the captured audio and notifies {@link #mCallback} of corresponding
      * events.
@@ -276,7 +299,12 @@ public class Recorder {
         public void run() {
             while (!Thread.currentThread().isInterrupted()) {
                 if(mAudioRecord != null) {
-                    int prevVoiceLength = (global.getPrevVoiceDuration() / 1000) * sampleRate;
+                    int prevVoiceLength;
+                    if(isManualMode){
+                        prevVoiceLength = (int) (0.1 * sampleRate);  //if we are using manual mode we use a reduced prev voice duration
+                    }else {
+                        prevVoiceLength = (global.getPrevVoiceDuration() / 1000) * sampleRate;
+                    }
                     int size;
                     int oldTailIndex = tailIndex;
                     boolean jumped;
@@ -355,30 +383,34 @@ public class Recorder {
     }
 
     private boolean isHearingVoice(float[] buffer, int begin, int end) {
-        // We iterate circlularly the mBuffer from the begin index to the end index, and if one of the values exceed the threshold the method returns true.
-        // Also The range with the old ENCODING_PCM_16BIT was [-32768, 32767], while now with the new ENCODING_PCM_FLOAT it is [-1, 1],
-        // so to convert the values of the new range into those of the old range (the threshold is based on the old values) I have to multiply them by 32767.
-        int numberOfThreshold = 15;
-        int count = begin;
-        while (count != end){
-            float s = Math.abs(buffer[count]) * 32767;
-            int amplitudeThreshold = global.getAmplitudeThreshold();
-            if (s > amplitudeThreshold) {
-                numberOfThreshold--;
-                //return true;
+        if(!isManualMode) {
+            // We iterate circlularly the mBuffer from the begin index to the end index, and if one of the values exceed the threshold the method returns true.
+            // Also The range with the old ENCODING_PCM_16BIT was [-32768, 32767], while now with the new ENCODING_PCM_FLOAT it is [-1, 1],
+            // so to convert the values of the new range into those of the old range (the threshold is based on the old values) I have to multiply them by 32767.
+            int numberOfThreshold = 15;
+            int count = begin;
+            while (count != end) {
+                float s = Math.abs(buffer[count]) * 32767;
+                int amplitudeThreshold = global.getAmplitudeThreshold();
+                if (s > amplitudeThreshold) {
+                    numberOfThreshold--;
+                    //return true;
+                }
+                if (count < buffer.length - 1) {
+                    count++;
+                } else {
+                    count = 0;
+                }
             }
-            if (count < buffer.length-1){
-                count++;
-            }else{
-                count = 0;
+            if (numberOfThreshold <= 0) {
+                return true;
+            } else {
+                return false;
             }
-        }
-        if(numberOfThreshold <= 0){
-            return true;
+            //return false;
         }else{
-            return false;
+            return true;  //in this way if we are in manual mode the recording will run until we call end()
         }
-        //return false;
     }
 
     public boolean isOnHeadsetSco(){

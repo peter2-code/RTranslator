@@ -429,14 +429,7 @@ public class VoiceTranslationActivity extends GeneralActivity {
                     showConfirmExitDialog(confirmExitListener);
                 }
             } else if (fragment instanceof WalkieTalkieFragment) {
-                WalkieTalkieFragment walkieTalkieFragment = (WalkieTalkieFragment) fragment;
-                if (walkieTalkieFragment.isInputActive()) {
-                    if (walkieTalkieFragment.isEditTextOpen()) {
-                        walkieTalkieFragment.deleteEditText();
-                    } else {
-                        setFragment(DEFAULT_FRAGMENT);
-                    }
-                }
+                setFragment(DEFAULT_FRAGMENT);
             } else if (fragment instanceof PairingFragment) {
                 setFragment(DEFAULT_FRAGMENT);
             }else{
