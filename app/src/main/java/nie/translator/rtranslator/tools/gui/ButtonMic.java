@@ -208,6 +208,11 @@ public class ButtonMic extends DeactivableButton {
     }
 
     @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
     public void activate(boolean start) {
         super.activate(start);
         animator.animateActivation(context, this);

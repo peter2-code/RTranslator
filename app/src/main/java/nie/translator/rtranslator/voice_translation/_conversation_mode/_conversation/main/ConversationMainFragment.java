@@ -135,7 +135,7 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
         final View.OnClickListener deactivatedClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(activity, getResources().getString(R.string.error_wait_initialization), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(activity, getResources().getString(R.string.error_wait_initialization), Toast.LENGTH_SHORT).show();
             }
         };
         sound.setOnClickListenerForDeactivated(deactivatedClickListener);
@@ -273,7 +273,7 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
     public void restoreAttributesFromService() {
         conversationServiceCommunicator.getAttributes(new VoiceTranslationService.AttributesListener() {
             @Override
-            public void onSuccess(ArrayList<GuiMessage> messages, boolean isMicMute, boolean isAudioMute, boolean isTTSError, final boolean isEditTextOpen, boolean isBluetoothHeadsetConnected) {
+            public void onSuccess(ArrayList<GuiMessage> messages, boolean isMicMute, boolean isAudioMute, boolean isTTSError, final boolean isEditTextOpen, boolean isBluetoothHeadsetConnected, boolean isMicAutomatic) {
                 // initialization with service values
                 mAdapter = new MessagesAdapter(messages, new MessagesAdapter.Callback() {
                     @Override

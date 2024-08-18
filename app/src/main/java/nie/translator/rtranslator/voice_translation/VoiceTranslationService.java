@@ -95,6 +95,7 @@ public abstract class VoiceTranslationService extends GeneralService {
     protected boolean isEditTextOpen = false;
     protected int utterancesCurrentlySpeaking = 0;
     protected final Object mLock = new Object();
+    protected boolean isMicAutomatic = true;
 
 
     @Override
@@ -420,6 +421,7 @@ public abstract class VoiceTranslationService extends GeneralService {
                     bundle.putBoolean("isTTSError", tts == null);
                     bundle.putBoolean("isEditTextOpen", isEditTextOpen);
                     bundle.putBoolean("isBluetoothHeadsetConnected", isBluetoothHeadsetConnected());
+                    bundle.putBoolean("isMicAutomatic", isMicAutomatic);
                     super.notifyToClient(bundle);
                     return true;
             }
@@ -489,8 +491,9 @@ public abstract class VoiceTranslationService extends GeneralService {
                         boolean isTTSError = data.getBoolean("isTTSError");
                         boolean isEditTextOpen = data.getBoolean("isEditTextOpen");
                         boolean isBluetoothHeadsetConnected = data.getBoolean("isBluetoothHeadsetConnected");
-                        while (attributesListeners.size() > 0) {
-                            attributesListeners.remove(0).onSuccess(messages, isMicMute, isAudioMute, isTTSError, isEditTextOpen, isBluetoothHeadsetConnected);
+                        boolean isMicAutomatic = data.getBoolean("isMicAutomatic");
+                        while (!attributesListeners.isEmpty()) {
+                            attributesListeners.remove(0).onSuccess(messages, isMicMute, isAudioMute, isTTSError, isEditTextOpen, isBluetoothHeadsetConnected, isMicAutomatic);
                         }
                         return true;
                     }
@@ -644,7 +647,7 @@ public abstract class VoiceTranslationService extends GeneralService {
     }
 
     public interface AttributesListener {
-        void onSuccess(ArrayList<GuiMessage> messages, boolean isMicMute, boolean isAudioMute, boolean isTTSError, boolean isEditTextOpen, boolean isBluetoothHeadsetConnected);
+        void onSuccess(ArrayList<GuiMessage> messages, boolean isMicMute, boolean isAudioMute, boolean isTTSError, boolean isEditTextOpen, boolean isBluetoothHeadsetConnected, boolean isMicAutomatic);
     }
 
     protected abstract class VoiceTranslationServiceRecognizerListener implements RecognizerListener {

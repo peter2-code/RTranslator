@@ -68,7 +68,6 @@ public class WalkieTalkieService extends VoiceTranslationService {
     private CustomLocale secondLanguage;
     private Translator.TranslateListener firstResultTranslateListener;
     private Translator.TranslateListener secondResultTranslateListener;
-    private boolean isMicAutomatic = true;
     private boolean manualRecognizingFirstLanguage = false;
     private boolean manualRecognizingSecondLanguage = false;
 
@@ -139,6 +138,9 @@ public class WalkieTalkieService extends VoiceTranslationService {
                                 break;
                             case STOP_MANUAL_RECOGNITION:
                                 isMicAutomatic = true;
+                                if(manualRecognizingFirstLanguage || manualRecognizingSecondLanguage){
+                                    mVoiceRecorder.stopRecording();
+                                }
                                 mVoiceRecorder.setManualMode(false);
                                 break;
                             case START_RECOGNIZING_FIRST_LANGUAGE:

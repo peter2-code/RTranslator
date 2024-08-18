@@ -275,6 +275,8 @@ public class Recorder {
             isManualMode = manualMode;
             if(isManualMode){
                 stop();
+            }else{
+                start();
             }
         }
     }
