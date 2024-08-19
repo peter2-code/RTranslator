@@ -21,11 +21,13 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
+
+import com.google.android.material.slider.Slider;
 
 import java.util.Locale;
 
@@ -39,8 +41,8 @@ public class SeekBarPreference extends Preference {
     public static final int SPEECH_TIMEOUT_MODE = 1;
     public static final int PREV_VOICE_DURATION_MODE = 2;
     private int mode;
-    private int defaultValue = 50;
-    private SeekBar seekBar;
+    private float defaultValue = 50;
+    private Slider slider;
     private TextView value;
     private TextView title;
     private TextView summary;
@@ -69,32 +71,34 @@ public class SeekBarPreference extends Preference {
         value = (TextView) holder.findViewById(R.id.textViewValue);
         title = (TextView) holder.findViewById(R.id.title);
         summary = (TextView) holder.findViewById(R.id.summary);
-        seekBar = (SeekBar) holder.findViewById(R.id.seekBar);
+        slider = (Slider) holder.findViewById(R.id.seekBar);
         button = (ImageButton) holder.findViewById(R.id.buttonRestore);
 
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        slider.addOnChangeListener(new Slider.OnChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int seekBarValue, boolean b) {
+            public void onValueChange(Slider seekBar, float seekBarValue, boolean b) {
                 switch (mode) {
                     case MIC_SENSIBILITY_MODE:
-                        value.setText(String.format(Locale.US, "%d", seekBarValue));
+                        value.setText(String.format(Locale.US, "%d", (int) seekBarValue));
                         break;
                     case SPEECH_TIMEOUT_MODE:
-                        value.setText(String.format(Locale.US, "%.2f s", ((float) seekBarValue + Recorder.MIN_SPEECH_TIMEOUT_MILLIS) / 1000));
+                        value.setText(String.format(Locale.US, "%.2f s", seekBarValue));
                         break;
                     case PREV_VOICE_DURATION_MODE:
-                        value.setText(String.format(Locale.US, "%.2f s", ((float) seekBarValue + Recorder.MIN_PREV_VOICE_DURATION) / 1000));
+                        value.setText(String.format(Locale.US, "%.2f s", seekBarValue));
                         break;
                 }
             }
+        });
 
+        slider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+            public void onStartTrackingTouch(@NonNull Slider slider) {
 
             }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            public void onStopTrackingTouch(@NonNull Slider slider) {
                 saveValue();
             }
         });
@@ -102,11 +106,7 @@ public class SeekBarPreference extends Preference {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    seekBar.setProgress(defaultValue, true);
-                } else {
-                    seekBar.setProgress(defaultValue);
-                }
+                slider.setValue(defaultValue);
                 saveValue();
             }
         });
@@ -123,25 +123,28 @@ public class SeekBarPreference extends Preference {
     }
 
     private void initialize() {
-        if (seekBar != null) {  //if onBindViewHolder was run before (and therefore failed to execute the code inside if(global!=null){} )
+        if (slider != null) {  //if onBindViewHolder was run before (and therefore failed to execute the code inside if(global!=null){} )
             switch (mode) {
                 case MIC_SENSIBILITY_MODE:
                     defaultValue = 50;
-                    seekBar.setMax(100);
+                    slider.setStepSize(1);
+                    slider.setValueTo(100);
                     title.setText(R.string.preference_title_mic_sensitivity);
                     summary.setText(R.string.preference_description_mic_sensitivity);
                     break;
 
                 case SPEECH_TIMEOUT_MODE:
-                    defaultValue = Recorder.DEFAULT_SPEECH_TIMEOUT_MILLIS - Recorder.MIN_SPEECH_TIMEOUT_MILLIS;
-                    seekBar.setMax(Recorder.MAX_SPEECH_TIMEOUT_MILLIS - Recorder.MIN_SPEECH_TIMEOUT_MILLIS);  //we not use only MAX_SPEECH_TIMEOUT_MILLIS because we can't set the min value, so we set a (MAX - MIN) Max and we add MIN to the value of the SeekBar
+                    defaultValue = Recorder.DEFAULT_SPEECH_TIMEOUT_MILLIS / 1000f;
+                    slider.setValueFrom(Recorder.MIN_SPEECH_TIMEOUT_MILLIS / 1000f);
+                    slider.setValueTo(Recorder.MAX_SPEECH_TIMEOUT_MILLIS / 1000f);  //we not use only MAX_SPEECH_TIMEOUT_MILLIS because we can't set the min value, so we set a (MAX - MIN) Max and we add MIN to the value of the SeekBar
                     title.setText(R.string.preference_title_speech_timeout);
                     summary.setText(R.string.preference_description_speech_timeout);
                     break;
 
                 case PREV_VOICE_DURATION_MODE:
-                    defaultValue = Recorder.DEFAULT_PREV_VOICE_DURATION - Recorder.MIN_PREV_VOICE_DURATION;
-                    seekBar.setMax(Recorder.MAX_PREV_VOICE_DURATION - Recorder.MIN_PREV_VOICE_DURATION);
+                    defaultValue = Recorder.DEFAULT_PREV_VOICE_DURATION / 1000f;
+                    slider.setValueFrom(Recorder.MIN_PREV_VOICE_DURATION / 1000f);
+                    slider.setValueTo(Recorder.MAX_PREV_VOICE_DURATION / 1000f);
                     title.setText(R.string.preference_title_prev_voice_duration);
                     summary.setText(R.string.preference_description_prev_voice_duration);
                     break;
@@ -155,31 +158,19 @@ public class SeekBarPreference extends Preference {
         switch (mode) {
             case MIC_SENSIBILITY_MODE: {
                 int value = global.getMicSensitivity();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    seekBar.setProgress(value, true);
-                } else {
-                    seekBar.setProgress(value);
-                }
+                slider.setValue(value);
             }
             break;
 
             case SPEECH_TIMEOUT_MODE: {
-                int value = global.getSpeechTimeout() - Recorder.MIN_SPEECH_TIMEOUT_MILLIS;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    seekBar.setProgress(value, true);
-                } else {
-                    seekBar.setProgress(value);
-                }
+                float value = global.getSpeechTimeout() / 1000f;
+                slider.setValue(value);
             }
             break;
 
             case PREV_VOICE_DURATION_MODE: {
-                int value = global.getPrevVoiceDuration() - Recorder.MIN_PREV_VOICE_DURATION;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    seekBar.setProgress(value, true);
-                } else {
-                    seekBar.setProgress(value);
-                }
+                float value = global.getPrevVoiceDuration() / 1000f;
+                slider.setValue(value);
             }
             break;
         }
