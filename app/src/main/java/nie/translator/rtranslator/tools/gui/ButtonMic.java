@@ -18,9 +18,11 @@ package nie.translator.rtranslator.tools.gui;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -32,9 +34,10 @@ import nie.translator.rtranslator.voice_translation._conversation_mode._conversa
 
 
 public class ButtonMic extends DeactivableButton {
-    public static final int SIZE_DEACTIVATED_DP = 56;
+    public static final int SIZE_MUTED_DP = 56;
     public static final int SIZE_NORMAL_DP = 66;
     public static final int SIZE_LISTENING_DP = 76;
+    public static final float SIZE_ICON_DP = 42;
     public static final int STATE_NORMAL = 0;
     public static final int STATE_RETURN = 1;
     public static final int STATE_SEND = 2;
@@ -43,6 +46,7 @@ public class ButtonMic extends DeactivableButton {
     private boolean isListening = false;
     private TextView micInput;
     private EditText editText;
+
     @Nullable
     private MicrophoneComunicable fragment;
     private Context context;
@@ -81,8 +85,8 @@ public class ButtonMic extends DeactivableButton {
         colorMutedDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.very_very_dark_gray), GuiTools.getColorStateList(context,R.color.very_very_light_gray));
     }
 
-    public void deleteEditText(VoiceTranslationActivity activity, final ConversationMainFragment fragment, final ButtonKeyboard buttonKeyboard, final EditText editText) {
-        animator.animateDeleteEditText(activity, this, buttonKeyboard, editText, new CustomAnimator.Listener() {
+    public void deleteEditText(VoiceTranslationActivity activity, final ConversationMainFragment fragment, final ButtonKeyboard buttonKeyboard, final EditText editText, ImageButton micPlaceHolder) {
+        animator.animateDeleteEditText(activity, this, buttonKeyboard, editText, micPlaceHolder, new CustomAnimator.Listener() {
             @Override
             public void onAnimationStart() {
                 fragment.setInputActive(false);
@@ -125,18 +129,14 @@ public class ButtonMic extends DeactivableButton {
                 editText.setText(""); // do it without activating the listener
                 if (micInput != null) {
                     // animation micInput (TextView under the mic) and enlargement of the microphone after the change of icon from send to mic
-                    if (isMute) {
-                        animator.animateIconToMicAndIconChange(context, this, micInput, getDrawable(R.drawable.mic_mute));
-                    }else{
-                        animator.animateIconToMicAndIconChange(context, this, micInput, getDrawable(R.drawable.mic));
-                    }
+                    Drawable icon = getDrawable(R.drawable.mic_icon);
+                    icon.setColorFilter(currentColor.iconColor.getDefaultColor(), PorterDuff.Mode.SRC_IN);
+                    animator.animateIconToMicAndIconChange(context, this, micInput, icon);
                 } else {
                     // microphone enlargement animation
-                    if(isMute){
-                        animator.animateIconToMicAndIconChange(context, this, getDrawable(R.drawable.mic_mute));
-                    }else {
-                        animator.animateIconToMicAndIconChange(context, this, getDrawable(R.drawable.mic));
-                    }
+                    Drawable icon = getDrawable(R.drawable.mic_icon);
+                    icon.setColorFilter(currentColor.iconColor.getDefaultColor(), PorterDuff.Mode.SRC_IN);
+                    animator.animateIconToMicAndIconChange(context, this, icon);
                 }
             }
         } else if (state == STATE_RETURN) {
@@ -154,15 +154,15 @@ public class ButtonMic extends DeactivableButton {
 
             } else if (oldState == STATE_SEND) {
                 // change icon animation
-                if(isMute){
-                    animator.animateIconChange(this, getDrawable(R.drawable.mic_mute));
-                }else{
-                    animator.animateIconChange(this, getDrawable(R.drawable.mic));
-                }
+                Drawable icon = getDrawable(R.drawable.mic_icon);
+                icon.setColorFilter(currentColor.iconColor.getDefaultColor(), PorterDuff.Mode.SRC_IN);
+                animator.animateIconChange(this, icon);
             }
         } else if (state == STATE_SEND) {
             // change icon animation
-            animator.animateIconChange(this, getDrawable(R.drawable.send_icon));
+            Drawable icon = getDrawable(R.drawable.send_icon);
+            icon.setColorFilter(currentColor.iconColor.getDefaultColor(), PorterDuff.Mode.SRC_IN);
+            animator.animateIconChange(this, icon);
         }
     }
 

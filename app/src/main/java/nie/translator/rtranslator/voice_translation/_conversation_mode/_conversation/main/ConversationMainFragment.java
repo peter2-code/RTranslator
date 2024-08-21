@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +59,7 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
     protected ButtonMic microphone;
     private ButtonSound sound;
     private EditText editText;
+    private ImageButton micPlaceHolder;
     private Handler mHandler = new Handler();
     //connection
     protected VoiceTranslationService.VoiceTranslationServiceCommunicator conversationServiceCommunicator;
@@ -104,6 +106,7 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
         microphone = view.findViewById(R.id.buttonMic);
         sound = view.findViewById(R.id.buttonSound);
         editText = view.findViewById(R.id.editText);
+        micPlaceHolder = view.findViewById(R.id.buttonPlaceHolder);
         microphone.setFragment(this);
         microphone.setEditText(editText);
         deactivateInputs(DeactivableButton.DEACTIVATED);
@@ -160,7 +163,7 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
             @Override
             public void onClick(View view) {
                 isEditTextOpen = true;
-                keyboard.generateEditText(activity, ConversationMainFragment.this, microphone, editText, true);
+                keyboard.generateEditText(activity, ConversationMainFragment.this, microphone, editText, micPlaceHolder, true);
                 conversationServiceCommunicator.setEditTextOpen(true);
             }
         });
@@ -179,7 +182,7 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
                     case ButtonMic.STATE_RETURN:
                         isEditTextOpen = false;
                         conversationServiceCommunicator.setEditTextOpen(false);
-                        microphone.deleteEditText(activity, ConversationMainFragment.this, keyboard, editText);
+                        microphone.deleteEditText(activity, ConversationMainFragment.this, keyboard, editText, micPlaceHolder);
                         break;
                     case ButtonMic.STATE_SEND:
                         // sending the message to be translated to the service
@@ -201,7 +204,7 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
                 if (microphone.getState() == ButtonMic.STATE_RETURN) {
                     isEditTextOpen = false;
                     conversationServiceCommunicator.setEditTextOpen(false);
-                    microphone.deleteEditText(activity, ConversationMainFragment.this, keyboard, editText);
+                    microphone.deleteEditText(activity, ConversationMainFragment.this, keyboard, editText, micPlaceHolder);
                 } else {
                     Toast.makeText(activity, R.string.error_missing_mic_permissions, Toast.LENGTH_SHORT).show();
                 }
@@ -213,7 +216,7 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
                 if (microphone.getState() == ButtonMic.STATE_RETURN) {
                     isEditTextOpen = false;
                     conversationServiceCommunicator.setEditTextOpen(false);
-                    microphone.deleteEditText(activity, ConversationMainFragment.this, keyboard, editText);
+                    microphone.deleteEditText(activity, ConversationMainFragment.this, keyboard, editText, micPlaceHolder);
                 } else {
                     deactivatedClickListener.onClick(v);
                 }
@@ -292,7 +295,7 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
                 // restore editText
                 ConversationMainFragment.this.isEditTextOpen = isEditTextOpen;
                 if (isEditTextOpen) {
-                    keyboard.generateEditText(activity, ConversationMainFragment.this, microphone, editText, false);
+                    keyboard.generateEditText(activity, ConversationMainFragment.this, microphone, editText, micPlaceHolder, false);
                 }
                 if (isBluetoothHeadsetConnected) {
                     conversationServiceCallback.onBluetoothHeadsetConnected();
@@ -358,7 +361,7 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
     public void deleteEditText() {
         isEditTextOpen = false;
         conversationServiceCommunicator.setEditTextOpen(false);
-        microphone.deleteEditText(activity, this, keyboard, editText);
+        microphone.deleteEditText(activity, this, keyboard, editText, micPlaceHolder);
     }
 
     public boolean isInputActive() {

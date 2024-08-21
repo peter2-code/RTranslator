@@ -51,6 +51,7 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kyleduo.switchbutton.SwitchButton;
 import nie.translator.rtranslator.R;
@@ -79,35 +80,45 @@ public class CustomAnimator {
         int duration=context.getResources().getInteger(R.integer.durationStandard);
         int durationShort=buttonMic.getResources().getInteger(R.integer.durationShort);
         micInput.measure(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        final int micFinalSize= Tools.convertDpToPixels(context,micSizeInDp);
-        final int micInputFinalWidth= micInput.getMeasuredWidth();
-        final int micInputFinalHeight= micInput.getMeasuredHeight();
-        Animator micAnimator=createAnimatorSize(buttonMic,buttonMic.getWidth(),buttonMic.getHeight(),micFinalSize,micFinalSize,duration);
-        Animator micInputAnimator=createAnimatorSize(micInput,micInput.getWidth(),micInput.getHeight(),micInputFinalWidth,micInputFinalHeight,durationShort,duration);
+        final int micFinalSize;
+        if(buttonMic.isMute()) {
+            micFinalSize = Tools.convertDpToPixels(context, ButtonMic.SIZE_MUTED_DP);
+        }else{
+            micFinalSize = Tools.convertDpToPixels(context, ButtonMic.SIZE_NORMAL_DP);
+        }
+        final int micInputFinalWidth = micInput.getMeasuredWidth();
+        final int micInputFinalHeight = micInput.getMeasuredHeight();
+        Animator micAnimator = createAnimatorSize(buttonMic,buttonMic.getWidth(),buttonMic.getHeight(),micFinalSize,micFinalSize,duration);
+        Animator micInputAnimator = createAnimatorSize(micInput,micInput.getWidth(),micInput.getHeight(),micInputFinalWidth,micInputFinalHeight,durationShort,duration);
         animatorSet.play(micAnimator).with(micInputAnimator);
         animatorSet.start();
     }
 
     public void animateIconToMic(Context context, ButtonMic buttonMic){
-        final int micFinalSize=Tools.convertDpToPixels(context,micSizeInDp);
-        Animator micAnimator=createAnimatorSize(buttonMic,buttonMic.getWidth(),buttonMic.getHeight(),micFinalSize,micFinalSize,context.getResources().getInteger(R.integer.durationStandard));
+        final int micFinalSize;
+        if(buttonMic.isMute()) {
+            micFinalSize = Tools.convertDpToPixels(context, ButtonMic.SIZE_MUTED_DP);
+        } else {
+            micFinalSize = Tools.convertDpToPixels(context, ButtonMic.SIZE_NORMAL_DP);
+        }
+        Animator micAnimator = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), micFinalSize, micFinalSize, context.getResources().getInteger(R.integer.durationStandard));
         micAnimator.start();
     }
 
     public void animateMicToIcon(Context context, ButtonMic buttonMic, TextView micInput){
-        AnimatorSet animatorSet= new AnimatorSet();
         int duration=context.getResources().getInteger(R.integer.durationStandard);
-        final int micFinalSize=Tools.convertDpToPixels(context,iconSizeInDp);
-        final int micInputFinalSize= 1;
-        Animator micAnimator=createAnimatorSize(buttonMic,buttonMic.getWidth(),buttonMic.getHeight(),micFinalSize,micFinalSize,duration);
-        Animator micInputAnimator=createAnimatorSize(micInput,micInput.getWidth(),micInput.getHeight(),micInputFinalSize,micInputFinalSize,duration);
+        AnimatorSet animatorSet= new AnimatorSet();
+        final int micFinalSize = Tools.convertDpToPixels(context, ButtonMic.SIZE_ICON_DP);
+        final int micInputFinalSize = 1;
+        Animator micAnimator = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), micFinalSize, micFinalSize,duration);
+        Animator micInputAnimator = createAnimatorSize(micInput, micInput.getWidth(), micInput.getHeight(), micInputFinalSize, micInputFinalSize, duration);
         animatorSet.play(micAnimator).with(micInputAnimator);
         animatorSet.start();
     }
 
     public void animateMicToIcon(Context context, ButtonMic buttonMic){
-        final int micFinalSize=Tools.convertDpToPixels(context,iconSizeInDp);
-        Animator micAnimator=createAnimatorSize(buttonMic,buttonMic.getWidth(),buttonMic.getHeight(),micFinalSize,micFinalSize,context.getResources().getInteger(R.integer.durationStandard));
+        final int micFinalSize = Tools.convertDpToPixels(context, ButtonMic.SIZE_ICON_DP);
+        Animator micAnimator = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), micFinalSize, micFinalSize, context.getResources().getInteger(R.integer.durationStandard));
         micAnimator.start();
     }
 
@@ -250,7 +261,7 @@ public class CustomAnimator {
 
     public void animateMute(Context context, final ButtonMic buttonMic){
         int duration=buttonMic.getResources().getInteger(R.integer.durationStandard);
-        int finalSizeInPixels = Tools.convertDpToPixels(context, ButtonMic.SIZE_DEACTIVATED_DP);
+        int finalSizeInPixels = Tools.convertDpToPixels(context, ButtonMic.SIZE_MUTED_DP);
 
         AnimatorSet animatorSet = new AnimatorSet();
 
@@ -696,23 +707,62 @@ public class CustomAnimator {
     }
 
 
-    public void animateGenerateEditText(final VoiceTranslationActivity activity, final ButtonKeyboard buttonKeyboard, final ButtonMic buttonMic, final EditText editText, final Listener listener){
+    public Animator animateTabSelection(final VoiceTranslationActivity activity, MaterialCardView containerConversation, TextView titleConversation, MaterialCardView containerConnection, TextView titleConnection, int tabSelected){
+        int duration = activity.getResources().getInteger(R.integer.durationStandard);
+        AnimatorSet animatorSet = new AnimatorSet();
+
+        int deselectedColorText = GuiTools.getColorStateList(activity, R.color.primary_very_dark).getDefaultColor();
+        int deselectedColorBackground = GuiTools.getColorStateList(activity, R.color.accent_white).getDefaultColor();
+        int selectedColorText = GuiTools.getColorStateList(activity, R.color.accent_white).getDefaultColor();
+        int selectedColorBackground = GuiTools.getColorStateList(activity, R.color.primary_very_dark).getDefaultColor();
+
+        Animator animatorBackgroundColorConversation;
+        Animator animatorTextColorConversation;
+        Animator animatorBackgroundColorConnection;
+        Animator animatorTextColorConnection;
+
+        if(tabSelected == 0){
+            animatorBackgroundColorConversation = createAnimatorColor(containerConversation, deselectedColorBackground, selectedColorBackground, duration);
+            animatorTextColorConversation = createAnimatorColor(titleConversation, deselectedColorText, selectedColorText, duration);
+            animatorBackgroundColorConnection = createAnimatorColor(containerConnection, selectedColorBackground, deselectedColorBackground, duration);
+            animatorTextColorConnection = createAnimatorColor(titleConnection, selectedColorText, deselectedColorText, duration);
+        }else{  //tabSelected == 1
+            animatorBackgroundColorConversation = createAnimatorColor(containerConversation, selectedColorBackground, deselectedColorBackground, duration);
+            animatorTextColorConversation = createAnimatorColor(titleConversation, selectedColorText, deselectedColorText, duration);
+            animatorBackgroundColorConnection = createAnimatorColor(containerConnection, deselectedColorBackground, selectedColorBackground, duration);
+            animatorTextColorConnection = createAnimatorColor(titleConnection, deselectedColorText, selectedColorText, duration);
+        }
+
+        animatorSet.play(animatorBackgroundColorConversation).with(animatorTextColorConversation).with(animatorBackgroundColorConnection).with(animatorTextColorConnection);
+
+        animatorSet.start();
+        return animatorSet;
+    }
+
+
+
+
+    public void animateGenerateEditText(final VoiceTranslationActivity activity, final ButtonKeyboard buttonKeyboard, final ButtonMic buttonMic, final EditText editText, final ImageButton micPlaceHolder, final Listener listener){
         Point point= new Point();
         activity.getWindowManager().getDefaultDisplay().getSize(point);
-        int margin= Tools.convertDpToPixels(activity,28);
-        int buttonSize=Tools.convertDpToPixels(activity,24);
+        int durationStandard = activity.getResources().getInteger(R.integer.durationStandard);
+        int margin = Tools.convertDpToPixels(activity,16);
+        int iconSize = Tools.convertDpToPixels(activity, 40);
+        int micReducedSize = Tools.convertDpToPixels(activity,ButtonMic.SIZE_ICON_DP);
         int screenWidth=point.x;
-        int expandedEditTextWidth=screenWidth-(margin + buttonSize + margin + buttonSize + margin);
+        int expandedEditTextWidth=screenWidth-(margin + micReducedSize + margin + iconSize + margin);
 
         AnimatorSet animatorSet= new AnimatorSet();
         // disappearance keyboard button animation
-        final Animator animation1= createAnimatorAlpha(buttonKeyboard,1f,0f,50);
+        final Animator animation1 = createAnimatorAlpha(buttonKeyboard,1f,0f,50);
         // appearance of the editText animation
-        final Animator animation2= createAnimatorAlpha(editText,0f,1f,50);
+        final Animator animation2 = createAnimatorAlpha(editText,0f,1f,50);
         // enlargement of the editText animation
-        Animator animation3= createAnimatorWidth(editText,buttonSize,expandedEditTextWidth,activity.getResources().getInteger(R.integer.durationStandard)-50);
+        Animator animation3 = createAnimatorWidth(editText, iconSize, expandedEditTextWidth,durationStandard-50);
+        // shrinkage of the micPlaceHolder (to reduce size of the entire container of editText)
+        Animator animation4 = createAnimatorHeight(micPlaceHolder, micPlaceHolder.getHeight(), Tools.convertDpToPixels(activity, 1), durationStandard);
 
-        animatorSet.play(animation3).after(animation2);
+        animatorSet.play(animation3).with(animation4).after(animation2);
         animatorSet.play(animation2).with(animation1);
 
         animatorSet.addListener(new Animator.AnimatorListener() {
@@ -750,24 +800,29 @@ public class CustomAnimator {
         animatorSet.start();
     }
 
-    public void animateDeleteEditText(final VoiceTranslationActivity activity, final ButtonMic buttonMic, final ButtonKeyboard buttonKeyboard, final EditText editText, final Listener listener){
+    public void animateDeleteEditText(final VoiceTranslationActivity activity, final ButtonMic buttonMic, final ButtonKeyboard buttonKeyboard, final EditText editText, final ImageButton micPlaceHolder, final Listener listener){
         Point point= new Point();
         activity.getWindowManager().getDefaultDisplay().getSize(point);
-        int margin= Tools.convertDpToPixels(activity,28);
-        int buttonSize= Tools.convertDpToPixels(activity,24);
-        int screenWidth=point.x;
-        int expandedEditTextWidth=screenWidth-(margin + buttonSize + margin + buttonSize + margin);
+        int durationStandard = activity.getResources().getInteger(R.integer.durationStandard);
+        int margin = Tools.convertDpToPixels(activity,16);
+        int iconSize = Tools.convertDpToPixels(activity, 40);
+        int micReducedSize = Tools.convertDpToPixels(activity,ButtonMic.SIZE_ICON_DP);
+        int screenWidth = point.x;
+        int expandedEditTextWidth = screenWidth-(margin + micReducedSize + margin + iconSize + margin);
 
         AnimatorSet animatorSet= new AnimatorSet();
         // appearance keyboard button animation
-        final Animator animation1= createAnimatorAlpha(buttonKeyboard,0f,1f,50);
+        final Animator animation1 = createAnimatorAlpha(buttonKeyboard,0f,1f,50);
         // disappearance of the editText animation
-        final Animator animation2= createAnimatorAlpha(editText,1f,0f,50);
+        final Animator animation2 = createAnimatorAlpha(editText,1f,0f,50);
         // shrinkage of the editText animation
-        Animator animation3= createAnimatorWidth(editText,expandedEditTextWidth,buttonSize,activity.getResources().getInteger(R.integer.durationStandard)-50);
+        Animator animation3 = createAnimatorWidth(editText, expandedEditTextWidth, iconSize,durationStandard-50);
+        // enlargement of the micPlaceHolder (to increase the size of the entire container of the mic)
+        Animator animation4 = createAnimatorHeight(micPlaceHolder, micPlaceHolder.getHeight(), Tools.convertDpToPixels(activity,ButtonMic.SIZE_LISTENING_DP), durationStandard);
 
         animatorSet.play(animation1).with(animation2);
         animatorSet.play(animation2).after(animation3);
+        animatorSet.play(animation3).with(animation4);
 
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
@@ -1306,6 +1361,32 @@ public class CustomAnimator {
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
                 drawable.setColorFilter((int) animator.getAnimatedValue(),PorterDuff.Mode.SRC_IN);
+            }
+        });
+        animator.setDuration(duration);
+
+        return animator;
+    }
+
+    public Animator createAnimatorColor(final TextView textView, int initialColor, final int finalColor, int duration){
+        ValueAnimator animator = ValueAnimator.ofObject(new ArgbEvaluator(), initialColor, finalColor);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                textView.setTextColor((int) animator.getAnimatedValue());
+            }
+        });
+        animator.setDuration(duration);
+
+        return animator;
+    }
+
+    public Animator createAnimatorColor(final MaterialCardView card, int initialColor, final int finalColor, int duration){
+        ValueAnimator animator = ValueAnimator.ofObject(new ArgbEvaluator(), initialColor, finalColor);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                card.setCardBackgroundColor((int) animator.getAnimatedValue());
             }
         });
         animator.setDuration(duration);

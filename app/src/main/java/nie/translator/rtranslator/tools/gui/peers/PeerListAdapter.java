@@ -185,8 +185,19 @@ public class PeerListAdapter extends BaseAdapter {
                 ((TextView) view.findViewById(R.id.path)).setText(R.string.not_available);
             }
             ((TextView) view.findViewById(R.id.textRowRecent)).setText(peerName);
-
         }
+
+        if(view != null) {
+            View divider = view.findViewById(R.id.divider);
+            if(divider != null) {
+                if (position == getCount() - 1) {
+                    divider.setVisibility(View.GONE);
+                } else {
+                    divider.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+
         return view;
     }
 

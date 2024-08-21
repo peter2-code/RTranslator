@@ -30,8 +30,8 @@
     <string name="loading">loading…</string>
     <string name="forward">forward</string>
     <string name="no_graph_data">No usage data present</string>
-    <string name="conversation">conversation</string>
-    <string name="connection">connection</string>
+    <string name="conversation">Conversation</string>
+    <string name="connection">Connection</string>
     <string name="translate">Translate</string>
     <string name="fix">fix</string>
 
@@ -74,7 +74,7 @@
     <string name="error_internet_lack_accessing">To perform the operation an internet connection is required, check your connection</string>
     <string name="error_internet_lack_services">Unable to translate message, check internet connection</string>
     <string name="error_internet_lack_loading_languages">To view the languages you need an internet connection, check your connection and try again</string>
-    <string name="error_connection_rejected"> refused the connection request</string>
+    <string name="error_connection_rejected">refused the connection request</string>
     <string name="error_connection">Connection error</string>
     <string name="error_starting_search">Error starting search</string>
     <string name="error_cannot_interact_connection">cannot interact with devices during connection</string>

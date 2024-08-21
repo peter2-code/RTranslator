@@ -58,7 +58,7 @@
     <string name="error_internet_lack_accessing">Для виконання операції потрібне підключення до Інтернету, перевірте ваше підключення</string>
     <string name="error_internet_lack_services">Не вдалося перекласти повідомлення, перевірте підключення до Інтернету</string>
     <string name="error_internet_lack_loading_languages">Для перегляду мов потрібне підключення до Інтернету, перевірте ваше підключення і спробуйте ще раз</string>
-    <string name="error_connection_rejected"> відмовив запиту на підключення</string>
+    <string name="error_connection_rejected">відмовив запиту на підключення</string>
     <string name="error_connection">Помилка підключення</string>
     <string name="error_starting_search">Помилка запуску пошуку</string>
     <string name="error_cannot_interact_connection">не можна взаємодіяти з пристроями під час підключення</string>

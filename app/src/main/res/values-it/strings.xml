@@ -28,8 +28,8 @@
     <string name="loading">caricamento…</string>
     <string name="forward">avanti</string>
     <string name="no_graph_data">Nessun dato sull\' utilizzo presente</string>
-    <string name="conversation">conversazione</string>
-    <string name="connection">connessione</string>
+    <string name="conversation">Conversazione</string>
+    <string name="connection">Connessione</string>
     <string name="translate">Traduci</string>
     <string name="fix">correggi</string>
 
@@ -72,7 +72,7 @@
     <string name="error_internet_lack_accessing">Per eseguire l\'operazione è necessaria una connessione a internet, controllare la propria connessione</string>
     <string name="error_internet_lack_services">Impossibile tradurre il messaggio, controllare la connessione a internet</string>
     <string name="error_internet_lack_loading_languages">Per visualizzare le lingue è necessaria una connessione a internet, controllare la propria connessione e riprovare</string>
-    <string name="error_connection_rejected"> ha rifiutato la richiesta di connessione</string>
+    <string name="error_connection_rejected">ha rifiutato la richiesta di connessione</string>
     <string name="error_connection">Errore di connessione</string>
     <string name="error_starting_search">Errore durante l\' avvio della ricerca</string>
     <string name="error_cannot_interact_connection">Non si può interagire con i dispositivi durante la connessione</string>
