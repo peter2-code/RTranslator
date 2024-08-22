@@ -67,6 +67,7 @@ public class PairingFragment extends PairingToolbarFragment {
     private ConstraintLayout constraintLayout;
     private Peer confirmConnectionPeer;
     private ListView listViewGui;
+    private TextView discoveryDescriptionBottom;
     private Timer connectionTimer;
     @Nullable
     private PeerListAdapter listView;
@@ -233,6 +234,7 @@ public class PairingFragment extends PairingToolbarFragment {
                 if (noPermissions.getVisibility() != View.VISIBLE) {
                     // appearance of the written of missing permission
                     listViewGui.setVisibility(View.GONE);
+                    discoveryDescriptionBottom.setVisibility(View.INVISIBLE);
                     noDevices.setVisibility(View.GONE);
                     discoveryDescription.setVisibility(View.GONE);
                     noPermissions.setVisibility(View.VISIBLE);
@@ -268,6 +270,7 @@ public class PairingFragment extends PairingToolbarFragment {
         super.onViewCreated(view, savedInstanceState);
         constraintLayout = view.findViewById(R.id.container);
         listViewGui = view.findViewById(R.id.list_view);
+        discoveryDescriptionBottom = view.findViewById(R.id.discoveryDescriptionBottom);
         discoveryDescription = view.findViewById(R.id.discoveryDescription);
         noDevices = view.findViewById(R.id.noDevices);
         noPermissions = view.findViewById(R.id.noPermission);
@@ -409,6 +412,7 @@ public class PairingFragment extends PairingToolbarFragment {
             if (result == BluetoothCommunicator.BLUETOOTH_LE_NOT_SUPPORTED && noBluetoothLe.getVisibility() != View.VISIBLE) {
                 // appearance of the bluetooth le missing sign
                 listViewGui.setVisibility(View.GONE);
+                discoveryDescriptionBottom.setVisibility(View.INVISIBLE);
                 noDevices.setVisibility(View.GONE);
                 discoveryDescription.setVisibility(View.GONE);
                 noBluetoothLe.setVisibility(View.VISIBLE);
@@ -462,12 +466,14 @@ public class PairingFragment extends PairingToolbarFragment {
                 discoveryDescription.setVisibility(View.GONE);
                 noDevices.setVisibility(View.GONE);
                 listViewGui.setVisibility(View.VISIBLE);
+                discoveryDescriptionBottom.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onLastItemRemoved() {
                 super.onLastItemRemoved();
                 listViewGui.setVisibility(View.GONE);
+                discoveryDescriptionBottom.setVisibility(View.INVISIBLE);
                 if (noPermissions.getVisibility() != View.VISIBLE) {
                     discoveryDescription.setVisibility(View.VISIBLE);
                     noDevices.setVisibility(View.VISIBLE);

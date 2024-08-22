@@ -38,7 +38,7 @@
         app:layout_constraintStart_toEndOf="@+id/user_image_list"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- ImageView previous color: #5F5F5F -->
+    <!-- ImageView default color: #5F5F5F -->
     <ImageView
         android:id="@+id/user_image_list"
         android:layout_width="34dp"
@@ -59,6 +59,8 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginStart="74dp"
+        android:layout_marginEnd="24dp"
         android:background="@color/very_very_light_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

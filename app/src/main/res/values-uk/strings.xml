@@ -14,8 +14,8 @@
     <string name="loading">завантаження…</string>
     <string name="forward">вперед</string>
     <string name="no_graph_data">Відсутні дані використання</string>
-    <string name="conversation">розмова</string>
-    <string name="connection">з\'єднання</string>
+    <string name="conversation">Розмова</string>
+    <string name="connection">З\'єднання</string>
     <string name="translate">Переклад</string>
     <string name="fix">виправити</string>
 

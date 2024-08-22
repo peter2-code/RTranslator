@@ -41,7 +41,7 @@
         app:layout_constraintVertical_bias="0" />
 
 
-    <!-- ImageView previous color: #5F5F5F -->
+    <!-- ImageView default color: #5F5F5F -->
     <ImageView
         android:id="@+id/user_image_recent"
         android:layout_width="46dp"
@@ -67,7 +67,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="16dp"
         android:text="@string/not_available"
         android:textColor="@color/dark_gray"
         android:textSize="13sp"
@@ -86,7 +86,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@null"
+        android:backgroundTint="@android:color/transparent"
         android:src="@drawable/three_dot_icon"
         android:tint="@color/very_dark_gray"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -97,8 +97,10 @@
 
     <View
         android:id="@+id/divider"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="1dp"
+        android:layout_marginStart="78dp"
+        android:layout_marginEnd="16dp"
         android:background="@color/very_very_light_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
