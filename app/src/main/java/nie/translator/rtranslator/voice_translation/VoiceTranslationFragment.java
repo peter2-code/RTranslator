@@ -104,7 +104,8 @@ public abstract class VoiceTranslationFragment extends Fragment implements Micro
     public void onStop() {
         super.onStop();
         deactivateInputs(DeactivableButton.DEACTIVATED);
-        if (activity.getCurrentFragment() != VoiceTranslationActivity.DEFAULT_FRAGMENT && activity.getCurrentFragment() != VoiceTranslationActivity.PAIRING_FRAGMENT) {
+        //isChangingConfigurations is true when the screen rotates or in general we recreate the activity for some other changes
+        if (activity.getCurrentFragment() != VoiceTranslationActivity.DEFAULT_FRAGMENT && activity.getCurrentFragment() != VoiceTranslationActivity.PAIRING_FRAGMENT && !activity.isChangingConfigurations()) {
             Toast.makeText(activity, getResources().getString(R.string.toast_working_background), Toast.LENGTH_SHORT).show();
         }
     }

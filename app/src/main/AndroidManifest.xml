@@ -71,7 +71,7 @@
             android:name="nie.translator.rtranslator.voice_translation.VoiceTranslationActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:configChanges="orientation|screenLayout|layoutDirection|screenSize"
+            android:configChanges="orientation|screenLayout|screenSize"
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:theme="@style/Theme.Speech" />
         <activity

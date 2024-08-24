@@ -8,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.inputmethodservice.InputMethodService;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -485,12 +487,16 @@ public class TranslationFragment extends Fragment {
                         //screen is reduced
                         if(!isScreenReduced){
                             isScreenReduced = true;
+
                             onScreenSizeChanged(true);
                         }
                     }else{
                         //screen is not reduced
                         if(isScreenReduced){
                             isScreenReduced = false;
+                            //inputText.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+                            //InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+
                             onScreenSizeChanged(false);
                         }
                     }

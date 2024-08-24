@@ -156,15 +156,18 @@ public class CustomLocale implements Comparable<CustomLocale>, Serializable {
     }
 
     public String getDisplayName(ArrayList<CustomLocale> ttsLanguages) {
+        String name = locale.getDisplayName();
+        name = name.substring(0,1).toUpperCase(locale) + name.substring(1);  //we convert the first letter to uppercase
         if (containsLanguage(ttsLanguages, CustomLocale.getInstance(locale.getLanguage()))) {
-            return locale.getDisplayName();
+            return name;
         } else {
-            return locale.getDisplayName()+" (no TTS)";    // Notice that users cannot use TTS for this language.
+            return name + " (no TTS)";    // Notice that users cannot use TTS for this language.
         }
     }
 
     public String getDisplayNameWithoutTTS() {
-        return locale.getDisplayName();
+        String name = locale.getDisplayName();
+        return name.substring(0,1).toUpperCase(locale) + name.substring(1);  //we convert the first letter to uppercase
     }
 
     public String getDisplayName(Locale locale) {
