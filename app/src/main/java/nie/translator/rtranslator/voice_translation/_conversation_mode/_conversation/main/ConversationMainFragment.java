@@ -107,7 +107,7 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
         sound = view.findViewById(R.id.buttonSound);
         editText = view.findViewById(R.id.editText);
         micPlaceHolder = view.findViewById(R.id.buttonPlaceHolder);
-        microphone.setFragment(this);
+        microphone.initialize(this);
         microphone.setEditText(editText);
         deactivateInputs(DeactivableButton.DEACTIVATED);
         editText.addTextChangedListener(new TextWatcher() {
@@ -415,8 +415,8 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
 
     public class ConversationServiceCallback extends VoiceTranslationService.VoiceTranslationServiceCallback {
         @Override
-        public void onVoiceStarted() {
-            super.onVoiceStarted();
+        public void onVoiceStarted(int mode) {
+            super.onVoiceStarted(mode);
             microphone.onVoiceStarted();
         }
 
@@ -427,16 +427,16 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
         }
 
         @Override
-        public void onMicProgrammaticallyStarted() {
-            super.onMicProgrammaticallyStarted();
+        public void onMicActivated() {
+            super.onMicActivated();
             if(!microphone.isActivated()) {
                 microphone.activate(false);
             }
         }
 
         @Override
-        public void onMicProgrammaticallyStopped() {
-            super.onMicProgrammaticallyStopped();
+        public void onMicDeactivated() {
+            super.onMicDeactivated();
             if(microphone.getState() == ButtonMic.STATE_NORMAL && microphone.isActivated() && !microphone.isMute()) {
                 microphone.deactivate(DeactivableButton.DEACTIVATED);
             }

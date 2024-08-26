@@ -372,14 +372,61 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.55">
 
-                        <nie.translator.rtranslator.tools.gui.ButtonMic
-                            android:id="@+id/button"
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/circle"
-                            android:src="@drawable/mic_icon"
-                            app:tint="@color/primary_very_dark" />
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+                            <nie.translator.rtranslator.tools.gui.ButtonMic
+                                android:id="@+id/buttonMicLeft"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_gravity="center"
+                                android:background="@drawable/circle"
+                                android:src="@drawable/mic_icon"
+                                app:tint="@color/primary_very_dark"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"/>
+
+                            <View
+                                android:id="@+id/leftLineL"
+                                android:layout_width="5dp"
+                                android:layout_height="19dp"
+                                android:layout_marginEnd="4dp"
+                                android:background="@drawable/rounded_line"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="@+id/buttonMicLeft"
+                                app:layout_constraintEnd_toStartOf="@+id/centerLineL"
+                                app:layout_constraintHorizontal_bias="1.0"
+                                app:layout_constraintStart_toStartOf="@+id/buttonMicLeft"
+                                app:layout_constraintTop_toTopOf="@+id/buttonMicLeft" />
+
+                            <View
+                                android:id="@+id/centerLineL"
+                                android:layout_width="5dp"
+                                android:layout_height="24dp"
+                                android:background="@drawable/rounded_line"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="@+id/buttonMicLeft"
+                                app:layout_constraintEnd_toEndOf="@+id/buttonMicLeft"
+                                app:layout_constraintStart_toStartOf="@+id/buttonMicLeft"
+                                app:layout_constraintTop_toTopOf="@+id/buttonMicLeft" />
+
+                            <View
+                                android:id="@+id/rightLineL"
+                                android:layout_width="5dp"
+                                android:layout_height="12dp"
+                                android:layout_marginStart="4dp"
+                                android:background="@drawable/rounded_line"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="@+id/buttonMicLeft"
+                                app:layout_constraintEnd_toEndOf="@+id/buttonMicLeft"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintStart_toEndOf="@+id/centerLineL"
+                                app:layout_constraintTop_toTopOf="@+id/buttonMicLeft" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <nie.translator.rtranslator.tools.gui.AnimatedTextView
                             android:id="@+id/textButton1"
@@ -409,15 +456,63 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.55">
 
-                        <nie.translator.rtranslator.tools.gui.ButtonMic
-                            android:id="@+id/buttonMic"
-                            android:layout_width="66dp"
-                            android:layout_height="66dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/circle"
-                            android:backgroundTint="@color/primary"
-                            android:src="@drawable/mic_icon"
-                            app:tint="@color/white" />
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+                            <nie.translator.rtranslator.tools.gui.ButtonMic
+                                android:id="@+id/buttonMic"
+                                android:layout_width="66dp"
+                                android:layout_height="66dp"
+                                android:layout_gravity="center"
+                                android:background="@drawable/circle"
+                                android:backgroundTint="@color/primary"
+                                android:src="@drawable/mic_icon"
+                                app:tint="@color/accent_white"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"/>
+
+                            <View
+                                android:id="@+id/leftLine"
+                                android:layout_width="5dp"
+                                android:layout_height="19dp"
+                                android:layout_marginEnd="4dp"
+                                android:background="@drawable/rounded_line"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="@+id/buttonMic"
+                                app:layout_constraintEnd_toStartOf="@+id/centerLine"
+                                app:layout_constraintHorizontal_bias="1.0"
+                                app:layout_constraintStart_toStartOf="@+id/buttonMic"
+                                app:layout_constraintTop_toTopOf="@+id/buttonMic" />
+
+                            <View
+                                android:id="@+id/centerLine"
+                                android:layout_width="5dp"
+                                android:layout_height="24dp"
+                                android:background="@drawable/rounded_line"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="@+id/buttonMic"
+                                app:layout_constraintEnd_toEndOf="@+id/buttonMic"
+                                app:layout_constraintStart_toStartOf="@+id/buttonMic"
+                                app:layout_constraintTop_toTopOf="@+id/buttonMic" />
+
+                            <View
+                                android:id="@+id/rightLine"
+                                android:layout_width="5dp"
+                                android:layout_height="12dp"
+                                android:layout_marginStart="4dp"
+                                android:background="@drawable/rounded_line"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="@+id/buttonMic"
+                                app:layout_constraintEnd_toEndOf="@+id/buttonMic"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintStart_toEndOf="@+id/centerLine"
+                                app:layout_constraintTop_toTopOf="@+id/buttonMic" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <TextView
                             android:id="@+id/textButton3"
@@ -485,14 +580,62 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.55">
 
-                        <nie.translator.rtranslator.tools.gui.ButtonMic
-                            android:id="@+id/button2"
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/circle"
-                            android:src="@drawable/mic_icon"
-                            app:tint="@color/primary_very_dark" />
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+                            <nie.translator.rtranslator.tools.gui.ButtonMic
+                                android:id="@+id/buttonMicRight"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_gravity="center"
+                                android:background="@drawable/circle"
+                                android:src="@drawable/mic_icon"
+                                app:tint="@color/primary_very_dark"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"/>
+
+                            <View
+                                android:id="@+id/leftLineR"
+                                android:layout_width="5dp"
+                                android:layout_height="19dp"
+                                android:layout_marginEnd="4dp"
+                                android:background="@drawable/rounded_line"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="@+id/buttonMicRight"
+                                app:layout_constraintEnd_toStartOf="@+id/centerLineR"
+                                app:layout_constraintHorizontal_bias="1.0"
+                                app:layout_constraintStart_toStartOf="@+id/buttonMicRight"
+                                app:layout_constraintTop_toTopOf="@+id/buttonMicRight" />
+
+                            <View
+                                android:id="@+id/centerLineR"
+                                android:layout_width="5dp"
+                                android:layout_height="24dp"
+                                android:background="@drawable/rounded_line"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="@+id/buttonMicRight"
+                                app:layout_constraintEnd_toEndOf="@+id/buttonMicRight"
+                                app:layout_constraintStart_toStartOf="@+id/buttonMicRight"
+                                app:layout_constraintTop_toTopOf="@+id/buttonMicRight" />
+
+                            <View
+                                android:id="@+id/rightLineR"
+                                android:layout_width="5dp"
+                                android:layout_height="12dp"
+                                android:layout_marginStart="4dp"
+                                android:background="@drawable/rounded_line"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="@+id/buttonMicRight"
+                                app:layout_constraintEnd_toEndOf="@+id/buttonMicRight"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintStart_toEndOf="@+id/centerLineR"
+                                app:layout_constraintTop_toTopOf="@+id/buttonMicRight" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <nie.translator.rtranslator.tools.gui.AnimatedTextView
                             android:id="@+id/textButton2"

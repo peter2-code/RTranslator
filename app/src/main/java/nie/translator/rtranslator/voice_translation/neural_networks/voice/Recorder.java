@@ -30,6 +30,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Arrays;
+
 import nie.translator.rtranslator.Global;
 import nie.translator.rtranslator.voice_translation._conversation_mode._conversation.ConversationService;
 
@@ -273,6 +275,9 @@ public class Recorder {
     public void setManualMode(boolean manualMode) {
         if(isManualMode != manualMode) {
             isManualMode = manualMode;
+            if(isRecording){
+                mCallback.onVoiceEnd();
+            }
             if(isManualMode){
                 stop();
             }else{
@@ -288,6 +293,10 @@ public class Recorder {
     public void stopRecording(){
         end();
         stop();
+    }
+
+    public boolean isRecording() {
+        return isRecording;
     }
 
     /**
@@ -325,6 +334,9 @@ public class Recorder {
                     if ((oldTailIndex < headIndex && tailIndex > headIndex) || (oldTailIndex > headIndex && tailIndex > headIndex && jumped)) {  //if we overwrote the oldest data
                         headIndex = tailIndex + 1;  //we adjust the headIndex accordingly
                     }
+                    //we notify volume level
+                    notifyVolumeLevel(mBuffer, oldTailIndex, tailIndex);
+                    //we do the rest of voice processing
                     final long now = System.currentTimeMillis();
                     if (isHearingVoice(mBuffer, oldTailIndex, tailIndex)) {
                         if (mLastVoiceHeardMillis == Long.MAX_VALUE) {    // use Long's maximum limit to indicate that we have no voice
@@ -386,7 +398,7 @@ public class Recorder {
 
     private boolean isHearingVoice(float[] buffer, int begin, int end) {
         if(!isManualMode) {
-            // We iterate circlularly the mBuffer from the begin index to the end index, and if one of the values exceed the threshold the method returns true.
+            // We iterate circularly the mBuffer from the begin index to the end index, and if one of the values exceed the threshold the method returns true.
             // Also The range with the old ENCODING_PCM_16BIT was [-32768, 32767], while now with the new ENCODING_PCM_FLOAT it is [-1, 1],
             // so to convert the values of the new range into those of the old range (the threshold is based on the old values) I have to multiply them by 32767.
             int numberOfThreshold = 15;
@@ -396,7 +408,6 @@ public class Recorder {
                 int amplitudeThreshold = global.getAmplitudeThreshold();
                 if (s > amplitudeThreshold) {
                     numberOfThreshold--;
-                    //return true;
                 }
                 if (count < buffer.length - 1) {
                     count++;
@@ -409,9 +420,71 @@ public class Recorder {
             } else {
                 return false;
             }
-            //return false;
         }else{
             return true;  //in this way if we are in manual mode the recording will run until we call end()
+        }
+    }
+
+    private void notifyVolumeLevel(float[] buffer, int begin, int end) {
+        if(isRecording){
+            float[] amplifiedBuffer = new float[getMBufferRangeSize(begin, end)];
+
+            //we make a copy of the buffer with every value amplified and converted to an absolute value
+            //so the range of every value from [-1, 1] will become [0, amplification]
+            int count = begin;
+            int linearCount = 0;
+            float amplification = (32767f/global.getAmplitudeThreshold()) * 2;
+            while (count != end) {
+                amplifiedBuffer[linearCount] = (float) (Math.abs(buffer[count]) * amplification);
+                if (count < buffer.length - 1) {
+                    count++;
+                } else {
+                    count = 0;
+                }
+                linearCount++;
+            }
+
+            //we remove the nMinValuesToRemove lower values
+            /*int nMinValuesToRemove = 1;
+            int nMin = 0;
+            while (nMin < nMinValuesToRemove) {
+                float min = Float.MAX_VALUE;
+                int minIndex = 0;
+                for(int i=0; i<amplifiedBuffer.length; i++){
+                    if(amplifiedBuffer[i] < min){
+                        min = amplifiedBuffer[i];
+                        minIndex = i;
+                    }
+                }
+                amplifiedBuffer[minIndex] = 0;    //assign a 0 is equivalent to remove a number because it will not have an effect on the sum (and even on the average because we exclude this number in the number of elements)
+                nMin++;
+            }*/
+
+            //we do the average of every value in amplifiedBuffer
+            float sum = 0;
+            for (int i=0; i<amplifiedBuffer.length; i++) {
+                sum += amplifiedBuffer[i];
+            }
+            float average = sum / (amplifiedBuffer.length /*- nMinValuesToRemove*/);
+
+            //Log.d("volume", "volume: " + average);
+
+            //we cap the values between 0 and 1 (and we decrease the sensitivity in the [0.8, 1] range)
+            if(average > 1){
+                float surplus = average-1f;
+                surplus = surplus / 5;
+                average = 0.8f + surplus;
+            }
+            if(average > 1){
+                average = 1;
+            }
+            if(average < 0){
+                average = 0;
+            }
+
+            //Log.d("volume", "volume capped: " + average);
+
+            mCallback.onVolumeLevel(average);
         }
     }
 
@@ -480,6 +553,12 @@ public class Recorder {
             }
             Log.e("recorder","onVoiceEnd");
         }
+
+        /**
+         * Called continuously when we hear voice
+         * @param volumeLevel a value between [0, 1] that represent the volume percentage of the audio captured by the microphone
+         */
+        public void onVolumeLevel(float volumeLevel){}
     }
 
     public static abstract class SimpleCallback extends Callback {
@@ -490,14 +569,17 @@ public class Recorder {
 
         @Override
         public void onVoiceStart() {
+            super.onVoiceStart();
         }
 
         @Override
         public void onVoice(@NonNull float[] data, int size) {
+            super.onVoice(data, size);
         }
 
         @Override
         public void onVoiceEnd() {
+            super.onVoiceEnd();
         }
     }
 }

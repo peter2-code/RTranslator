@@ -603,11 +603,13 @@
                         android:textColor="@color/white"
                         android:theme="@style/Theme.MaterialComponents"
                         android:visibility="visible"
+                        android:outlineProvider="none"
+                        app:elevation="0dp"
                         app:cornerRadius="20dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/button"
-                        app:layout_constraintEnd_toStartOf="@+id/button2"
-                        app:layout_constraintStart_toEndOf="@+id/button"
-                        app:layout_constraintTop_toTopOf="@+id/button" />
+                        app:layout_constraintBottom_toBottomOf="@+id/buttonMicLeft"
+                        app:layout_constraintEnd_toStartOf="@+id/buttonMicRight"
+                        app:layout_constraintStart_toEndOf="@+id/buttonMicLeft"
+                        app:layout_constraintTop_toTopOf="@+id/buttonMicLeft" />
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:id="@+id/buttonWalkieTalkieSmall"
@@ -617,7 +619,7 @@
                         android:alpha="0"
                         android:clickable="false"
                         android:src="@drawable/walkie_talkie_icon_reduced"
-                        app:elevation="3dp"
+                        app:elevation="0dp"
                         app:backgroundTint="@color/primary_very_lite"
                         app:rippleColor="@color/light_gray"
                         app:fabSize="mini"
@@ -640,7 +642,7 @@
                         android:src="@drawable/conversation_icon_reduced"
                         app:backgroundTint="@color/primary_very_lite"
                         app:fabSize="mini"
-                        app:elevation="3dp"
+                        app:elevation="0dp"
                         app:tint="@color/primary_very_dark"
                         app:layout_constraintBottom_toBottomOf="@+id/buttonTranslate"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -650,19 +652,18 @@
                         app:layout_constraintVertical_bias="0.50" />
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/button"
+                        android:id="@+id/buttonMicLeft"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="8dp"
                         android:clickable="true"
-                        android:elevation="16dp"
                         android:focusable="true"
                         android:src="@drawable/walkie_talkie_icon"
                         android:visibility="visible"
-                        app:tint="@color/primary_very_dark"
                         app:backgroundTint="@color/primary_very_lite"
+                        app:elevation="0dp"
                         app:layout_constraintBottom_toTopOf="@+id/textButton1"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -670,7 +671,8 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="1.0"
                         app:maxImageSize="40dp"
-                        app:rippleColor="@color/light_gray" />
+                        app:rippleColor="@color/light_gray"
+                        app:tint="@color/primary_very_dark" />
 
                     <TextView
                         android:id="@+id/textButton1"
@@ -683,27 +685,26 @@
                         android:lines="1"
                         android:scrollHorizontally="true"
                         android:text="@string/title_fragment_walkie_talkie"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         android:visibility="visible"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="@+id/button"
-                        app:layout_constraintStart_toStartOf="@+id/button"
+                        app:layout_constraintEnd_toEndOf="@+id/buttonMicLeft"
+                        app:layout_constraintStart_toStartOf="@+id/buttonMicLeft"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.998" />
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/button2"
+                        android:id="@+id/buttonMicRight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="24dp"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="8dp"
                         android:clickable="true"
-                        android:elevation="16dp"
                         android:focusable="true"
                         android:src="@drawable/conversation_icon"
                         android:visibility="visible"
-                        app:tint="@color/primary_very_dark"
                         app:backgroundTint="@color/primary_very_lite"
+                        app:elevation="0dp"
                         app:layout_constraintBottom_toTopOf="@+id/textButton2"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"
@@ -711,7 +712,8 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="1.0"
                         app:maxImageSize="40dp"
-                        app:rippleColor="@color/light_gray" />
+                        app:rippleColor="@color/light_gray"
+                        app:tint="@color/primary_very_dark" />
 
                     <TextView
                         android:id="@+id/textButton2"
@@ -724,11 +726,11 @@
                         android:lines="1"
                         android:scrollHorizontally="true"
                         android:text="@string/title_fragment_conversation"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         android:visibility="visible"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="@+id/button2"
-                        app:layout_constraintStart_toStartOf="@+id/button2"
+                        app:layout_constraintEnd_toEndOf="@+id/buttonMicRight"
+                        app:layout_constraintStart_toStartOf="@+id/buttonMicRight"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.998" />
 

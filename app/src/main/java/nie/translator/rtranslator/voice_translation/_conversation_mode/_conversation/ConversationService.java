@@ -275,7 +275,7 @@ public class ConversationService extends VoiceTranslationService {
     }
 
     @Override
-    protected boolean shouldStopMicDuringTTS() {
+    protected boolean shouldDeactivateMicDuringTTS() {
         return !isBluetoothHeadsetConnected();
     }
 

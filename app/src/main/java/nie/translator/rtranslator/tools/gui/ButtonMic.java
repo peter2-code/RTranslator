@@ -16,21 +16,30 @@
 
 package nie.translator.rtranslator.tools.gui;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.AndroidResources;
 
 import nie.translator.rtranslator.R;
+import nie.translator.rtranslator.tools.Tools;
 import nie.translator.rtranslator.tools.gui.animations.CustomAnimator;
 import nie.translator.rtranslator.voice_translation.VoiceTranslationActivity;
 import nie.translator.rtranslator.voice_translation._conversation_mode._conversation.main.ConversationMainFragment;
+import nie.translator.rtranslator.voice_translation._walkie_talkie_mode._walkie_talkie.WalkieTalkieFragment;
 
 
 public class ButtonMic extends DeactivableButton {
@@ -38,9 +47,21 @@ public class ButtonMic extends DeactivableButton {
     public static final int SIZE_NORMAL_DP = 66;
     public static final int SIZE_LISTENING_DP = 76;
     public static final float SIZE_ICON_DP = 42;
+
+    public static final int MAX_LENGTH_LEFT_LINE_DP = 21;
+    public static final int MAX_LENGTH_CENTER_LINE_DP = 26;
+    public static final int MAX_LENGTH_RIGHT_LINE_DP = 13;
+    public static final int MIN_LINE_LENGTH_DP = 5;
+
     public static final int STATE_NORMAL = 0;
     public static final int STATE_RETURN = 1;
     public static final int STATE_SEND = 2;
+
+    public static ButtonMicColor colorActivated;
+    public static ButtonMicColor colorMutedActivated;
+    public static ButtonMicColor colorDeactivated;
+    public static ButtonMicColor colorMutedDeactivated;
+
     private boolean isMute = false;
     private int state = STATE_NORMAL;
     private boolean isListening = false;
@@ -49,39 +70,39 @@ public class ButtonMic extends DeactivableButton {
 
     @Nullable
     private MicrophoneComunicable fragment;
+    private View leftLine;
+    private View centerLine;
+    private View rightLine;
     private Context context;
     private CustomAnimator animator = new CustomAnimator();
     private ButtonMicColor currentColor;
-    public static ButtonMicColor colorActivated;
-    public static ButtonMicColor colorMutedActivated;
-    public static ButtonMicColor colorDeactivated;
-    public static ButtonMicColor colorMutedDeactivated;
+    private float volumeLevel = -1;
 
 
     public ButtonMic(Context context) {
         super(context);
         this.context = context;
-        colorActivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.white), GuiTools.getColorStateList(context,R.color.primary));
+        colorActivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.accent_white), GuiTools.getColorStateList(context,R.color.primary));
         colorMutedActivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.primary_very_dark), GuiTools.getColorStateList(context,R.color.primary_very_lite));
-        colorDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.white), GuiTools.getColorStateList(context,R.color.gray));
+        colorDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.accent_white), GuiTools.getColorStateList(context,R.color.gray));
         colorMutedDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.very_very_dark_gray), GuiTools.getColorStateList(context,R.color.very_very_light_gray));
     }
 
     public ButtonMic(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        colorActivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.white), GuiTools.getColorStateList(context,R.color.primary));
+        colorActivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.accent_white), GuiTools.getColorStateList(context,R.color.primary));
         colorMutedActivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.primary_very_dark), GuiTools.getColorStateList(context,R.color.primary_very_lite));
-        colorDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.white), GuiTools.getColorStateList(context,R.color.gray));
+        colorDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.accent_white), GuiTools.getColorStateList(context,R.color.gray));
         colorMutedDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.very_very_dark_gray), GuiTools.getColorStateList(context,R.color.very_very_light_gray));
     }
 
     public ButtonMic(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
-        colorActivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.white), GuiTools.getColorStateList(context,R.color.primary));
+        colorActivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.accent_white), GuiTools.getColorStateList(context,R.color.primary));
         colorMutedActivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.primary_very_dark), GuiTools.getColorStateList(context,R.color.primary_very_lite));
-        colorDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.white), GuiTools.getColorStateList(context,R.color.gray));
+        colorDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.accent_white), GuiTools.getColorStateList(context,R.color.gray));
         colorMutedDeactivated = new ButtonMicColor(GuiTools.getColorStateList(context,R.color.very_very_dark_gray), GuiTools.getColorStateList(context,R.color.very_very_light_gray));
     }
 
@@ -180,10 +201,16 @@ public class ButtonMic extends DeactivableButton {
     }
 
     public void setMute(boolean mute) {
-        boolean oldMute = isMute;
         isMute = mute;
         if (state == STATE_NORMAL) {
             if (mute) {
+                if(leftLine != null && centerLine != null && rightLine != null){
+                    getDrawable().setColorFilter(currentColor.iconColor.getDefaultColor(), PorterDuff.Mode.SRC_IN);  //we make the mic icon visible
+                    leftLine.setVisibility(GONE);
+                    centerLine.setVisibility(GONE);
+                    rightLine.setVisibility(GONE);
+                    volumeLevel = -1;
+                }
                 animator.animateMute(context, this);
                 currentColor = colorMutedActivated;  //da fare: controllare se questo codice viene eseguito solo quando il buttonMic è attivo
             } else {
@@ -194,16 +221,94 @@ public class ButtonMic extends DeactivableButton {
     }
 
     public void onVoiceStarted() {
-        if (!isMute && activationStatus == ACTIVATED) {  // see if it makes sense to keep this check
+        if (activationStatus == ACTIVATED) {  // see if it makes sense to keep this check
             isListening = true;
-            animator.animateOnVoiceStart(context,this);
+            if(!isMute) {
+                if(leftLine != null && centerLine != null && rightLine != null){
+                    getDrawable().setColorFilter(GuiTools.getColorStateList(context, android.R.color.transparent).getDefaultColor(), PorterDuff.Mode.SRC_IN);  //we make the mic icon invisible
+                    leftLine.setVisibility(VISIBLE);
+                    centerLine.setVisibility(VISIBLE);
+                    rightLine.setVisibility(VISIBLE);
+                }
+                animator.animateOnVoiceStart(context, this);
+            }
         }
     }
 
     public void onVoiceEnded() {
+        isListening = false;
         if (!isMute) {   // see if it makes sense to keep this check
-            isListening = false;
+            if(leftLine != null && centerLine != null && rightLine != null){
+                getDrawable().setColorFilter(currentColor.iconColor.getDefaultColor(), PorterDuff.Mode.SRC_IN);  //we make the mic icon visible
+                leftLine.setVisibility(GONE);
+                centerLine.setVisibility(GONE);
+                rightLine.setVisibility(GONE);
+                volumeLevel = -1;
+            }
             animator.animateOnVoiceEnd(context, this);
+        }
+    }
+
+    public void updateVolumeLevel(float volumeLevel){
+        if(isListening){
+            //we make the mic icon invisible (we do this also here because otherwise when the onVoiceStart is called during another animation the icon will not disappear)
+            getDrawable().setColorFilter(GuiTools.getColorStateList(context, android.R.color.transparent).getDefaultColor(), PorterDuff.Mode.SRC_IN);
+        }
+        if(this.volumeLevel == -1) {
+            updateVolumeLevel(volumeLevel, new CustomAnimator.EndListener() {
+                @Override
+                public void onAnimationEnd() {
+                    if(isListening()){
+                        updateVolumeLevel(ButtonMic.this.volumeLevel, this);
+                    }else{
+                        ButtonMic.this.volumeLevel = -1;
+                    }
+                }
+            });
+        }
+        this.volumeLevel = volumeLevel;
+    }
+
+    private void updateVolumeLevel(float volumeLevel, CustomAnimator.EndListener listener){
+        if(leftLine != null && centerLine != null && rightLine != null && leftLine.getVisibility() == VISIBLE && centerLine.getVisibility() == VISIBLE && rightLine.getVisibility() == VISIBLE) {
+            int duration_ms = 70;
+            //Log.d("volume", "volume: " + volumeLevel);
+            float maxLengthLeft = Tools.convertDpToPixels(context, MAX_LENGTH_LEFT_LINE_DP);
+            float maxLengthCenter = Tools.convertDpToPixels(context, MAX_LENGTH_CENTER_LINE_DP);
+            float maxLengthRight = Tools.convertDpToPixels(context, MAX_LENGTH_RIGHT_LINE_DP);
+            float minLength = Tools.convertDpToPixels(context, MIN_LINE_LENGTH_DP);
+
+            AnimatorSet animatorSet = new AnimatorSet();
+
+            Animator leftAnimation = animator.createAnimatorHeight(leftLine, leftLine.getHeight(), (int) (minLength + (volumeLevel * (maxLengthLeft - minLength))), duration_ms);
+            Animator centerAnimation = animator.createAnimatorHeight(centerLine, centerLine.getHeight(), (int) (minLength + (volumeLevel * (maxLengthCenter - minLength))), duration_ms);
+            Animator rightAnimation = animator.createAnimatorHeight(rightLine, rightLine.getHeight(), (int) (minLength + (volumeLevel * (maxLengthRight - minLength))), duration_ms);
+
+            animatorSet.play(leftAnimation).with(centerAnimation).with(rightAnimation);
+            animatorSet.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(@NonNull Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(@NonNull Animator animation) {
+                    if(listener != null){
+                        listener.onAnimationEnd();
+                    }
+                }
+
+                @Override
+                public void onAnimationCancel(@NonNull Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(@NonNull Animator animation) {
+
+                }
+            });
+            animatorSet.start();
         }
     }
 
@@ -247,8 +352,15 @@ public class ButtonMic extends DeactivableButton {
         }
     }
 
-    public void setFragment(@Nullable MicrophoneComunicable fragment) {
+    public void initialize(@Nullable MicrophoneComunicable fragment) {  //da fare: cancellarlo quando avrò implementato l'animazione in base al volume anche in Conversation
         this.fragment = fragment;
+    }
+
+    public void initialize(@Nullable MicrophoneComunicable fragment, View leftLine, View centerLine, View rightLine) {  //da fare: cancellarlo quando avrò implementato l'animazione in base al volume anche in Conversation
+        this.fragment = fragment;
+        this.leftLine = leftLine;
+        this.centerLine = centerLine;
+        this.rightLine = rightLine;
     }
 
     public Drawable getDrawable(int id) {
