@@ -35,6 +35,7 @@ public class LanguageListAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private boolean showTTSInfo = true;
     private ArrayList<CustomLocale> ttsLanguages = new ArrayList<>();
+    private boolean ttsLanguagesInitialized = false;
 
     public LanguageListAdapter(Activity activity, ArrayList<CustomLocale> languages, CustomLocale selectedLanguage) {
         this.activity = activity;
@@ -84,17 +85,17 @@ public class LanguageListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
+    public View getView(int position, View view, ViewGroup container) {
         final CustomLocale item = (CustomLocale) getItem(position);
         if (view == null) {
-            view = inflater.inflate(R.layout.component_row_language, null);
+            view = inflater.inflate(R.layout.component_row_language, container, false);
         }
         if (item.equals(selectedLanguage)) {
             view.findViewById(R.id.isSelected).setVisibility(View.VISIBLE);
         } else {
             view.findViewById(R.id.isSelected).setVisibility(View.GONE);
         }
-        if(showTTSInfo){
+        if(showTTSInfo && ttsLanguagesInitialized){
             ((TextView) view.findViewById(R.id.languageName)).setText(item.getDisplayName(ttsLanguages));
         }else {
             ((TextView) view.findViewById(R.id.languageName)).setText(item.getDisplayNameWithoutTTS());
@@ -108,6 +109,8 @@ public class LanguageListAdapter extends BaseAdapter {
             @Override
             public void onSuccess(ArrayList<CustomLocale> ttsLanguages) {
                 LanguageListAdapter.this.ttsLanguages = ttsLanguages;
+                ttsLanguagesInitialized = true;
+                notifyDataSetChanged();
             }
 
             @Override

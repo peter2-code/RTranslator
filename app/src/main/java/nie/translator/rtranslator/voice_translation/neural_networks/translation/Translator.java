@@ -1097,7 +1097,7 @@ public class Translator extends NeuralNetworkApi {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document document = documentBuilder.parse(context.getResources().openRawResource(R.raw.nllb_supported_launguages));
+            Document document = documentBuilder.parse(context.getResources().openRawResource(R.raw.nllb_supported_languages));
             NodeList listCode = document.getElementsByTagName("code");
             NodeList listCodeNllb = document.getElementsByTagName("code_NLLB");
             for (int i = 0; i < listCode.getLength(); i++) {
@@ -1133,7 +1133,7 @@ public class Translator extends NeuralNetworkApi {
             if(mode == MADLAD){
                 document = documentBuilder.parse(context.getResources().openRawResource(R.raw.madlad_supported_launguages));
             }else{  //if mode == NLLB
-                document = documentBuilder.parse(context.getResources().openRawResource(R.raw.nllb_supported_launguages));
+                document = documentBuilder.parse(context.getResources().openRawResource(R.raw.nllb_supported_languages));
             }
             NodeList list = document.getElementsByTagName("code");
             for (int i = 0; i < list.getLength(); i++) {

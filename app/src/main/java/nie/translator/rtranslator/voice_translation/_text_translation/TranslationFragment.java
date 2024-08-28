@@ -842,7 +842,7 @@ public class TranslationFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
                 listViewGui.setVisibility(View.VISIBLE);
 
-                listView = new LanguageListAdapter(activity, false, languages, selectedLanguage);
+                listView = new LanguageListAdapter(activity, true, languages, selectedLanguage);
                 listViewGui.setAdapter(listView);
                 listViewGui.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override

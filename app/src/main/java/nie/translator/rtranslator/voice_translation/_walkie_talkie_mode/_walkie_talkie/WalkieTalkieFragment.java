@@ -613,7 +613,7 @@ public class WalkieTalkieFragment extends VoiceTranslationFragment {
         global.getTTSLanguages(true, new Global.GetLocalesListListener() {
             @Override
             public void onSuccess(ArrayList<CustomLocale> ttsLanguages) {
-                ((AnimatedTextView) firstLanguageSelector.findViewById(R.id.firstLanguageName)).setText(language.getDisplayName(ttsLanguages), true);
+                ((AnimatedTextView) firstLanguageSelector.findViewById(R.id.firstLanguageName)).setText(language.getDisplayNameWithoutTTS(), true);
                 leftMicLanguage.setText(language.getDisplayNameWithoutTTS(), true);
             }
 
@@ -633,7 +633,7 @@ public class WalkieTalkieFragment extends VoiceTranslationFragment {
         global.getTTSLanguages(true, new Global.GetLocalesListListener() {
             @Override
             public void onSuccess(ArrayList<CustomLocale> ttsLanguages) {
-                ((AnimatedTextView) secondLanguageSelector.findViewById(R.id.secondLanguageName)).setText(language.getDisplayName(ttsLanguages), true);
+                ((AnimatedTextView) secondLanguageSelector.findViewById(R.id.secondLanguageName)).setText(language.getDisplayNameWithoutTTS(), true);
                 rightMicLanguage.setText(language.getDisplayNameWithoutTTS(), true);
             }
 

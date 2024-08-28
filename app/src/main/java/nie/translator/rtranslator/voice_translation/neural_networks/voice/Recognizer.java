@@ -585,7 +585,7 @@ public class Recognizer extends NeuralNetworkApi {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document document = documentBuilder.parse(context.getResources().openRawResource(R.raw.recognizer_supported_launguages));
+            Document document = documentBuilder.parse(context.getResources().openRawResource(R.raw.whisper_supported_languages));
             NodeList list = document.getElementsByTagName("code");
             for (int i = 0; i < list.getLength(); i++) {
                 languages.add(CustomLocale.getInstance(list.item(i).getTextContent()));
