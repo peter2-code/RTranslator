@@ -64,12 +64,13 @@ public class WalkieTalkieFragment extends VoiceTranslationFragment {
     public static final int INITIALIZE = 0;
     public static final long LONG_PRESS_THRESHOLD_MS = 700;
     private boolean isMicAutomatic = true;
+    private ConstraintLayout container;
     protected ButtonMic microphone;
     private ButtonMic leftMicrophone;
     private ButtonMic rightMicrophone;
     private AnimatedTextView leftMicLanguage;
     private AnimatedTextView rightMicLanguage;
-    ConstraintLayout constraintLayout;
+    private ConstraintLayout constraintLayout;
     private AppCompatImageButton exitButton;
     private ConstraintLayout firstLanguageSelector;
     private ConstraintLayout secondLanguageSelector;
@@ -111,6 +112,7 @@ public class WalkieTalkieFragment extends VoiceTranslationFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         constraintLayout = view.findViewById(R.id.container);
+        container = view.findViewById(R.id.walkie_talkie_main_container);
         firstLanguageSelector = view.findViewById(R.id.firstLanguageSelector);
         secondLanguageSelector = view.findViewById(R.id.secondLanguageSelector);
         exitButton = view.findViewById(R.id.exitButton);
@@ -126,6 +128,7 @@ public class WalkieTalkieFragment extends VoiceTranslationFragment {
         settingsButton = view.findViewById(R.id.settingsButton);
         description.setText(R.string.description_walkie_talkie);
         deactivateInputs(DeactivableButton.DEACTIVATED);
+        //container.setVisibility(View.INVISIBLE);  //we make the UI invisible until the restore of the attributes from the service (to avoid instant changes of the UI).
     }
 
     @Override
@@ -358,8 +361,9 @@ public class WalkieTalkieFragment extends VoiceTranslationFragment {
     public void restoreAttributesFromService() {
         walkieTalkieServiceCommunicator.getAttributes(new VoiceTranslationService.AttributesListener() {
             @Override
-            public void onSuccess(ArrayList<GuiMessage> messages, boolean isMicMute, boolean isAudioMute, boolean isTTSError, final boolean isEditTextOpen, boolean isBluetoothHeadsetConnected, boolean isMicAutomatic) {
+            public void onSuccess(ArrayList<GuiMessage> messages, boolean isMicMute, boolean isAudioMute, boolean isTTSError, final boolean isEditTextOpen, boolean isBluetoothHeadsetConnected, boolean isMicAutomatic, boolean isMicActivated, int listeningMic) {
                 // initialization with service values
+                //container.setVisibility(View.VISIBLE);
                 mAdapter = new MessagesAdapter(messages, new MessagesAdapter.Callback() {
                     @Override
                     public void onFirstItemAdded() {
@@ -370,24 +374,56 @@ public class WalkieTalkieFragment extends VoiceTranslationFragment {
                 mRecyclerView.setAdapter(mAdapter);
                 // restore microphone and sound status
                 if(isMicAutomatic) {
-                    microphone.setMute(isMicMute);
-                    leftMicrophone.setMute(true);   //da fare: cambiarlo implementando un vero restore
-                    rightMicrophone.setMute(true);  //da fare: cambiarlo implementando un vero restore
+                    microphone.setMute(isMicMute, false);
+                    leftMicrophone.setMute(true, false);
+                    rightMicrophone.setMute(true, false);
+                    if(isMicActivated) {
+                        if (listeningMic == VoiceTranslationService.AUTO_LANGUAGE) {
+                            microphone.onVoiceStarted(false);
+                        } else {
+                            microphone.onVoiceEnded(false);
+                        }
+                    }else{
+                        microphone.onVoiceEnded(false);
+                    }
+                    leftMicrophone.onVoiceEnded(false);
+                    rightMicrophone.onVoiceEnded(false);
                 }else{
                     WalkieTalkieFragment.this.isMicAutomatic = false;
-                    microphone.setMute(true);
-                    leftMicrophone.setMute(false);
-                    rightMicrophone.setMute(false);
+                    microphone.setMute(true, false);
+                    leftMicrophone.setMute(false, false);
+                    rightMicrophone.setMute(false, false);
+                    if(isMicActivated) {
+                        if (listeningMic == VoiceTranslationService.FIRST_LANGUAGE) {
+                            leftMicrophone.onVoiceStarted(false);
+                        } else {
+                            leftMicrophone.onVoiceEnded(false);
+                        }
+                        if (listeningMic == VoiceTranslationService.SECOND_LANGUAGE) {
+                            rightMicrophone.onVoiceStarted(false);
+                        } else {
+                            rightMicrophone.onVoiceEnded(false);
+                        }
+                    }else{
+                        leftMicrophone.onVoiceEnded(false);
+                        rightMicrophone.onVoiceEnded(false);
+                    }
+                    microphone.onVoiceEnded(false);
                 }
+
                 sound.setMute(isAudioMute);
                 if(isTTSError){
                     sound.deactivate(DeactivableButton.DEACTIVATED_FOR_TTS_ERROR);
                 }
 
-                if (!microphone.isMute()) {
-                    activateInputs(true);
-                } else {
-                    activateInputs(false);
+                if(isMicActivated){
+                    if (!microphone.isMute()) {
+                        activateInputs(true);
+                    } else {
+                        activateInputs(false);
+                    }
+                }else{
+                    deactivateInputs(DeactivableButton.DEACTIVATED);
                 }
             }
         });
@@ -434,10 +470,11 @@ public class WalkieTalkieFragment extends VoiceTranslationFragment {
 
     @Override
     protected void activateInputs(boolean start) {
+        Log.d("mic", "activatedInputs");
         microphone.activate(start);
         leftMicrophone.activate(false);
         rightMicrophone.activate(false);
-        sound.activate(start);
+        sound.activate(false);
     }
 
     private void switchMicMode(boolean automatic){
@@ -656,14 +693,14 @@ public class WalkieTalkieFragment extends VoiceTranslationFragment {
         @Override
         public void onVoiceStarted(int mode) {
             super.onVoiceStarted(mode);
-            if(mode == VoiceTranslationService.VoiceTranslationServiceCallback.AUTO_LANGUAGE) {
-                microphone.onVoiceStarted();
+            if(mode == VoiceTranslationService.AUTO_LANGUAGE && !microphone.isMute()) {
+                microphone.onVoiceStarted(true);
                 Log.e("onVoiceStart", "onVoiceStart center");
-            }else if(mode == VoiceTranslationService.VoiceTranslationServiceCallback.FIRST_LANGUAGE) {
-                leftMicrophone.onVoiceStarted();
+            }else if(mode == VoiceTranslationService.FIRST_LANGUAGE && !leftMicrophone.isMute()) {
+                leftMicrophone.onVoiceStarted(true);
                 Log.e("onVoiceStart", "onVoiceStart left");
-            }else if(mode == VoiceTranslationService.VoiceTranslationServiceCallback.SECOND_LANGUAGE) {
-                rightMicrophone.onVoiceStarted();
+            }else if(mode == VoiceTranslationService.SECOND_LANGUAGE && !rightMicrophone.isMute()) {
+                rightMicrophone.onVoiceStarted(true);
                 Log.e("onVoiceStart", "onVoiceStart right");
             }
         }
@@ -671,9 +708,9 @@ public class WalkieTalkieFragment extends VoiceTranslationFragment {
         @Override
         public void onVoiceEnded() {
             super.onVoiceEnded();
-            microphone.onVoiceEnded();
-            leftMicrophone.onVoiceEnded();
-            rightMicrophone.onVoiceEnded();
+            microphone.onVoiceEnded(true);
+            leftMicrophone.onVoiceEnded(true);
+            rightMicrophone.onVoiceEnded(true);
         }
 
         @Override
@@ -691,6 +728,7 @@ public class WalkieTalkieFragment extends VoiceTranslationFragment {
         @Override
         public void onMicActivated() {
             super.onMicActivated();
+            Log.d("mic", "onMicActivated");
             if(!microphone.isActivated()) {
                 microphone.activate(false);
             }
@@ -705,7 +743,7 @@ public class WalkieTalkieFragment extends VoiceTranslationFragment {
         @Override
         public void onMicDeactivated() {
             super.onMicDeactivated();
-            if (microphone.getState() == ButtonMic.STATE_NORMAL && microphone.isActivated() /*&& !microphone.isMute()*/) {
+            if (microphone.getState() == ButtonMic.STATE_NORMAL && microphone.isActivated()) {
                 microphone.deactivate(DeactivableButton.DEACTIVATED);
             }
             if (leftMicrophone.getState() == ButtonMic.STATE_NORMAL && leftMicrophone.isActivated()) {

@@ -239,70 +239,116 @@ public class CustomAnimator {
         animatorSet.start();
     }
 
-    public void animateOnVoiceStart(Context context, final ButtonMic buttonMic){
+    public void animateOnVoiceStart(Context context, final ButtonMic buttonMic, boolean instant){
         int duration=buttonMic.getResources().getInteger(R.integer.durationStandard);
         int finalSizeInPixels = Tools.convertDpToPixels(context, ButtonMic.SIZE_LISTENING_DP);
 
-        // enlargement animation
-        Animator enlargeAnimation = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), finalSizeInPixels, finalSizeInPixels, duration);
-        enlargeAnimation.setInterpolator(new DecelerateInterpolator());
-        enlargeAnimation.start();
+        if(!instant) {
+            // enlargement animation
+            Animator enlargeAnimation = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), finalSizeInPixels, finalSizeInPixels, duration);
+            enlargeAnimation.setInterpolator(new DecelerateInterpolator());
+            enlargeAnimation.start();
+        }else{
+            ViewGroup.LayoutParams layoutParams = buttonMic.getLayoutParams();
+            layoutParams.width = finalSizeInPixels;
+            layoutParams.height = finalSizeInPixels;
+            buttonMic.setLayoutParams(layoutParams);
+        }
     }
 
-    public void animateOnVoiceEnd(Context context, final ButtonMic buttonMic){
+    public void animateOnVoiceEnd(Context context, final ButtonMic buttonMic, boolean instant){
         int duration=buttonMic.getResources().getInteger(R.integer.durationStandard);
         int finalSizeInPixels = Tools.convertDpToPixels(context, ButtonMic.SIZE_NORMAL_DP);
 
-        //reduce animation
-        Animator reduceAnimation = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), finalSizeInPixels, finalSizeInPixels, duration);
-        reduceAnimation.setInterpolator(new DecelerateInterpolator());
-        reduceAnimation.start();
+        if(!instant) {
+            //reduce animation
+            Animator reduceAnimation = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), finalSizeInPixels, finalSizeInPixels, duration);
+            reduceAnimation.setInterpolator(new DecelerateInterpolator());
+            reduceAnimation.start();
+        }else{
+            ViewGroup.LayoutParams layoutParams = buttonMic.getLayoutParams();
+            layoutParams.width = finalSizeInPixels;
+            layoutParams.height = finalSizeInPixels;
+            buttonMic.setLayoutParams(layoutParams);
+        }
     }
 
-    public void animateMute(Context context, final ButtonMic buttonMic){
-        int duration=buttonMic.getResources().getInteger(R.integer.durationStandard);
+    public void animateMute(Context context, final ButtonMic buttonMic, boolean instant){
+        int duration = buttonMic.getResources().getInteger(R.integer.durationStandard);
         int finalSizeInPixels = Tools.convertDpToPixels(context, ButtonMic.SIZE_MUTED_DP);
 
-        AnimatorSet animatorSet = new AnimatorSet();
+        int initialColorIcon = GuiTools.getColor(buttonMic.getContext(), R.color.white);
+        int finalColorIcon = GuiTools.getColor(buttonMic.getContext(), R.color.primary_very_dark);
+        int initialColor = GuiTools.getColor(buttonMic.getContext(), R.color.primary);
+        int finalColor = GuiTools.getColor(buttonMic.getContext(), R.color.primary_very_lite);
 
-        //reduce animation
-        Animator reduceAnimation = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), finalSizeInPixels, finalSizeInPixels, duration);
+        if(!instant) {
+            AnimatorSet animatorSet = new AnimatorSet();
 
-        // change color of icon animation
-        int initialColorIcon = GuiTools.getColor(buttonMic.getContext(),R.color.white);
-        int finalColorIcon = GuiTools.getColor(buttonMic.getContext(),R.color.primary_very_dark);
-        Animator animatorIconColor = createAnimatorColor(buttonMic.getDrawable(), initialColorIcon, finalColorIcon, duration);
+            //reduce animation
+            Animator reduceAnimation = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), finalSizeInPixels, finalSizeInPixels, duration);
 
-        // change color of background animation
-        int initialColor = GuiTools.getColor(buttonMic.getContext(),R.color.primary);
-        int finalColor = GuiTools.getColor(buttonMic.getContext(),R.color.primary_very_lite);
-        Animator animatorBackgroundColor = createAnimatorColor(buttonMic.getBackground(), initialColor, finalColor, duration);
+            // change color of icon animation
+            Animator animatorIconColor = createAnimatorColor(buttonMic.getDrawable(), initialColorIcon, finalColorIcon, duration);
 
-        animatorSet.play(reduceAnimation).with(animatorIconColor).with(animatorBackgroundColor);
-        animatorSet.start();
+            // change color of background animation
+            Animator animatorBackgroundColor = createAnimatorColor(buttonMic.getBackground(), initialColor, finalColor, duration);
+
+            animatorSet.play(reduceAnimation).with(animatorIconColor).with(animatorBackgroundColor);
+            animatorSet.start();
+
+        }else{
+            //reduce size
+            ViewGroup.LayoutParams layoutParams = buttonMic.getLayoutParams();
+            layoutParams.width = finalSizeInPixels;
+            layoutParams.height = finalSizeInPixels;
+            buttonMic.setLayoutParams(layoutParams);
+
+            // change color of icon
+            buttonMic.getDrawable().setColorFilter(finalColorIcon, PorterDuff.Mode.SRC_IN);
+
+            // change color of background
+            buttonMic.getBackground().setColorFilter(finalColor, PorterDuff.Mode.SRC_IN);
+        }
     }
 
-    public void animateUnmute(Context context, final ButtonMic buttonMic){
-        int duration=buttonMic.getResources().getInteger(R.integer.durationStandard);
+    public void animateUnmute(Context context, final ButtonMic buttonMic, boolean instant){
+        int duration = buttonMic.getResources().getInteger(R.integer.durationStandard);
         int finalSizeInPixels = Tools.convertDpToPixels(context, ButtonMic.SIZE_NORMAL_DP);
 
-        AnimatorSet animatorSet = new AnimatorSet();
-
-        //enlarge animation
-        Animator enlargeAnimation = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), finalSizeInPixels, finalSizeInPixels, duration);
-
-        // change color of icon animation
         int initialColorIcon = GuiTools.getColor(buttonMic.getContext(),R.color.primary_very_dark);
         int finalColorIcon = GuiTools.getColor(buttonMic.getContext(),R.color.white);
-        Animator animatorIconColor = createAnimatorColor(buttonMic.getDrawable(), initialColorIcon, finalColorIcon, duration);
-
-        // change color of background animation
         int initialColor = GuiTools.getColor(buttonMic.getContext(),R.color.primary_very_lite);
         int finalColor = GuiTools.getColor(buttonMic.getContext(),R.color.primary);
-        Animator animatorBackgroundColor = createAnimatorColor(buttonMic.getBackground(), initialColor, finalColor, duration);
 
-        animatorSet.play(enlargeAnimation).with(animatorIconColor).with(animatorBackgroundColor);
-        animatorSet.start();
+        if(!instant) {
+            AnimatorSet animatorSet = new AnimatorSet();
+
+            //enlarge animation
+            Animator enlargeAnimation = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), finalSizeInPixels, finalSizeInPixels, duration);
+
+            // change color of icon animation
+            Animator animatorIconColor = createAnimatorColor(buttonMic.getDrawable(), initialColorIcon, finalColorIcon, duration);
+
+            // change color of background animation
+            Animator animatorBackgroundColor = createAnimatorColor(buttonMic.getBackground(), initialColor, finalColor, duration);
+
+            animatorSet.play(enlargeAnimation).with(animatorIconColor).with(animatorBackgroundColor);
+            animatorSet.start();
+
+        } else {
+            //increase size
+            ViewGroup.LayoutParams layoutParams = buttonMic.getLayoutParams();
+            layoutParams.width = finalSizeInPixels;
+            layoutParams.height = finalSizeInPixels;
+            buttonMic.setLayoutParams(layoutParams);
+
+            // change color of icon
+            buttonMic.getDrawable().setColorFilter(finalColorIcon, PorterDuff.Mode.SRC_IN);
+
+            // change color of background
+            buttonMic.getBackground().setColorFilter(finalColor, PorterDuff.Mode.SRC_IN);
+        }
     }
 
     public void animateDeactivation(Context context, final ButtonMic buttonMic){

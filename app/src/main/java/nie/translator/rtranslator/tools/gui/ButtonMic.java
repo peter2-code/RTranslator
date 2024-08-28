@@ -50,7 +50,7 @@ public class ButtonMic extends DeactivableButton {
 
     public static final int MAX_LENGTH_LEFT_LINE_DP = 21;
     public static final int MAX_LENGTH_CENTER_LINE_DP = 26;
-    public static final int MAX_LENGTH_RIGHT_LINE_DP = 13;
+    public static final int MAX_LENGTH_RIGHT_LINE_DP = 15;
     public static final int MIN_LINE_LENGTH_DP = 5;
 
     public static final int STATE_NORMAL = 0;
@@ -77,6 +77,7 @@ public class ButtonMic extends DeactivableButton {
     private CustomAnimator animator = new CustomAnimator();
     private ButtonMicColor currentColor;
     private float volumeLevel = -1;
+    private Animator animationVoice;
 
 
     public ButtonMic(Context context) {
@@ -200,7 +201,11 @@ public class ButtonMic extends DeactivableButton {
         return isMute;
     }
 
-    public void setMute(boolean mute) {
+    public void setMute(boolean mute){
+        setMute(mute, true);
+    }
+
+    public void setMute(boolean mute, boolean animate) {
         isMute = mute;
         if (state == STATE_NORMAL) {
             if (mute) {
@@ -211,16 +216,16 @@ public class ButtonMic extends DeactivableButton {
                     rightLine.setVisibility(GONE);
                     volumeLevel = -1;
                 }
-                animator.animateMute(context, this);
-                currentColor = colorMutedActivated;  //da fare: controllare se questo codice viene eseguito solo quando il buttonMic è attivo
+                animator.animateMute(context, this, !animate);
+                currentColor = colorMutedActivated;   //setMute can be called only when the mic is activate
             } else {
-                animator.animateUnmute(context, this);
-                currentColor = colorActivated;  //da fare: controllare se questo codice viene eseguito solo quando il buttonMic è attivo
+                animator.animateUnmute(context, this, !animate);
+                currentColor = colorActivated;     //setMute can be called only when the mic is activate
             }
         }
     }
 
-    public void onVoiceStarted() {
+    public void onVoiceStarted(boolean animate) {
         if (activationStatus == ACTIVATED) {  // see if it makes sense to keep this check
             isListening = true;
             if(!isMute) {
@@ -230,14 +235,14 @@ public class ButtonMic extends DeactivableButton {
                     centerLine.setVisibility(VISIBLE);
                     rightLine.setVisibility(VISIBLE);
                 }
-                animator.animateOnVoiceStart(context, this);
+                animator.animateOnVoiceStart(context, this, !animate);
             }
         }
     }
 
-    public void onVoiceEnded() {
+    public void onVoiceEnded(boolean animate) {
         isListening = false;
-        if (!isMute) {   // see if it makes sense to keep this check
+        if (!isMute) {
             if(leftLine != null && centerLine != null && rightLine != null){
                 getDrawable().setColorFilter(currentColor.iconColor.getDefaultColor(), PorterDuff.Mode.SRC_IN);  //we make the mic icon visible
                 leftLine.setVisibility(GONE);
@@ -245,7 +250,7 @@ public class ButtonMic extends DeactivableButton {
                 rightLine.setVisibility(GONE);
                 volumeLevel = -1;
             }
-            animator.animateOnVoiceEnd(context, this);
+            animator.animateOnVoiceEnd(context, this, !animate);
         }
     }
 
@@ -254,14 +259,18 @@ public class ButtonMic extends DeactivableButton {
             //we make the mic icon invisible (we do this also here because otherwise when the onVoiceStart is called during another animation the icon will not disappear)
             getDrawable().setColorFilter(GuiTools.getColorStateList(context, android.R.color.transparent).getDefaultColor(), PorterDuff.Mode.SRC_IN);
         }
-        if(this.volumeLevel == -1) {
-            updateVolumeLevel(volumeLevel, new CustomAnimator.EndListener() {
+        if(this.volumeLevel == -1 || this.animationVoice == null || !this.animationVoice.isRunning()) {
+            animationVoice = updateVolumeLevel(volumeLevel, new CustomAnimator.EndListener() {
                 @Override
                 public void onAnimationEnd() {
                     if(isListening()){
-                        updateVolumeLevel(ButtonMic.this.volumeLevel, this);
+                        animationVoice = updateVolumeLevel(ButtonMic.this.volumeLevel, this);
                     }else{
                         ButtonMic.this.volumeLevel = -1;
+                        if(animationVoice != null){
+                            animationVoice.cancel();
+                            animationVoice = null;
+                        }
                     }
                 }
             });
@@ -269,10 +278,10 @@ public class ButtonMic extends DeactivableButton {
         this.volumeLevel = volumeLevel;
     }
 
-    private void updateVolumeLevel(float volumeLevel, CustomAnimator.EndListener listener){
-        if(leftLine != null && centerLine != null && rightLine != null && leftLine.getVisibility() == VISIBLE && centerLine.getVisibility() == VISIBLE && rightLine.getVisibility() == VISIBLE) {
+    private Animator updateVolumeLevel(float volumeLevel, CustomAnimator.EndListener listener){
+        if(leftLine != null && centerLine != null && rightLine != null && leftLine.getVisibility() == VISIBLE && centerLine.getVisibility() == VISIBLE && rightLine.getVisibility() == VISIBLE && volumeLevel > 0) {
             int duration_ms = 70;
-            //Log.d("volume", "volume: " + volumeLevel);
+            Log.d("volume", "volume: " + volumeLevel);
             float maxLengthLeft = Tools.convertDpToPixels(context, MAX_LENGTH_LEFT_LINE_DP);
             float maxLengthCenter = Tools.convertDpToPixels(context, MAX_LENGTH_CENTER_LINE_DP);
             float maxLengthRight = Tools.convertDpToPixels(context, MAX_LENGTH_RIGHT_LINE_DP);
@@ -309,7 +318,9 @@ public class ButtonMic extends DeactivableButton {
                 }
             });
             animatorSet.start();
+            return animatorSet;
         }
+        return null;
     }
 
     @Override
@@ -356,7 +367,7 @@ public class ButtonMic extends DeactivableButton {
         this.fragment = fragment;
     }
 
-    public void initialize(@Nullable MicrophoneComunicable fragment, View leftLine, View centerLine, View rightLine) {  //da fare: cancellarlo quando avrò implementato l'animazione in base al volume anche in Conversation
+    public void initialize(@Nullable MicrophoneComunicable fragment, View leftLine, View centerLine, View rightLine) {
         this.fragment = fragment;
         this.leftLine = leftLine;
         this.centerLine = centerLine;

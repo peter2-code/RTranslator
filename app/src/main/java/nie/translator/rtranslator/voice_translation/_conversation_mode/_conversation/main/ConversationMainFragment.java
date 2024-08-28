@@ -33,6 +33,7 @@ import android.widget.Toast;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.ArrayList;
 
@@ -54,6 +55,7 @@ import nie.translator.rtranslator.voice_translation._conversation_mode._conversa
 public class ConversationMainFragment extends VoiceTranslationFragment {
     private boolean isEditTextOpen = false;
     private boolean isInputActive = true;
+    private ConstraintLayout container;
     private TextView micInput;
     private ButtonKeyboard keyboard;
     protected ButtonMic microphone;
@@ -101,13 +103,14 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        container = view.findViewById(R.id.conversation_main_container);
         micInput = view.findViewById(R.id.inputMicType);
         keyboard = view.findViewById(R.id.buttonKeyboard);
         microphone = view.findViewById(R.id.buttonMic);
         sound = view.findViewById(R.id.buttonSound);
         editText = view.findViewById(R.id.editText);
         micPlaceHolder = view.findViewById(R.id.buttonPlaceHolder);
-        microphone.initialize(this);
+        microphone.initialize(this, view.findViewById(R.id.leftLine), view.findViewById(R.id.centerLine), view.findViewById(R.id.rightLine));
         microphone.setEditText(editText);
         deactivateInputs(DeactivableButton.DEACTIVATED);
         editText.addTextChangedListener(new TextWatcher() {
@@ -130,6 +133,7 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
         });
         microphone.setMicInput(micInput);
         description.setText(R.string.description_conversation);
+        container.setVisibility(View.INVISIBLE);  //we make the UI invisible until the restore of the attributes from the service (to avoid instant changes of the UI).
     }
 
     @Override
@@ -276,7 +280,8 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
     public void restoreAttributesFromService() {
         conversationServiceCommunicator.getAttributes(new VoiceTranslationService.AttributesListener() {
             @Override
-            public void onSuccess(ArrayList<GuiMessage> messages, boolean isMicMute, boolean isAudioMute, boolean isTTSError, final boolean isEditTextOpen, boolean isBluetoothHeadsetConnected, boolean isMicAutomatic) {
+            public void onSuccess(ArrayList<GuiMessage> messages, boolean isMicMute, boolean isAudioMute, boolean isTTSError, final boolean isEditTextOpen, boolean isBluetoothHeadsetConnected, boolean isMicAutomatic, boolean isMicActivated, int listeningMic) {
+                container.setVisibility(View.VISIBLE);
                 // initialization with service values
                 mAdapter = new MessagesAdapter(messages, new MessagesAdapter.Callback() {
                     @Override
@@ -287,7 +292,16 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
                 });
                 mRecyclerView.setAdapter(mAdapter);
                 // restore microphone and sound status
-                microphone.setMute(isMicMute);
+                microphone.setMute(isMicMute, false);
+                if(isMicActivated) {
+                    if (listeningMic == VoiceTranslationService.AUTO_LANGUAGE) {
+                        microphone.onVoiceStarted(false);
+                    } else {
+                        microphone.onVoiceEnded(false);
+                    }
+                }else{
+                    microphone.onVoiceEnded(false);
+                }
                 sound.setMute(isAudioMute);
                 if(isTTSError){
                     sound.deactivate(DeactivableButton.DEACTIVATED_FOR_TTS_ERROR);
@@ -303,10 +317,14 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
                     conversationServiceCallback.onBluetoothHeadsetDisconnected();
                 }
 
-                if (!microphone.isMute() && !isEditTextOpen) {
-                    activateInputs(true);
-                } else {
-                    activateInputs(false);
+                if(isMicActivated){
+                    if (!microphone.isMute() && !isEditTextOpen) {
+                        activateInputs(true);
+                    } else {
+                        activateInputs(false);
+                    }
+                }else{
+                    deactivateInputs(DeactivableButton.DEACTIVATED);
                 }
             }
         });
@@ -417,13 +435,23 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
         @Override
         public void onVoiceStarted(int mode) {
             super.onVoiceStarted(mode);
-            microphone.onVoiceStarted();
+            if(!microphone.isMute()) {
+                microphone.onVoiceStarted(true);
+            }
         }
 
         @Override
         public void onVoiceEnded() {
             super.onVoiceEnded();
-            microphone.onVoiceEnded();
+            microphone.onVoiceEnded(true);
+        }
+
+        @Override
+        public void onVolumeLevel(float volumeLevel) {
+            super.onVolumeLevel(volumeLevel);
+            if(microphone.isListening()) {
+                microphone.updateVolumeLevel(volumeLevel);
+            }
         }
 
         @Override
@@ -437,7 +465,7 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
         @Override
         public void onMicDeactivated() {
             super.onMicDeactivated();
-            if(microphone.getState() == ButtonMic.STATE_NORMAL && microphone.isActivated() && !microphone.isMute()) {
+            if(microphone.getState() == ButtonMic.STATE_NORMAL && microphone.isActivated()) {
                 microphone.deactivate(DeactivableButton.DEACTIVATED);
             }
         }

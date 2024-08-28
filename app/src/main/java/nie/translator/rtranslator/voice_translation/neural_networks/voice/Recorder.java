@@ -177,7 +177,7 @@ public class Recorder {
             mThread.interrupt();
             mThread = null;
         }
-        if(mAudioRecord != null) {
+        if (mAudioRecord != null) {
             mAudioRecord.stop();
         }
         //mBuffer = null;
@@ -279,9 +279,12 @@ public class Recorder {
                 mCallback.onVoiceEnd();
             }
             if(isManualMode){
+                Log.d("mic", "manual mode activating");
                 stop();
+                Log.d("mic", "manual mode activated");
             }else{
                 start();
+                Log.d("mic", "manual mode deactivated");
             }
         }
     }
@@ -309,11 +312,11 @@ public class Recorder {
         @Override
         public void run() {
             while (!Thread.currentThread().isInterrupted()) {
-                if(mAudioRecord != null) {
+                if (mAudioRecord != null) {
                     int prevVoiceLength;
-                    if(isManualMode){
+                    if (isManualMode) {
                         prevVoiceLength = (int) (0.1 * sampleRate);  //if we are using manual mode we use a reduced prev voice duration
-                    }else {
+                    } else {
                         prevVoiceLength = (global.getPrevVoiceDuration() / 1000) * sampleRate;
                     }
                     int size;
@@ -341,7 +344,9 @@ public class Recorder {
                     if (isHearingVoice(mBuffer, oldTailIndex, tailIndex)) {
                         if (mLastVoiceHeardMillis == Long.MAX_VALUE) {    // use Long's maximum limit to indicate that we have no voice
                             mVoiceStartedMillis = now;
-                            mCallback.onVoiceStart();
+                            if(!Thread.currentThread().isInterrupted()) {
+                                mCallback.onVoiceStart();
+                            }
                             if (getMBufferSize() > prevVoiceLength) {
                                 if (tailIndex - prevVoiceLength >= 0) {
                                     startVoiceIndex = tailIndex - prevVoiceLength;
@@ -354,15 +359,22 @@ public class Recorder {
                         }
                         mLastVoiceHeardMillis = now;
                         if (now - (mVoiceStartedMillis - global.getPrevVoiceDuration()) > MAX_SPEECH_LENGTH_MILLIS) {
-                            end();
+                            if(!Thread.currentThread().isInterrupted()) {
+                                end();
+                            }
                         }
                     } else if (mLastVoiceHeardMillis != Long.MAX_VALUE) {
                         if (now - mLastVoiceHeardMillis > global.getSpeechTimeout()) {
-                            end();
+                            if(!Thread.currentThread().isInterrupted()) {
+                                end();
+                            }
                         }
                     }
                 }
             }
+            dismiss();
+            headIndex = 0;
+            tailIndex = 0;
         }
     }
 

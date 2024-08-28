@@ -556,7 +556,7 @@ public class Recognizer extends NeuralNetworkApi {
     private String correctText(String text){
         String correctedText = text;
 
-        //sometimes, even if timestamps are deactivated, Whisper insert those anyway (es. <|0.00|>), so we remove eventual timestamps (da fare: testarlo)
+        //sometimes, even if timestamps are deactivated, Whisper insert those anyway (es. <|0.00|>), so we remove eventual timestamps
         String regex = "<\\|[^>]*\\|> ";    //with this regex we remove all substrings of the form "<|something|> "
         correctedText = correctedText.replaceAll(regex, "");
 

@@ -45,6 +45,9 @@ import nie.translator.rtranslator.voice_translation.neural_networks.voice.Record
 
 
 public abstract class VoiceTranslationService extends GeneralService {
+    public static final int AUTO_LANGUAGE = 0;
+    public static final int FIRST_LANGUAGE = 1;
+    public static final int SECOND_LANGUAGE = 2;
     // commands
     public static final int GET_ATTRIBUTES = 6;
     public static final int START_MIC = 0;
@@ -94,6 +97,7 @@ public abstract class VoiceTranslationService extends GeneralService {
     protected boolean isEditTextOpen = false;
     protected int utterancesCurrentlySpeaking = 0;
     protected final Object mLock = new Object();
+    protected boolean isMicActivated = true;
     protected boolean isMicAutomatic = true;
     protected boolean manualRecognizingFirstLanguage = false;
     protected boolean manualRecognizingSecondLanguage = false;
@@ -430,6 +434,18 @@ public abstract class VoiceTranslationService extends GeneralService {
                     bundle.putBoolean("isEditTextOpen", isEditTextOpen);
                     bundle.putBoolean("isBluetoothHeadsetConnected", isBluetoothHeadsetConnected());
                     bundle.putBoolean("isMicAutomatic", isMicAutomatic);
+                    bundle.putBoolean("isMicActivated", isMicActivated);
+                    if(mVoiceRecorder.isRecording()){
+                        if(manualRecognizingFirstLanguage) {
+                            bundle.putInt("listeningMic", FIRST_LANGUAGE);
+                        } else if(manualRecognizingSecondLanguage) {
+                            bundle.putInt("listeningMic", SECOND_LANGUAGE);
+                        } else {
+                            bundle.putInt("listeningMic", AUTO_LANGUAGE);
+                        }
+                    }else{
+                        bundle.putInt("listeningMic", -1);
+                    }
                     super.notifyToClient(bundle);
                     return true;
             }
@@ -449,11 +465,11 @@ public abstract class VoiceTranslationService extends GeneralService {
         Bundle bundle = new Bundle();
         bundle.clear();
         if(manualRecognizingFirstLanguage){
-            bundle.putInt("mode", VoiceTranslationServiceCallback.FIRST_LANGUAGE);
+            bundle.putInt("mode", FIRST_LANGUAGE);
         }else if(manualRecognizingSecondLanguage){
-            bundle.putInt("mode", VoiceTranslationServiceCallback.SECOND_LANGUAGE);
+            bundle.putInt("mode", SECOND_LANGUAGE);
         }else{
-            bundle.putInt("mode", VoiceTranslationServiceCallback.AUTO_LANGUAGE);
+            bundle.putInt("mode", AUTO_LANGUAGE);
         }
         bundle.putInt("callback", ON_VOICE_STARTED);
         super.notifyToClient(bundle);
@@ -475,6 +491,7 @@ public abstract class VoiceTranslationService extends GeneralService {
     }
 
     protected void notifyMicActivated() {
+        isMicActivated = true;
         Bundle bundle = new Bundle();
         bundle.clear();
         bundle.putInt("callback", ON_MIC_ACTIVATED);
@@ -482,6 +499,7 @@ public abstract class VoiceTranslationService extends GeneralService {
     }
 
     protected void notifyMicDeactivated() {
+        isMicActivated = false;
         Bundle bundle = new Bundle();
         bundle.clear();
         bundle.putInt("callback", ON_MIC_DEACTIVATED);
@@ -515,8 +533,10 @@ public abstract class VoiceTranslationService extends GeneralService {
                         boolean isEditTextOpen = data.getBoolean("isEditTextOpen");
                         boolean isBluetoothHeadsetConnected = data.getBoolean("isBluetoothHeadsetConnected");
                         boolean isMicAutomatic = data.getBoolean("isMicAutomatic");
+                        boolean isMicActivated = data.getBoolean("isMicActivated");
+                        int listeningMic = data.getInt("listeningMic");
                         while (!attributesListeners.isEmpty()) {
-                            attributesListeners.remove(0).onSuccess(messages, isMicMute, isAudioMute, isTTSError, isEditTextOpen, isBluetoothHeadsetConnected, isMicAutomatic);
+                            attributesListeners.remove(0).onSuccess(messages, isMicMute, isAudioMute, isTTSError, isEditTextOpen, isBluetoothHeadsetConnected, isMicAutomatic, isMicActivated, listeningMic);
                         }
                         return true;
                     }
@@ -655,10 +675,6 @@ public abstract class VoiceTranslationService extends GeneralService {
     }
 
     public static abstract class VoiceTranslationServiceCallback extends ServiceCallback {
-        public static final int AUTO_LANGUAGE = 0;
-        public static final int FIRST_LANGUAGE = 1;
-        public static final int SECOND_LANGUAGE = 2;
-
         public void onVoiceStarted(int mode) {
         }
 
@@ -685,7 +701,7 @@ public abstract class VoiceTranslationService extends GeneralService {
     }
 
     public interface AttributesListener {
-        void onSuccess(ArrayList<GuiMessage> messages, boolean isMicMute, boolean isAudioMute, boolean isTTSError, boolean isEditTextOpen, boolean isBluetoothHeadsetConnected, boolean isMicAutomatic);
+        void onSuccess(ArrayList<GuiMessage> messages, boolean isMicMute, boolean isAudioMute, boolean isTTSError, boolean isEditTextOpen, boolean isBluetoothHeadsetConnected, boolean isMicAutomatic, boolean isMicActivated, int listeningMic);
     }
 
     protected abstract class VoiceTranslationServiceRecognizerListener implements RecognizerListener {

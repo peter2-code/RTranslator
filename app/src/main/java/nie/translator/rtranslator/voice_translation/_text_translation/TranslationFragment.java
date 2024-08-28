@@ -283,7 +283,7 @@ public class TranslationFragment extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isKeyboardShowing) {  //da fare: decidere come gestire meglio questo caso, dato che non è detto che la tastiera venga sempre rilevata per bene, quindi questo codice potrebbe funzionare male
+                if(!isKeyboardShowing) {
                     activity.onBackPressed();
                 }else {
                     View view = activity.getCurrentFocus();

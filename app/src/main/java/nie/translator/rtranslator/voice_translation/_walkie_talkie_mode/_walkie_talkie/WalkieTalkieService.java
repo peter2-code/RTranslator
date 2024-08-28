@@ -19,6 +19,8 @@ package nie.translator.rtranslator.voice_translation._walkie_talkie_mode._walkie
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import java.util.ArrayList;
 
@@ -149,19 +151,23 @@ public class WalkieTalkieService extends VoiceTranslationService {
                                 if(!manualRecognizingSecondLanguage && !isMicAutomatic) {
                                     manualRecognizingFirstLanguage = true;
                                     mVoiceRecorder.startRecording();
+                                    Log.d("voice", "started manual listening left");
                                 }
                                 break;
                             case STOP_RECOGNIZING_FIRST_LANGUAGE:
                                 mVoiceRecorder.stopRecording();
+                                Log.d("voice", "stopped manual listening left");
                                 break;
                             case START_RECOGNIZING_SECOND_LANGUAGE:
                                 if(!manualRecognizingFirstLanguage && !isMicAutomatic) {
                                     manualRecognizingSecondLanguage = true;
                                     mVoiceRecorder.startRecording();
+                                    Log.d("voice", "started manual listening right");
                                 }
                                 break;
                             case STOP_RECOGNIZING_SECOND_LANGUAGE:
                                 mVoiceRecorder.stopRecording();
+                                Log.d("voice", "stopped manual listening right");
                                 break;
                             case START_RECOGNIZING_AUTO_LANGUAGE:
                                 if(!manualRecognizingAutoLanguage && !isMicAutomatic) {

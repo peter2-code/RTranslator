@@ -19,6 +19,7 @@ package nie.translator.rtranslator.tools.gui;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -65,11 +66,16 @@ public class ButtonKeyboard extends DeactivableButton {
         }else{
             Point point= new Point();
             activity.getWindowManager().getDefaultDisplay().getSize(point);
-            int margin= Tools.convertDpToPixels(context,28);
-            int buttonSize=Tools.convertDpToPixels(context,24);
+            int margin = Tools.convertDpToPixels(activity,16);
+            int iconSize = Tools.convertDpToPixels(activity, 40);
+            int micReducedSize = Tools.convertDpToPixels(activity,ButtonMic.SIZE_ICON_DP);
             int screenWidth=point.x;
-            int expandedEditTextWidth=screenWidth-(margin + buttonSize + margin + buttonSize + margin);
+            int expandedEditTextWidth=screenWidth-(margin + micReducedSize + margin + iconSize + margin);
 
+            //shrinkage of the micPlaceHolder (to reduce size of the entire container of editText)
+            ViewGroup.LayoutParams layoutParams = micPlaceHolder.getLayoutParams();
+            layoutParams.height = Tools.convertDpToPixels(activity, 1);
+            micPlaceHolder.setLayoutParams(layoutParams);
 
             //buttonMic change
             //at this point the buttonMic state is normal
