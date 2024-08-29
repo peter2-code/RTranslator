@@ -454,7 +454,9 @@ public class Translator extends NeuralNetworkApi {
         while (joined) {
             joined = false;
             for (int i = 1; i < textSplit.size(); i++) {
-                if ((textSplit.get(i-1).length() + textSplit.get(i).length() < 512) || (textSplit.get(i-1).length() < 20)) {
+                int numTokens = tokenizer.tokenize(getNllbLanguageCode(inputLanguage.getCode()), getNllbLanguageCode(outputLanguage.getCode()), textSplit.get(i-1)).getInputIDs().length;
+                int numTokens2 = tokenizer.tokenize(getNllbLanguageCode(inputLanguage.getCode()), getNllbLanguageCode(outputLanguage.getCode()), textSplit.get(i)).getInputIDs().length;
+                if ((numTokens + numTokens2 < 200) || (numTokens2 < 5)) {
                     textSplit.set(i-1, textSplit.get(i-1) + textSplit.get(i));
                     textSplit.remove(i);
                     i = i - 1;
@@ -466,6 +468,7 @@ public class Translator extends NeuralNetworkApi {
         for (String subtext : textSplit) {
             android.util.Log.i("result", subtext);
         }
+        android.util.Log.i("performance", "Text split done in: " + (System.currentTimeMillis() - initTime) + "ms");
 
         final String[] joinedStringOutput = {""};
         for(int i=0; i<textSplit.size(); i++) {
