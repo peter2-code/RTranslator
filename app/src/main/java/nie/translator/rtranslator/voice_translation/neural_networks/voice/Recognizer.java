@@ -17,6 +17,7 @@
 package nie.translator.rtranslator.voice_translation.neural_networks.voice;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -59,7 +60,7 @@ public class Recognizer extends NeuralNetworkApi {
     private ArrayDeque<DataContainer> dataToRecognize = new ArrayDeque<>();
     private final Object lock = new Object();
 
-    private final String[] LANGUAGES = {
+    private static final String[] LANGUAGES = {
             "en",
             "zh",
             "de",
@@ -582,16 +583,24 @@ public class Recognizer extends NeuralNetworkApi {
     // LANGUAGES instead contains all languages supported by Whisper and it is needed for generating the language ID
     public static ArrayList<CustomLocale> getSupportedLanguages(Context context) {
         ArrayList<CustomLocale> languages = new ArrayList<>();
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        try {
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document document = documentBuilder.parse(context.getResources().openRawResource(R.raw.whisper_supported_languages));
-            NodeList list = document.getElementsByTagName("code");
-            for (int i = 0; i < list.getLength(); i++) {
-                languages.add(CustomLocale.getInstance(list.item(i).getTextContent()));
+        SharedPreferences sharedPreferences = context.getSharedPreferences("default", Context.MODE_PRIVATE);
+        boolean qualityLow = sharedPreferences.getBoolean("languagesNNQualityLow", false);
+        if(!qualityLow) {
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            try {
+                DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+                Document document = documentBuilder.parse(context.getResources().openRawResource(R.raw.whisper_supported_languages));
+                NodeList list = document.getElementsByTagName("code");
+                for (int i = 0; i < list.getLength(); i++) {
+                    languages.add(CustomLocale.getInstance(list.item(i).getTextContent()));
+                }
+            } catch (IOException | SAXException | ParserConfigurationException e) {
+                e.printStackTrace();
             }
-        } catch (IOException | SAXException | ParserConfigurationException e) {
-            e.printStackTrace();
+        }else{
+            for (String language : LANGUAGES) {
+                languages.add(CustomLocale.getInstance(language));
+            }
         }
         return languages;
     }

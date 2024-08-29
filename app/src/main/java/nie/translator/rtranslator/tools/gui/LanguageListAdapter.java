@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import nie.translator.rtranslator.Global;
 import nie.translator.rtranslator.R;
@@ -39,6 +40,12 @@ public class LanguageListAdapter extends BaseAdapter {
 
     public LanguageListAdapter(Activity activity, ArrayList<CustomLocale> languages, CustomLocale selectedLanguage) {
         this.activity = activity;
+        languages.sort(new Comparator<CustomLocale>(){
+            @Override
+            public int compare(final CustomLocale locale1, CustomLocale locale2){
+                return locale1.getDisplayNameWithoutTTS().compareTo(locale2.getDisplayNameWithoutTTS());
+            }
+        });
         this.languages = languages;
         this.selectedLanguage = selectedLanguage;
         notifyDataSetChanged();
@@ -49,6 +56,12 @@ public class LanguageListAdapter extends BaseAdapter {
     public LanguageListAdapter(Activity activity, boolean showTTSInfo, ArrayList<CustomLocale> languages, CustomLocale selectedLanguage) {
         this.activity = activity;
         this.showTTSInfo = showTTSInfo;
+        languages.sort(new Comparator<CustomLocale>() {
+            @Override
+            public int compare(final CustomLocale locale1, CustomLocale locale2) {
+                return locale1.getDisplayNameWithoutTTS().compareTo(locale2.getDisplayNameWithoutTTS());
+            }
+        });
         this.languages = languages;
         this.selectedLanguage = selectedLanguage;
         notifyDataSetChanged();
@@ -95,7 +108,7 @@ public class LanguageListAdapter extends BaseAdapter {
         } else {
             view.findViewById(R.id.isSelected).setVisibility(View.GONE);
         }
-        if(showTTSInfo && ttsLanguagesInitialized){
+        if(showTTSInfo && ttsLanguagesInitialized) {
             ((TextView) view.findViewById(R.id.languageName)).setText(item.getDisplayName(ttsLanguages));
         }else {
             ((TextView) view.findViewById(R.id.languageName)).setText(item.getDisplayNameWithoutTTS());
@@ -103,7 +116,7 @@ public class LanguageListAdapter extends BaseAdapter {
         return view;
     }
 
-    private void initializeTTSLanguageList(Activity activity){
+    private void initializeTTSLanguageList(Activity activity) {
         Global global = (Global) activity.getApplication();
         global.getTTSLanguages(true, new Global.GetLocalesListListener() {
             @Override

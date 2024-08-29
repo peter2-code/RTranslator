@@ -144,10 +144,10 @@
         <code>hu</code>
         <code_NLLB>hun_Latn</code_NLLB>
     </language>
-    <language>
+    <!--<language>
         <code>id</code>
         <code_NLLB>ind_Latn</code_NLLB>
-    </language>
+    </language>-->  <!-- NLLB treats this language (indonesian) as if it were English (bug) -->
     <language>
         <code>jv</code>
         <code_NLLB>jav_Latn</code_NLLB>
@@ -258,10 +258,6 @@
     </language>
     <language>
         <code>ki</code>
-        <code_NLLB>kik_Latn</code_NLLB>
-    </language>
-    <language>
-        <code></code>
         <code_NLLB>kik_Latn</code_NLLB>
     </language>
     <language>

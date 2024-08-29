@@ -177,7 +177,7 @@ public class TranslationFragment extends Fragment {
         //inputText.setRawInputType(InputType.TYPE_CLASS_TEXT);
 
         // setting of the selected languages
-        global.getFirstLanguage(true, new Global.GetLocaleListener() {
+        global.getFirstTextLanguage(true, new Global.GetLocaleListener() {
             @Override
             public void onSuccess(CustomLocale result) {
                 setFirstLanguage(result);
@@ -187,7 +187,7 @@ public class TranslationFragment extends Fragment {
 
             }
         });
-        global.getSecondLanguage(true, new Global.GetLocaleListener() {
+        global.getSecondTextLanguage(true, new Global.GetLocaleListener() {
             @Override
             public void onSuccess(CustomLocale result) {
                 setSecondLanguage(result);
@@ -247,7 +247,7 @@ public class TranslationFragment extends Fragment {
 
                 if(!text.isEmpty()) {
                     String finalText = text;
-                    global.getFirstAndSecondLanguages(true, new Global.GetTwoLocaleListener() {
+                    global.getFirstAndSecondTextLanguages(true, new Global.GetTwoLocaleListener() {
                         @Override
                         public void onSuccess(CustomLocale firstLanguage, CustomLocale secondLanguage) {
                             //we deactivate translate button
@@ -439,7 +439,7 @@ public class TranslationFragment extends Fragment {
         invertLanguagesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                global.getFirstAndSecondLanguages(true, new Global.GetTwoLocaleListener() {
+                global.getFirstAndSecondTextLanguages(true, new Global.GetTwoLocaleListener() {
                     @Override
                     public void onSuccess(CustomLocale language1, CustomLocale language2) {
                         setFirstLanguage(language2);
@@ -557,7 +557,7 @@ public class TranslationFragment extends Fragment {
                     tts.stop();
                     ttsListener.onDone("");  //we call this to make eventual visual updates to the tts buttons (stop() doesn't call onDone automatically)
                 }else {
-                    global.getFirstLanguage(true, new Global.GetLocaleListener() {
+                    global.getFirstTextLanguage(true, new Global.GetLocaleListener() {
                         @Override
                         public void onSuccess(CustomLocale firstLanguage) {
                             global.getTTSLanguages(true, new Global.GetLocalesListListener() {
@@ -595,7 +595,7 @@ public class TranslationFragment extends Fragment {
                     tts.stop();
                     ttsListener.onDone("");  //we call this to make eventual visual updates to the tts buttons (stop() doesn't call onDone automatically)
                 }else {
-                    global.getSecondLanguage(true, new Global.GetLocaleListener() {
+                    global.getSecondTextLanguage(true, new Global.GetLocaleListener() {
                         @Override
                         public void onSuccess(CustomLocale secondLanguage) {
                             global.getTTSLanguages(true, new Global.GetLocalesListListener() {
@@ -822,11 +822,11 @@ public class TranslationFragment extends Fragment {
 
         switch (languageNumber) {
             case 1: {
-                global.getFirstLanguage(false, listener);
+                global.getFirstTextLanguage(false, listener);
                 break;
             }
             case 2: {
-                global.getSecondLanguage(false, listener);
+                global.getSecondTextLanguage(false, listener);
                 break;
             }
         }
@@ -836,7 +836,7 @@ public class TranslationFragment extends Fragment {
         reloadButton.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
 
-        global.getLanguages(true, true, new Global.GetLocalesListListener() {
+        global.getTranslatorLanguages(true, new Global.GetLocalesListListener() {
             @Override
             public void onSuccess(final ArrayList<CustomLocale> languages) {
                 progressBar.setVisibility(View.GONE);
@@ -888,14 +888,14 @@ public class TranslationFragment extends Fragment {
 
     private void setFirstLanguage(CustomLocale language) {
         // save firstLanguage selected
-        global.setFirstLanguage(language);
+        global.setFirstTextLanguage(language);
         // change language displayed
         ((AnimatedTextView) firstLanguageSelector.findViewById(R.id.firstLanguageName)).setText(language.getDisplayNameWithoutTTS(), true);
     }
 
     private void setSecondLanguage(CustomLocale language) {
         // save secondLanguage selected
-        global.setSecondLanguage(language);
+        global.setSecondTextLanguage(language);
         // change language displayed
         ((AnimatedTextView) secondLanguageSelector.findViewById(R.id.secondLanguageName)).setText(language.getDisplayNameWithoutTTS(), true);
     }

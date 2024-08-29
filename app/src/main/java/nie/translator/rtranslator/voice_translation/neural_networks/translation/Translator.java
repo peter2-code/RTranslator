@@ -17,6 +17,7 @@
 package nie.translator.rtranslator.voice_translation.neural_networks.translation;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.icu.text.BreakIterator;
 import android.os.Looper;
 import android.util.Log;
@@ -1097,7 +1098,7 @@ public class Translator extends NeuralNetworkApi {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document document = documentBuilder.parse(context.getResources().openRawResource(R.raw.nllb_supported_languages));
+            Document document = documentBuilder.parse(context.getResources().openRawResource(R.raw.nllb_supported_languages_all));
             NodeList listCode = document.getElementsByTagName("code");
             NodeList listCodeNllb = document.getElementsByTagName("code_NLLB");
             for (int i = 0; i < listCode.getLength(); i++) {
@@ -1126,6 +1127,8 @@ public class Translator extends NeuralNetworkApi {
 
     public static ArrayList<CustomLocale> getSupportedLanguages(Context context, int mode) {
         ArrayList<CustomLocale> languages = new ArrayList<>();
+        SharedPreferences sharedPreferences = context.getSharedPreferences("default", Context.MODE_PRIVATE);
+        boolean qualityLow = sharedPreferences.getBoolean("languagesNNQualityLow", false);
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -1133,7 +1136,11 @@ public class Translator extends NeuralNetworkApi {
             if(mode == MADLAD){
                 document = documentBuilder.parse(context.getResources().openRawResource(R.raw.madlad_supported_launguages));
             }else{  //if mode == NLLB
-                document = documentBuilder.parse(context.getResources().openRawResource(R.raw.nllb_supported_languages));
+                if(!qualityLow) {
+                    document = documentBuilder.parse(context.getResources().openRawResource(R.raw.nllb_supported_languages));
+                }else{
+                    document = documentBuilder.parse(context.getResources().openRawResource(R.raw.nllb_supported_languages_all));
+                }
             }
             NodeList list = document.getElementsByTagName("code");
             for (int i = 0; i < list.getLength(); i++) {
