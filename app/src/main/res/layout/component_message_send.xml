@@ -17,6 +17,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="end"
@@ -28,10 +29,10 @@
         android:id="@+id/card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/accent"
+        android:backgroundTint="#D0EFE9"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
         app:cardCornerRadius="18sp"
-        app:cardElevation="2dp"
+        app:cardElevation="1dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,9 +51,11 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textIsSelectable="true"
             android:textSize="16sp"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tool:text="Ciao, come stai?"/>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

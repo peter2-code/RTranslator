@@ -111,6 +111,7 @@
     <string name="description_download">正在下载 %1$s</string>
     <string name="description_transfer">正在将 %1$s 传输到内部存储器</string>
     <string name="description_integrity_check">正在检查 %1$s 的完整性</string>
+    <string name="description_tts">要说话，RTranslator 使用系统默认的 TTS 引擎，要选择您喜欢的引擎，请点击下面的按钮</string>
 
     <string name="preference_header_language">语言</string>
     <string name="preference_header_output">输出</string>

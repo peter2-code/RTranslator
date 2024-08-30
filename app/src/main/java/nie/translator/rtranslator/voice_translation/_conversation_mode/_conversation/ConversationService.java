@@ -37,6 +37,7 @@ import nie.translator.rtranslator.voice_translation._conversation_mode.communica
 
 import nie.translator.rtranslator.bluetooth.Message;
 import nie.translator.rtranslator.bluetooth.Peer;
+import nie.translator.rtranslator.voice_translation._walkie_talkie_mode._walkie_talkie.WalkieTalkieService;
 import nie.translator.rtranslator.voice_translation.neural_networks.NeuralNetworkApiText;
 import nie.translator.rtranslator.voice_translation.neural_networks.translation.Translator;
 import nie.translator.rtranslator.voice_translation.neural_networks.voice.Recognizer;
@@ -116,6 +117,13 @@ public class ConversationService extends VoiceTranslationService {
                     // the client is notified
                     ConversationService.super.notifyVoiceEnd();
                 }
+            }
+
+            @Override
+            public void onVolumeLevel(float volumeLevel) {
+                super.onVolumeLevel(volumeLevel);
+                // we notify the client
+                ConversationService.super.notifyVolumeLevel(volumeLevel);
             }
         };
         clientHandler = new Handler(new Handler.Callback() {
@@ -275,7 +283,7 @@ public class ConversationService extends VoiceTranslationService {
     }
 
     @Override
-    protected boolean shouldStopMicDuringTTS() {
+    protected boolean shouldDeactivateMicDuringTTS() {
         return !isBluetoothHeadsetConnected();
     }
 

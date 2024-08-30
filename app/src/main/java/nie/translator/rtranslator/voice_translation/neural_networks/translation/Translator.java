@@ -17,6 +17,7 @@
 package nie.translator.rtranslator.voice_translation.neural_networks.translation;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.icu.text.BreakIterator;
 import android.os.Looper;
 import android.util.Log;
@@ -453,7 +454,9 @@ public class Translator extends NeuralNetworkApi {
         while (joined) {
             joined = false;
             for (int i = 1; i < textSplit.size(); i++) {
-                if ((textSplit.get(i-1).length() + textSplit.get(i).length() < 512) || (textSplit.get(i-1).length() < 20)) {
+                int numTokens = tokenizer.tokenize(getNllbLanguageCode(inputLanguage.getCode()), getNllbLanguageCode(outputLanguage.getCode()), textSplit.get(i-1)).getInputIDs().length;
+                int numTokens2 = tokenizer.tokenize(getNllbLanguageCode(inputLanguage.getCode()), getNllbLanguageCode(outputLanguage.getCode()), textSplit.get(i)).getInputIDs().length;
+                if ((numTokens + numTokens2 < 200) || (numTokens2 < 5)) {
                     textSplit.set(i-1, textSplit.get(i-1) + textSplit.get(i));
                     textSplit.remove(i);
                     i = i - 1;
@@ -465,6 +468,7 @@ public class Translator extends NeuralNetworkApi {
         for (String subtext : textSplit) {
             android.util.Log.i("result", subtext);
         }
+        android.util.Log.i("performance", "Text split done in: " + (System.currentTimeMillis() - initTime) + "ms");
 
         final String[] joinedStringOutput = {""};
         for(int i=0; i<textSplit.size(); i++) {
@@ -1097,7 +1101,7 @@ public class Translator extends NeuralNetworkApi {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document document = documentBuilder.parse(context.getResources().openRawResource(R.raw.nllb_supported_launguages));
+            Document document = documentBuilder.parse(context.getResources().openRawResource(R.raw.nllb_supported_languages_all));
             NodeList listCode = document.getElementsByTagName("code");
             NodeList listCodeNllb = document.getElementsByTagName("code_NLLB");
             for (int i = 0; i < listCode.getLength(); i++) {
@@ -1126,6 +1130,8 @@ public class Translator extends NeuralNetworkApi {
 
     public static ArrayList<CustomLocale> getSupportedLanguages(Context context, int mode) {
         ArrayList<CustomLocale> languages = new ArrayList<>();
+        SharedPreferences sharedPreferences = context.getSharedPreferences("default", Context.MODE_PRIVATE);
+        boolean qualityLow = sharedPreferences.getBoolean("languagesNNQualityLow", false);
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -1133,7 +1139,11 @@ public class Translator extends NeuralNetworkApi {
             if(mode == MADLAD){
                 document = documentBuilder.parse(context.getResources().openRawResource(R.raw.madlad_supported_launguages));
             }else{  //if mode == NLLB
-                document = documentBuilder.parse(context.getResources().openRawResource(R.raw.nllb_supported_launguages));
+                if(!qualityLow) {
+                    document = documentBuilder.parse(context.getResources().openRawResource(R.raw.nllb_supported_languages));
+                }else{
+                    document = documentBuilder.parse(context.getResources().openRawResource(R.raw.nllb_supported_languages_all));
+                }
             }
             NodeList list = document.getElementsByTagName("code");
             for (int i = 0; i < list.getLength(); i++) {

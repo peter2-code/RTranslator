@@ -17,6 +17,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="start"
@@ -28,9 +29,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
+        android:backgroundTint="@color/very_very_light_gray"
         android:visibility="visible"
         app:cardCornerRadius="18sp"
-        app:cardElevation="2dp"
+        app:cardElevation="1dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +56,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tool:text="Ciao, come stai?"/>
 
         <LinearLayout
             android:id="@+id/sender_container"
