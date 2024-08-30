@@ -37,8 +37,7 @@ import androidx.preference.PreferenceGroupAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.gallery.imageselector.GalleryImageSelector;
-
+import nie.translator.rtranslator.tools.GalleryImageSelector;
 import nie.translator.rtranslator.Global;
 import nie.translator.rtranslator.R;
 import nie.translator.rtranslator.tools.ErrorCodes;

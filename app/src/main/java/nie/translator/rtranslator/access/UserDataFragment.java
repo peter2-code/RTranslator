@@ -33,7 +33,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.gallery.imageselector.GalleryImageSelector;
+import nie.translator.rtranslator.tools.GalleryImageSelector;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;

@@ -26,7 +26,7 @@
     <string name="toast_working_background">RTranslator 将在背景中运行</string>
     <string name="toast_download_completed">下载完成</string>
     <string name="toast_download_error">下载时出现错误，请打开 RTranslator 重试</string>
-    <string name="toast_missing_notification_permission">为确保此模式在背景中正常运行，请启用通知</string>
+    <string name="toast_missing_notification_permission">为确保此模式在后台正常运行，请启用通知</string>
 
 
     <string name="dialog_confirm_delete">确认取消</string>
@@ -46,36 +46,36 @@
     <string name="hint_edit_text_message">输入内容</string>
     <string name="hint_user_name">用户昵称</string>
 
-    <string name="error_missing_location_permissions">无法在没有位置和蓝牙权限的情况下使用交互方式，请前往设定授予权限，或重新安装应用程序</string>
-    <string name="error_missing_mic_permissions">没有麦克风权限，语音识别无法运作，请前往设定授予权限或重新安装应用程序</string>
+    <string name="error_missing_location_permissions">无法在没有位置和蓝牙权限的情况下使用对话模式，请在设置中授予权限，或重新安装应用程序</string>
+    <string name="error_missing_mic_permissions">没有麦克风权限，语音识别无法运作，请在设置中授予权限或重新安装应用程序</string>
     <string name="error_tts_toast">缺少 TTS</string>
     <string name="error_tts">TTS 初始化时出现错误，是否要在没有 TTS 的情况下继续？</string>
-    <string name="error_missing_tts">此装置上没有 Google TTS 引擎，请下载以使用 TTS</string>
-    <string name="error_wrong_api_key_file">用于 API 的密钥档案无效，请插入有效的密钥档案</string>
+    <string name="error_missing_tts">此设备上没有 Google TTS 引擎，请下载以使用 TTS</string>
+    <string name="error_wrong_api_key_file">用于 API 的密钥档案无效，请输入有效的密钥档案</string>
     <string name="error_missing_api_key_file">请输入密钥档案以使用 API</string>
-    <string name="error_missing_bluetooth_le">此装置不支持低功耗蓝牙，无法使用交互方式</string>
-    <string name="error_internet_lack_loading">启动 RTranslator 需要因特网联机，请检查您的联机</string>
-    <string name="error_internet_lack_accessing">执行此操作需要因特网联机，请检查您的联机</string>
-    <string name="error_internet_lack_services">无法翻译讯息，请检查因特网联机</string>
-    <string name="error_internet_lack_loading_languages">查看语言需要因特网联机，请检查您的联机并重试</string>
+    <string name="error_missing_bluetooth_le">此设备不支持低功耗蓝牙，无法使用交互方式</string>
+    <string name="error_internet_lack_loading">启动 RTranslator 需要网络连接，请检查您的网络</string>
+    <string name="error_internet_lack_accessing">执行此操作需要网络连接，请检查您的网络</string>
+    <string name="error_internet_lack_services">无法翻译消息，请检查网络连接</string>
+    <string name="error_internet_lack_loading_languages">查看语言需要网络连接，请检查您的网络并重试</string>
     <string name="error_connection_rejected">拒绝了连接请求</string>
     <string name="error_connection">连接错误</string>
     <string name="error_starting_search">启动搜寻错误</string>
-    <string name="error_cannot_interact_connection">连接期间无法与设备互动</string>
-    <string name="error_cannot_interact_disconnection">断开连接期间无法与设备互动</string>
+    <string name="error_cannot_interact_connection">连接期间无法与设备交互</string>
+    <string name="error_cannot_interact_disconnection">断开连接期间无法与设备交互</string>
     <string name="error_wait_initialization">请等待初始化</string>
     <string name="error_invalid_key">请输入有效的密钥档案</string>
     <string name="error_picking_file">选取档案时出错，请重试</string>
-    <string name="error_selecting_image">选择图片时出错，请使用另一个相簿选择</string>
+    <string name="error_selecting_image">选择图片时出错，请使用另一个相册选择</string>
     <string name="error_wait_download_end">请等待下载完成</string>
     <string name="error_age_unchecked">您必须年满 14 岁才能使用此应用程序</string>
     <string name="error_privacy_unchecked">您必须阅读隐私政策才能使用此应用程序</string>
     <string name="error_missing_username">请输入名字</string>
     <string name="error_wrong_username">文字包含非法字符，仅允许以下字符：</string>
-    <string name="error_models_loading">加载翻译和语音识别模型档案时出错，可能有些档案损坏，请尝试重新启动应用程序，如果问题仍然存在，请按下修复按钮，仅重新下载损坏的档案。</string>
+    <string name="error_models_loading">加载翻译和语音识别模型档案时出错，部分档案可能损坏，请尝试重新启动应用程序，如果问题仍然存在，请点击修复按钮，这将重新下载损坏的档案。</string>
     <string name="error_download">下载时出错，请确保您有因特网联机并重试：</string>
     <string name="error_transfer">从外部内存到内部存储器传输下载文件时出错，请确保您没有取出 SD 卡或其他外部存储设备，并保持应用程序开启重新尝试：</string>
-    <string name="error_ram">您的装置内存小于 6GB，应用程序至少需要 6GB 内存才能运行，您仍然可以尝试使用，但可能会崩溃。</string>
+    <string name="error_ram">您的设备内存小于 6GB，应用程序至少需要 6GB 内存才能运行，您仍然可以尝试使用，但应用可能会崩溃。</string>
     <string name="error_storage">存储空间不足，下载可能失败</string>
 
     <string name="title_graph">每小时花费的美元 (USD)</string>
@@ -96,14 +96,18 @@
     <string name="header_connected_peers">已连接</string>
     <string name="header_key">API 密钥</string>
 
-    <string name="description_cost">语音识别将每次请求的成本四舍五入到最接近的 15 秒的倍数，平均总成本（包括翻译和语音识别），不考虑四舍五入，是每小时 2.5 美元，对于对讲机还必须将语言识别成本加到翻译中，了解更多请阅读<a href="https://github.com/niedev/RTranslator">教学</a></string>
-    <string name="description_discovery">此画面将搜寻并使我们对其他使用 RTranslator 的设备可见，以便能够与它们建立连接并开始对话</string>
-    <string name="description_key">要了解如何获取密钥档案，请阅读 <a href="https://github.com/niedev/RTranslator">教学</a></string>
+    <string name="description_cost">语音识别将每次请求的成本四舍五入到最接近的 15 秒的倍数，如果不考虑四舍五入，平均总成本（包括翻译和语音识别）是每小时 2.5 美元，对讲机模式还包括语言识别成本，了解更多请阅读<a href="https://github.com/niedev/RTranslator">教学</a>
+    </string>
+    <string name="description_discovery">此界面将搜寻其他设备，并使我们对其他使用 RTranslator 的设备可见，以便能够与它们建立连接并开始对话</string>
+    <string name="description_key">要了解如何获取密钥档案，请阅读        <a href="https://github.com/niedev/RTranslator">教学</a>
+    </string>
     <string name="description_fragment_user_data">您的名字将显示给所有附近的设备，而您的个人资料照片仅显示在您已经进行过配对的设备上</string>
-    <string name="description_fragment_download">现在 RTranslator 将下载翻译和语音识别所需的神经网络模型，完成后您可以开始使用应用程序（即使是没有网络的状态下）。</string>
-    <string name="description_conversation">交互方式是 RTranslator 的主要功能，它允许您实时翻译多个人之间的对话，为了更好的体验，建议将蓝牙耳机连接到手机，此外应用程序在背景运行和手机待机时也会继续工作（然而，一些手机在应用程序背景运行时可能会有性能问题）</string>
-    <string name="description_walkie_talkie">对讲机模式是 RTranslator 的次要功能，它不支持实时翻译，但设计成只需使用一部手机，它会自动检测并将语音从一种语言翻译成另一种语言，应用程序在背景运行和手机待机时也会继续工作</string>
-    <string name="description_notice">RTranslator 使用 <a href="https://openai.com/index/whisper/">OpenAI 的 Whisper</a> 进行语音识别，使用 <a href="https://ai.meta.com/research/no-language-left-behind/">Meta 的 NLLB</a> 进行翻译，这些模型需要相当多的计算能力和至少 6GB 的内存来执行，所以请确保您使用的是现代智能手机，以避免速度变慢或崩溃。更多有关 RTranslator 的信息，请访问应用程序的 GitHub 项目<a href="https://github.com/niedev/RTranslator">点击这里</a></string>
+    <string name="description_fragment_download">现在 RTranslator 将下载翻译和语音识别所需的神经网络模型，完成后您可以开始使用应用程序（即使是在没有网络的状态下）。</string>
+    <string name="description_conversation">对话模式是 RTranslator 的主要功能，它允许您实时翻译多个人之间的对话，为了更好的体验，建议将手机连接到蓝牙耳机，此外应用程序在后台运行和手机待机时也会继续工作（然而，一些手机在后台运行应用程序时可能会有性能问题）</string>
+    <string name="description_walkie_talkie">对讲机模式是 RTranslator 的次要功能，它不支持实时翻译，但只需要使用一部手机，它会自动检测并将语音从一种语言翻译成另一种语言，应用程序在后台运行和手机待机时也会继续工作</string>
+    <string name="description_notice">RTranslator 使用 <a href="https://openai.com/index/whisper/">OpenAI 的 Whisper</a> 进行语音识别，使用        <a href="https://ai.meta.com/research/no-language-left-behind/">Meta 的 NLLB</a> 进行翻译，这些模型需要相当多的计算能力和至少 6GB 的内存来执行，所以请确保您使用的是现代智能手机，以避免速度变慢或崩溃。更多有关 RTranslator 的信息，请访问应用程序的 GitHub 项目<a href="https://github.com/niedev/RTranslator">点击这里</a>
+    </string>
+
     <string name="description_download">正在下载 %1$s</string>
     <string name="description_transfer">正在将 %1$s 传输到内部存储器</string>
     <string name="description_integrity_check">正在检查 %1$s 的完整性</string>
@@ -130,6 +134,7 @@
     <string name="conversation_mode_running" >对话模式正在运行...</string>
     <string name="walkietalkie_mode" >对讲机模式</string>
     <string name="walkietalkie_mode_running" >对讲机模式正在运行...</string>
+    <string name="title_image_selector">用户头像</string>
 
 </resources>
 
