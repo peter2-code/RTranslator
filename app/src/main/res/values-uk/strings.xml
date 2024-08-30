@@ -109,6 +109,7 @@
     <string name="description_download">Завантаження %1$s</string>
     <string name="description_transfer">Перенесення %1$s в пам\'ять</string>
     <string name="description_integrity_check">Перевірка цілісності %1$s</string>
+    <string name="description_tts">Щоб говорити, RTranslator використовує систему TTS за замовчуванням, рекомендованим TTS є <a href="https://play.google.com/store/apps/details?id=com.google.android.tts">Google TTS</a>, але ви можете вибрати той, який вам більше подобається, щоб вибрати його, натисніть кнопку нижче</string>
 
     <string name="preference_header_language">Мова</string>
     <string name="preference_header_output">Вихід</string>

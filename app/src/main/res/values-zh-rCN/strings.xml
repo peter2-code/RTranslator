@@ -96,21 +96,18 @@
     <string name="header_connected_peers">已连接</string>
     <string name="header_key">API 密钥</string>
 
-    <string name="description_cost">语音识别将每次请求的成本四舍五入到最接近的 15 秒的倍数，平均总成本（包括翻译和语音识别），不考虑四舍五入，是每小时 2.5 美元，对于对讲机还必须将语言识别成本加到翻译中，了解更多请阅读<a href="https://github.com/niedev/RTranslator">教学</a>
-    </string>
+    <string name="description_cost">语音识别将每次请求的成本四舍五入到最接近的 15 秒的倍数，平均总成本（包括翻译和语音识别），不考虑四舍五入，是每小时 2.5 美元，对于对讲机还必须将语言识别成本加到翻译中，了解更多请阅读<a href="https://github.com/niedev/RTranslator">教学</a></string>
     <string name="description_discovery">此画面将搜寻并使我们对其他使用 RTranslator 的设备可见，以便能够与它们建立连接并开始对话</string>
-    <string name="description_key">要了解如何获取密钥档案，请阅读        <a href="https://github.com/niedev/RTranslator">教学</a>
-    </string>
+    <string name="description_key">要了解如何获取密钥档案，请阅读 <a href="https://github.com/niedev/RTranslator">教学</a></string>
     <string name="description_fragment_user_data">您的名字将显示给所有附近的设备，而您的个人资料照片仅显示在您已经进行过配对的设备上</string>
     <string name="description_fragment_download">现在 RTranslator 将下载翻译和语音识别所需的神经网络模型，完成后您可以开始使用应用程序（即使是没有网络的状态下）。</string>
     <string name="description_conversation">交互方式是 RTranslator 的主要功能，它允许您实时翻译多个人之间的对话，为了更好的体验，建议将蓝牙耳机连接到手机，此外应用程序在背景运行和手机待机时也会继续工作（然而，一些手机在应用程序背景运行时可能会有性能问题）</string>
     <string name="description_walkie_talkie">对讲机模式是 RTranslator 的次要功能，它不支持实时翻译，但设计成只需使用一部手机，它会自动检测并将语音从一种语言翻译成另一种语言，应用程序在背景运行和手机待机时也会继续工作</string>
-    <string name="description_notice">RTranslator 使用 <a href="https://openai.com/index/whisper/">OpenAI 的 Whisper</a> 进行语音识别，使用        <a href="https://ai.meta.com/research/no-language-left-behind/">Meta 的 NLLB</a> 进行翻译，这些模型需要相当多的计算能力和至少 6GB 的内存来执行，所以请确保您使用的是现代智能手机，以避免速度变慢或崩溃。更多有关 RTranslator 的信息，请访问应用程序的 GitHub 项目<a href="https://github.com/niedev/RTranslator">点击这里</a>
-    </string>
-
+    <string name="description_notice">RTranslator 使用 <a href="https://openai.com/index/whisper/">OpenAI 的 Whisper</a> 进行语音识别，使用 <a href="https://ai.meta.com/research/no-language-left-behind/">Meta 的 NLLB</a> 进行翻译，这些模型需要相当多的计算能力和至少 6GB 的内存来执行，所以请确保您使用的是现代智能手机，以避免速度变慢或崩溃。更多有关 RTranslator 的信息，请访问应用程序的 GitHub 项目<a href="https://github.com/niedev/RTranslator">点击这里</a></string>
     <string name="description_download">正在下载 %1$s</string>
     <string name="description_transfer">正在将 %1$s 传输到内部存储器</string>
     <string name="description_integrity_check">正在检查 %1$s 的完整性</string>
+    <string name="description_tts">要说话，RTranslator 使用系统默认的 TTS 引擎，要选择您喜欢的引擎，请点击下面的按钮</string>
 
     <string name="preference_header_language">语言</string>
     <string name="preference_header_output">输出</string>

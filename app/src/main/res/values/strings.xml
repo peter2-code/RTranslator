@@ -126,6 +126,7 @@
     <string name="description_download">Downloading %1$s</string>
     <string name="description_transfer">Transferring %1$s in internal memory</string>
     <string name="description_integrity_check">Checking integrity of %1$s</string>
+    <string name="description_tts">To speak, RTranslator uses the system\'s default TTS engine, the recommended TTS is the <a href="https://play.google.com/store/apps/details?id=com.google.android.tts">Google TTS</a>, but you can choose the one you prefer, to select it, click on the button below</string>
 
     <string name="preference_header_language">Language</string>
     <string name="preference_header_output">Output</string>

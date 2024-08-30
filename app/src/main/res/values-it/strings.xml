@@ -123,6 +123,7 @@
     <string name="description_download">Download di %1$s in corso</string>
     <string name="description_transfer">Trasferimento di %1$s nella memoria interna</string>
     <string name="description_integrity_check">Verifica dell\'integrità di %1$s</string>
+    <string name="description_tts">Per parlare, RTranslator usa il TTS di sistema, il TTS consigliato è il <a href="https://play.google.com/store/apps/details?id=com.google.android.tts">TTS di Google</a>, ma puoi usare quello che preferisci, per selezionarlo clicca sul pulsante sotto</string>
 
     <string name="preference_header_language">Lingua</string>
     <string name="preference_header_output">Output</string>
