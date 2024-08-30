@@ -14,8 +14,8 @@
     <string name="loading">завантаження…</string>
     <string name="forward">вперед</string>
     <string name="no_graph_data">Відсутні дані використання</string>
-    <string name="conversation">розмова</string>
-    <string name="connection">з\'єднання</string>
+    <string name="conversation">Розмова</string>
+    <string name="connection">З\'єднання</string>
     <string name="translate">Переклад</string>
     <string name="fix">виправити</string>
 
@@ -58,7 +58,7 @@
     <string name="error_internet_lack_accessing">Для виконання операції потрібне підключення до Інтернету, перевірте ваше підключення</string>
     <string name="error_internet_lack_services">Не вдалося перекласти повідомлення, перевірте підключення до Інтернету</string>
     <string name="error_internet_lack_loading_languages">Для перегляду мов потрібне підключення до Інтернету, перевірте ваше підключення і спробуйте ще раз</string>
-    <string name="error_connection_rejected"> відмовив запиту на підключення</string>
+    <string name="error_connection_rejected">відмовив запиту на підключення</string>
     <string name="error_connection">Помилка підключення</string>
     <string name="error_starting_search">Помилка запуску пошуку</string>
     <string name="error_cannot_interact_connection">не можна взаємодіяти з пристроями під час підключення</string>
@@ -109,6 +109,7 @@
     <string name="description_download">Завантаження %1$s</string>
     <string name="description_transfer">Перенесення %1$s в пам\'ять</string>
     <string name="description_integrity_check">Перевірка цілісності %1$s</string>
+    <string name="description_tts">Щоб говорити, RTranslator використовує систему TTS за замовчуванням, рекомендованим TTS є <a href="https://play.google.com/store/apps/details?id=com.google.android.tts">Google TTS</a>, але ви можете вибрати той, який вам більше подобається, щоб вибрати його, натисніть кнопку нижче</string>
 
     <string name="preference_header_language">Мова</string>
     <string name="preference_header_output">Вихід</string>

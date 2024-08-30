@@ -52,10 +52,13 @@ import nie.translator.rtranslator.voice_translation.neural_networks.voice.Record
 
 public class Global extends Application implements DefaultLifecycleObserver {
     private ArrayList<CustomLocale> languages = new ArrayList<>();
+    private ArrayList<CustomLocale> translatorLanguages = new ArrayList<>();
     private ArrayList<CustomLocale> ttsLanguages = new ArrayList<>();
     private CustomLocale language;
     private CustomLocale firstLanguage;
     private CustomLocale secondLanguage;
+    private CustomLocale firstTextLanguage;
+    private CustomLocale secondTextLanguage;
     private RecentPeersDataManager recentPeersDataManager;
     private ConversationBluetoothCommunicator bluetoothCommunicator;
     private Translator translator;
@@ -126,38 +129,66 @@ public class Global extends Application implements DefaultLifecycleObserver {
             TTS.getSupportedLanguages(this, new TTS.SupportedLanguagesListener() {    //we load TTS languages to catch eventual TTS errors
                 @Override
                 public void onLanguagesListAvailable(ArrayList<CustomLocale> ttsLanguages) {
-                    ArrayList<CustomLocale> translatorLanguages = Translator.getSupportedLanguages(Global.this, Translator.NLLB);
-                    ArrayList<CustomLocale> speechRecognizerLanguages = Recognizer.getSupportedLanguages(Global.this);
-                    //we return only the languages compatible with the speech recognizer and the translator
-                    final ArrayList<CustomLocale> compatibleLanguages = new ArrayList<>();
-                    for (CustomLocale translatorLanguage : translatorLanguages) {
-                        if (CustomLocale.containsLanguage(speechRecognizerLanguages, translatorLanguage)) {
-                            compatibleLanguages.add(translatorLanguage);
+                    getTranslatorLanguages(recycleResult, new GetLocalesListListener() {
+                        @Override
+                        public void onSuccess(ArrayList<CustomLocale> translatorLanguages) {
+                            ArrayList<CustomLocale> speechRecognizerLanguages = Recognizer.getSupportedLanguages(Global.this);
+                            //we return only the languages compatible with the speech recognizer and the translator
+                            final ArrayList<CustomLocale> compatibleLanguages = new ArrayList<>();
+                            for (CustomLocale translatorLanguage : translatorLanguages) {
+                                if (CustomLocale.containsLanguage(speechRecognizerLanguages, translatorLanguage)) {
+                                    compatibleLanguages.add(translatorLanguage);
+                                }
+                            }
+                            languages = compatibleLanguages;
+                            responseListener.onSuccess(compatibleLanguages);
                         }
-                    }
-                    languages = compatibleLanguages;
-                    responseListener.onSuccess(compatibleLanguages);
+
+                        @Override
+                        public void onFailure(int[] reasons, long value) {
+                            responseListener.onFailure(reasons, 0);
+                        }
+                    });
                 }
 
                 @Override
                 public void onError(int reason) {
                     if(ignoreTTSError) {
-                        ArrayList<CustomLocale> translatorLanguages = Translator.getSupportedLanguages(Global.this, Translator.NLLB);
-                        ArrayList<CustomLocale> speechRecognizerLanguages = Recognizer.getSupportedLanguages(Global.this);
-                        //we return only the languages compatible with the speech recognizer and the translator (without loading TTS languages)
-                        final ArrayList<CustomLocale> compatibleLanguages = new ArrayList<>();
-                        for (CustomLocale translatorLanguage : translatorLanguages) {
-                            if (CustomLocale.containsLanguage(speechRecognizerLanguages, translatorLanguage)) {
-                                compatibleLanguages.add(translatorLanguage);
+                        getTranslatorLanguages(recycleResult, new GetLocalesListListener() {
+                            @Override
+                            public void onSuccess(ArrayList<CustomLocale> translatorLanguages) {
+                                ArrayList<CustomLocale> speechRecognizerLanguages = Recognizer.getSupportedLanguages(Global.this);
+                                //we return only the languages compatible with the speech recognizer and the translator (without loading TTS languages)
+                                final ArrayList<CustomLocale> compatibleLanguages = new ArrayList<>();
+                                for (CustomLocale translatorLanguage : translatorLanguages) {
+                                    if (CustomLocale.containsLanguage(speechRecognizerLanguages, translatorLanguage)) {
+                                        compatibleLanguages.add(translatorLanguage);
+                                    }
+                                }
+                                languages = compatibleLanguages;
+                                responseListener.onSuccess(compatibleLanguages);
                             }
-                        }
-                        languages = compatibleLanguages;
-                        responseListener.onSuccess(compatibleLanguages);
+
+                            @Override
+                            public void onFailure(int[] reasons, long value) {
+                                responseListener.onFailure(reasons, 0);
+                            }
+                        });
                     }else{
                         responseListener.onFailure(new int[]{reason}, 0);
                     }
                 }
             });
+        }
+    }
+
+    public void getTranslatorLanguages(final boolean recycleResult, final GetLocalesListListener responseListener) {
+        if (recycleResult && !translatorLanguages.isEmpty()) {
+            responseListener.onSuccess(translatorLanguages);
+        } else {
+            ArrayList<CustomLocale> languages = Translator.getSupportedLanguages(Global.this, Translator.NLLB);
+            translatorLanguages = languages;
+            responseListener.onSuccess(languages);
         }
     }
 
@@ -314,7 +345,6 @@ public class Global extends Application implements DefaultLifecycleObserver {
                 responseListener.onFailure(reasons, value);
             }
         });
-
     }
 
     public void getSecondLanguage(final boolean recycleResult, final GetLocaleListener responseListener) {
@@ -375,6 +405,112 @@ public class Global extends Application implements DefaultLifecycleObserver {
         });
     }
 
+    public void getFirstTextLanguage(final boolean recycleResult, final GetLocaleListener responseListener) {
+        getTranslatorLanguages(true, new GetLocalesListListener() {
+            @Override
+            public void onSuccess(final ArrayList<CustomLocale> languages) {
+                getLanguage(true, new GetLocaleListener() {
+                    @Override
+                    public void onSuccess(CustomLocale predefinedLanguage) {
+                        CustomLocale language = null;
+                        if (recycleResult && Global.this.firstTextLanguage != null) {
+                            language = Global.this.firstTextLanguage;
+                        } else {
+                            SharedPreferences sharedPreferences = Global.this.getSharedPreferences("default", Context.MODE_PRIVATE);
+                            String code = sharedPreferences.getString("firstTextLanguage", predefinedLanguage.getCode());
+                            if (code != null) {
+                                language = CustomLocale.getInstance(code);
+                            }
+                        }
+
+                        int index = CustomLocale.search(languages, language);
+                        if (index != -1) {
+                            language = languages.get(index);
+                        } else {
+                            int index2 = CustomLocale.search(languages, predefinedLanguage);
+                            if (index2 != -1) {
+                                language = predefinedLanguage;
+                            } else {
+                                language = new CustomLocale("en");
+                            }
+                        }
+
+                        Global.this.firstTextLanguage = language;
+                        responseListener.onSuccess(language);
+                    }
+
+                    @Override
+                    public void onFailure(int[] reasons, long value) {
+                        responseListener.onFailure(reasons, value);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(int[] reasons, long value) {
+                responseListener.onFailure(reasons, value);
+            }
+        });
+    }
+
+    public void getSecondTextLanguage(final boolean recycleResult, final GetLocaleListener responseListener) {
+        getTranslatorLanguages(true, new GetLocalesListListener() {
+            @Override
+            public void onSuccess(ArrayList<CustomLocale> languages) {
+                CustomLocale predefinedLanguage = CustomLocale.getDefault();
+                CustomLocale language = null;
+                if (recycleResult && Global.this.secondTextLanguage != null) {
+                    language = Global.this.secondTextLanguage;
+                } else {
+                    SharedPreferences sharedPreferences = Global.this.getSharedPreferences("default", Context.MODE_PRIVATE);
+                    String code = sharedPreferences.getString("secondTextLanguage", null);
+                    if (code != null) {
+                        language = CustomLocale.getInstance(code);
+                    }
+                }
+
+                int index = CustomLocale.search(languages, language);
+                if (index != -1) {
+                    language = languages.get(index);
+                } else {
+                    language = new CustomLocale("en");
+                }
+
+                Global.this.secondTextLanguage = language;
+                responseListener.onSuccess(language);
+            }
+
+            @Override
+            public void onFailure(int[] reasons, long value) {
+                responseListener.onFailure(reasons, value);
+            }
+        });
+    }
+
+    public void getFirstAndSecondTextLanguages(final boolean recycleResult, final GetTwoLocaleListener responseListener){
+        getFirstTextLanguage(recycleResult, new GetLocaleListener() {
+            @Override
+            public void onSuccess(CustomLocale result1) {
+                getSecondTextLanguage(recycleResult, new GetLocaleListener() {
+                    @Override
+                    public void onSuccess(CustomLocale result2) {
+                        responseListener.onSuccess(result1, result2);
+                    }
+
+                    @Override
+                    public void onFailure(int[] reasons, long value) {
+                        responseListener.onFailure(reasons, value);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(int[] reasons, long value) {
+                responseListener.onFailure(reasons, value);
+            }
+        });
+    }
+
     public interface GetLocaleListener {
         void onSuccess(CustomLocale result);
 
@@ -408,6 +544,22 @@ public class Global extends Application implements DefaultLifecycleObserver {
         SharedPreferences sharedPreferences = this.getSharedPreferences("default", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("secondLanguage", language.getCode());
+        editor.apply();
+    }
+
+    public void setFirstTextLanguage(CustomLocale language) {
+        this.firstTextLanguage = language;
+        SharedPreferences sharedPreferences = this.getSharedPreferences("default", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("firstTextLanguage", language.getCode());
+        editor.apply();
+    }
+
+    public void setSecondTextLanguage(CustomLocale language) {
+        this.secondTextLanguage = language;
+        SharedPreferences sharedPreferences = this.getSharedPreferences("default", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("secondTextLanguage", language.getCode());
         editor.apply();
     }
 
@@ -542,21 +694,6 @@ public class Global extends Application implements DefaultLifecycleObserver {
         editor.apply();
     }
 
-    public String getApiKeyFileName() {
-        if (apiKeyFileName.length() == 0) {
-            final SharedPreferences sharedPreferences = this.getSharedPreferences("default", Context.MODE_PRIVATE);
-            apiKeyFileName = sharedPreferences.getString("apiKeyFileName", "");
-        }
-        return apiKeyFileName;
-    }
-
-    public void setApiKeyFileName(String apiKeyFileName) {
-        this.apiKeyFileName = apiKeyFileName;
-        final SharedPreferences sharedPreferences = this.getSharedPreferences("default", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("apiKeyFileName", apiKeyFileName);
-        editor.apply();
-    }
 
     private void createNotificationChannel(){
         String channelID = "service_background_notification";

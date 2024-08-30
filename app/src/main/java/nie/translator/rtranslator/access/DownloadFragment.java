@@ -35,6 +35,8 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.material.progressindicator.LinearProgressIndicator;
+
 import java.io.File;
 
 import nie.translator.rtranslator.Global;
@@ -93,7 +95,7 @@ public class DownloadFragment extends Fragment {
     private TextView downloadErrorText;
     private TextView transferErrorText;
     private TextView storageWarningText;
-    private ProgressBar progressBar;
+    private LinearProgressIndicator progressBar;
     private TextView progressDescriptionText;
     private TextView progressNumbersText;
 

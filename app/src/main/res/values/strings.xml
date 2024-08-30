@@ -30,8 +30,8 @@
     <string name="loading">loading…</string>
     <string name="forward">forward</string>
     <string name="no_graph_data">No usage data present</string>
-    <string name="conversation">conversation</string>
-    <string name="connection">connection</string>
+    <string name="conversation">Conversation</string>
+    <string name="connection">Connection</string>
     <string name="translate">Translate</string>
     <string name="fix">fix</string>
 
@@ -74,7 +74,7 @@
     <string name="error_internet_lack_accessing">To perform the operation an internet connection is required, check your connection</string>
     <string name="error_internet_lack_services">Unable to translate message, check internet connection</string>
     <string name="error_internet_lack_loading_languages">To view the languages you need an internet connection, check your connection and try again</string>
-    <string name="error_connection_rejected"> refused the connection request</string>
+    <string name="error_connection_rejected">refused the connection request</string>
     <string name="error_connection">Connection error</string>
     <string name="error_starting_search">Error starting search</string>
     <string name="error_cannot_interact_connection">cannot interact with devices during connection</string>
@@ -126,6 +126,7 @@
     <string name="description_download">Downloading %1$s</string>
     <string name="description_transfer">Transferring %1$s in internal memory</string>
     <string name="description_integrity_check">Checking integrity of %1$s</string>
+    <string name="description_tts">To speak, RTranslator uses the system\'s default TTS engine, the recommended TTS is the <a href="https://play.google.com/store/apps/details?id=com.google.android.tts">Google TTS</a>, but you can choose the one you prefer, to select it, click on the button below</string>
 
     <string name="preference_header_language">Language</string>
     <string name="preference_header_output">Output</string>
