@@ -133,13 +133,13 @@ Here are the results of my optimizations:
 
 |         | normal NLLB onnx model <br />(full int8, no kv-cache)  | RTranslator NLLB onnx model <br /> (partial int8, with kv-cache, separated parts)  |
 |---------| ------------------------------------------- | ---------------------------------------------------------- |
-|RAM Consumption| 2.5 GB  | 1.3GB  |
-|Execution time for 75 tokens| 8 seconds  | 2 seconds  |
+|RAM Consumption| 2.5 GB  | 1.3GB &nbsp;&nbsp;(1.9x improvement)  |
+|Execution time for 75 tokens| 8s  | 2s &nbsp;&nbsp;(4x improvement)  |
 
 |         | Whisper onnx model optimized with Olive <br /> (full int8, with kv-cache)  | RTranslator Whisper onnx model <br /> (partial int8, with kv-cache, separated parts)  |
 |---------| -------------------------------------------------------------- | ------------------------------------------------------------- |
-|RAM Consumption| 1.4 GB  | 0.9 GB  |
-|Execution time for 11s audio| 1.9 seconds  | 1.6 seconds  |
+|RAM Consumption| 1.4 GB  | 0.9 GB &nbsp;&nbsp;(1.5x improvement)|
+|Execution time for 11s audio| 1.9s  | 1.6s &nbsp;&nbsp;(1.2x improvement)|
 
 **N.B.** RTranslator Whisper model can also consume 0.5 GB of RAM but with an execution time of 2.1s (this mode is used for phones with less than 8 GB of RAM)
 <br /><br />
