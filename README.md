@@ -62,7 +62,7 @@ Bluetooth LE device search has been improved.
 Fixed some bugs.
 <br /><br />
 
-<h3>Performance</h3>
+<h3>Performance requirements</h3>
 
 I have optimized the AI models a lot to minimize RAM consumption and execution time, despite this however to be able to use the app without the risk of crashing you need a phone with at least **6GB of RAM**, and to have a good enough execution time you need a phone with a fast enough CPU.
 
@@ -123,8 +123,25 @@ And the following AI models:
 <a href="https://github.com/facebookresearch/fairseq/tree/nllb">NLLB</a> (open-source, but only for non-commercial use): The model used is NLLB-Distilled-600M with KV cache.
 
 <a href="https://github.com/openai/whisper">Whisper</a> (open-source): The model used is Whisper-Small-244M with KV cache.
+<br /><br />
 
-I converted both models to onnx format and quantized them in int8 (excluding some weights to ensure almost zero quality loss), also I separated some parts of the models to reduce RAM consumption (without this separation some weights were duplicated at runtime consuming more RAM than expected).
+<h3>Performance of the models</h3>
+
+I converted both NLLB and Whisper to onnx format and quantized them in int8 (excluding some weights to ensure almost zero quality loss), I also separated some parts of the models to reduce RAM consumption (without this separation some weights were duplicated at runtime consuming more RAM than expected) and done other optimizations to reduce execution time.
+
+Here are the results of my optimizations:
+
+|         | normal NLLB onnx model <br />(full int8, no kv-cache)  | RTranslator NLLB onnx model <br /> (partial int8, with kv-cache, separated parts)  |
+|---------| ------------------------------------------- | ---------------------------------------------------------- |
+|RAM Consumption| 2.5 GB  | 1.3GB  |
+|Execution time for 75 tokens| 8 seconds  | 2 seconds  |
+
+|         | Whisper onnx model optimized with Olive <br /> (full int8, with kv-cache)  | RTranslator Whisper onnx model <br /> (partial int8, with kv-cache, separated parts)  |
+|---------| -------------------------------------------------------------- | ------------------------------------------------------------- |
+|RAM Consumption| 1.4 GB  | 0.9 GB  |
+|Execution time for 11s audio| 1.9 seconds  | 1.6 seconds  |
+
+**N.B.** RTranslator Whisper model can also consume 0.5 GB of RAM but with an execution time of 2.1s (this mode is used for phones with less than 8 GB of RAM)
 <br /><br />
 
 <h3>Donations</h3>
