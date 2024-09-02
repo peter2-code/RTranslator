@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
@@ -76,8 +77,8 @@ public class TranslationFragment extends Fragment {
     private TextView conversationButtonText;
     private EditText inputText;
     private EditText outputText;
-    private ConstraintLayout firstLanguageSelector;
-    private ConstraintLayout secondLanguageSelector;
+    private CardView firstLanguageSelector;
+    private CardView secondLanguageSelector;
     private AppCompatImageButton invertLanguagesButton;
     private View lineSeparator;
     private ConstraintLayout toolbarContainer;
@@ -139,8 +140,8 @@ public class TranslationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        firstLanguageSelector = view.findViewById(R.id.firstLanguageSelector);
-        secondLanguageSelector = view.findViewById(R.id.secondLanguageSelector);
+        firstLanguageSelector = view.findViewById(R.id.firstLanguageSelectorContainer);
+        secondLanguageSelector = view.findViewById(R.id.secondLanguageSelectorContainer);
         invertLanguagesButton = view.findViewById(R.id.invertLanguages);
         translateButton = view.findViewById(R.id.buttonTranslate);
         walkieTalkieButton = view.findViewById(R.id.buttonMicLeft);
@@ -323,6 +324,12 @@ public class TranslationFragment extends Fragment {
         GuiMessage lastInputText = global.getTranslator().getLastInputText();
         GuiMessage lastOutputText = global.getTranslator().getLastOutputText();
 
+        //we hide the keyboard
+        if(getView() != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+        }
+
         inputTextListener = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -442,8 +449,14 @@ public class TranslationFragment extends Fragment {
                 global.getFirstAndSecondTextLanguages(true, new Global.GetTwoLocaleListener() {
                     @Override
                     public void onSuccess(CustomLocale language1, CustomLocale language2) {
-                        setFirstLanguage(language2);
-                        setSecondLanguage(language1);
+                        animator.animateSwitchLanguages(activity, firstLanguageSelector, secondLanguageSelector, invertLanguagesButton, new CustomAnimator.Listener() {
+                            @Override
+                            public void onAnimationEnd() {
+                                super.onAnimationEnd();
+                                setFirstLanguage(language2);
+                                setSecondLanguage(language1);
+                            }
+                        });
                     }
 
                     @Override
@@ -492,9 +505,6 @@ public class TranslationFragment extends Fragment {
                         //screen is not reduced
                         if(isScreenReduced){
                             isScreenReduced = false;
-                            //inputText.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-                            //InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-
                             onScreenSizeChanged(false);
                         }
                     }
@@ -882,6 +892,8 @@ public class TranslationFragment extends Fragment {
         invertLanguagesButton.setOnClickListener(null);
         inputText.removeTextChangedListener(inputTextListener);
         outputText.removeTextChangedListener(outputTextListener);
+        inputText.clearFocus();
+        outputText.clearFocus();
         //we detach the translate listener
         global.getTranslator().removeCallback(translateListener);
     }
@@ -890,14 +902,14 @@ public class TranslationFragment extends Fragment {
         // save firstLanguage selected
         global.setFirstTextLanguage(language);
         // change language displayed
-        ((AnimatedTextView) firstLanguageSelector.findViewById(R.id.firstLanguageName)).setText(language.getDisplayNameWithoutTTS(), true);
+        ((AnimatedTextView) firstLanguageSelector.findViewById(R.id.firstLanguageName)).setText(language.getDisplayNameWithoutTTS(), false);
     }
 
     private void setSecondLanguage(CustomLocale language) {
         // save secondLanguage selected
         global.setSecondTextLanguage(language);
         // change language displayed
-        ((AnimatedTextView) secondLanguageSelector.findViewById(R.id.secondLanguageName)).setText(language.getDisplayNameWithoutTTS(), true);
+        ((AnimatedTextView) secondLanguageSelector.findViewById(R.id.secondLanguageName)).setText(language.getDisplayNameWithoutTTS(), false);
     }
 
     private void onFailureShowingList(int[] reasons, long value) {

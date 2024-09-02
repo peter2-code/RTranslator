@@ -80,7 +80,7 @@ public class WalkieTalkieService extends VoiceTranslationService {
         speechRecognizer = ((Global) getApplication()).getSpeechRecognizer();
         clientHandler = new Handler(new Handler.Callback() {
             @Override
-            public boolean handleMessage(android.os.Message message) {
+            public boolean handleMessage(@NonNull android.os.Message message) {
                 int command = message.getData().getInt("command", -1);
                 if (command != -1) {
                     if (!WalkieTalkieService.super.executeCommand(command, message.getData())) {
@@ -135,48 +135,66 @@ public class WalkieTalkieService extends VoiceTranslationService {
                                 break;
                             case START_MANUAL_RECOGNITION:
                                 isMicAutomatic = false;
-                                mVoiceRecorder.setManualMode(true);
+                                if(mVoiceRecorder != null) {
+                                    mVoiceRecorder.setManualMode(true);
+                                }
                                 break;
                             case STOP_MANUAL_RECOGNITION:
                                 isMicAutomatic = true;
                                 if(manualRecognizingFirstLanguage || manualRecognizingSecondLanguage || manualRecognizingAutoLanguage){
-                                    mVoiceRecorder.stop();
+                                    if(mVoiceRecorder != null) {
+                                        mVoiceRecorder.stop();
+                                    }
                                     manualRecognizingFirstLanguage = false;
                                     manualRecognizingSecondLanguage = false;
                                     manualRecognizingAutoLanguage = false;
                                 }
-                                mVoiceRecorder.setManualMode(false);
+                                if(mVoiceRecorder != null) {
+                                    mVoiceRecorder.setManualMode(false);
+                                }
                                 break;
                             case START_RECOGNIZING_FIRST_LANGUAGE:
                                 if(!manualRecognizingSecondLanguage && !isMicAutomatic) {
                                     manualRecognizingFirstLanguage = true;
-                                    mVoiceRecorder.startRecording();
+                                    if(mVoiceRecorder != null) {
+                                        mVoiceRecorder.startRecording();
+                                    }
                                     Log.d("voice", "started manual listening left");
                                 }
                                 break;
                             case STOP_RECOGNIZING_FIRST_LANGUAGE:
-                                mVoiceRecorder.stopRecording();
+                                if(mVoiceRecorder != null) {
+                                    mVoiceRecorder.stopRecording();
+                                }
                                 Log.d("voice", "stopped manual listening left");
                                 break;
                             case START_RECOGNIZING_SECOND_LANGUAGE:
                                 if(!manualRecognizingFirstLanguage && !isMicAutomatic) {
                                     manualRecognizingSecondLanguage = true;
-                                    mVoiceRecorder.startRecording();
+                                    if(mVoiceRecorder != null) {
+                                        mVoiceRecorder.startRecording();
+                                    }
                                     Log.d("voice", "started manual listening right");
                                 }
                                 break;
                             case STOP_RECOGNIZING_SECOND_LANGUAGE:
-                                mVoiceRecorder.stopRecording();
+                                if(mVoiceRecorder != null) {
+                                    mVoiceRecorder.stopRecording();
+                                }
                                 Log.d("voice", "stopped manual listening right");
                                 break;
                             case START_RECOGNIZING_AUTO_LANGUAGE:
                                 if(!manualRecognizingAutoLanguage && !isMicAutomatic) {
                                     manualRecognizingAutoLanguage = true;
-                                    mVoiceRecorder.startRecording();
+                                    if(mVoiceRecorder != null) {
+                                        mVoiceRecorder.startRecording();
+                                    }
                                 }
                                 break;
                             case STOP_RECOGNIZING_AUTO_LANGUAGE:
-                                mVoiceRecorder.stopRecording();
+                                if(mVoiceRecorder != null) {
+                                    mVoiceRecorder.stopRecording();
+                                }
                                 break;
                         }
                     }
@@ -459,7 +477,7 @@ public class WalkieTalkieService extends VoiceTranslationService {
             super(id);
             super.serviceHandler = new Handler(new Handler.Callback() {
                 @Override
-                public boolean handleMessage(android.os.Message msg) {
+                public boolean handleMessage(@NonNull android.os.Message msg) {
                     msg.getData().setClassLoader(Peer.class.getClassLoader());
                     int callbackMessage = msg.getData().getInt("callback", -1);
                     Bundle data= msg.getData();
@@ -467,14 +485,14 @@ public class WalkieTalkieService extends VoiceTranslationService {
                         switch (callbackMessage){
                             case ON_FIRST_LANGUAGE:{
                                 CustomLocale language = (CustomLocale) data.getSerializable("language");
-                                while (firstLanguageListeners.size() > 0) {
+                                while (!firstLanguageListeners.isEmpty()) {
                                     firstLanguageListeners.remove(0).onLanguage(language);
                                 }
                                 break;
                             }
                             case ON_SECOND_LANGUAGE:{
                                 CustomLocale language = (CustomLocale) data.getSerializable("language");
-                                while (secondLanguageListeners.size() > 0) {
+                                while (!secondLanguageListeners.isEmpty()) {
                                     secondLanguageListeners.remove(0).onLanguage(language);
                                 }
                                 break;

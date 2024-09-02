@@ -25,11 +25,12 @@
     android:paddingStart="80dp"
     android:paddingEnd="0dp">
 
+    <!-- android:backgroundTint="#D8F0E9" -->
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#D0EFE9"
+        android:backgroundTint="#E0F2F1"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
         app:cardCornerRadius="18sp"
         app:cardElevation="1dp"

@@ -48,6 +48,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.button.MaterialButton;
@@ -246,7 +247,7 @@ public class CustomAnimator {
         if(!instant) {
             // enlargement animation
             Animator enlargeAnimation = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), finalSizeInPixels, finalSizeInPixels, duration);
-            enlargeAnimation.setInterpolator(new DecelerateInterpolator());
+            enlargeAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
             enlargeAnimation.start();
         }else{
             ViewGroup.LayoutParams layoutParams = buttonMic.getLayoutParams();
@@ -263,7 +264,7 @@ public class CustomAnimator {
         if(!instant) {
             //reduce animation
             Animator reduceAnimation = createAnimatorSize(buttonMic, buttonMic.getWidth(), buttonMic.getHeight(), finalSizeInPixels, finalSizeInPixels, duration);
-            reduceAnimation.setInterpolator(new DecelerateInterpolator());
+            reduceAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
             reduceAnimation.start();
         }else{
             ViewGroup.LayoutParams layoutParams = buttonMic.getLayoutParams();
@@ -295,6 +296,7 @@ public class CustomAnimator {
             Animator animatorBackgroundColor = createAnimatorColor(buttonMic.getBackground(), initialColor, finalColor, duration);
 
             animatorSet.play(reduceAnimation).with(animatorIconColor).with(animatorBackgroundColor);
+            animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
             animatorSet.start();
 
         }else{
@@ -334,6 +336,7 @@ public class CustomAnimator {
             Animator animatorBackgroundColor = createAnimatorColor(buttonMic.getBackground(), initialColor, finalColor, duration);
 
             animatorSet.play(enlargeAnimation).with(animatorIconColor).with(animatorBackgroundColor);
+            animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
             animatorSet.start();
 
         } else {
@@ -407,7 +410,7 @@ public class CustomAnimator {
         int textActionButtonHeight = walkieTalkieText.getHeight();
         int textActionButtonBottomMargin = ((ConstraintLayout.LayoutParams) walkieTalkieText.getLayoutParams()).bottomMargin;
         int actionButtonHeight = walkieTalkieButton.getHeight();
-        int translateButtonHeight = translationFragment.getTranslateButtonHeight();
+        int translateButtonHeight = translationFragment.getTranslateButtonHeight();  //143
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) walkieTalkieButton.getLayoutParams();
         int actionButtonTopMargin = layoutParams.topMargin;
         int actionButtonBottomMargin = layoutParams.bottomMargin;
@@ -421,7 +424,7 @@ public class CustomAnimator {
         Animator animationButtonBottomMargin = createAnimatorBottomMargin(new View[]{walkieTalkieButton, conversationButton}, actionButtonBottomMargin, 0, durationShort);
         Animator animationButtonTopMargin = createAnimatorTopMargin(new View[]{walkieTalkieButton, conversationButton}, actionButtonTopMargin, Tools.convertDpToPixels(activity,8), durationShort);
         Animator animationButtonHeight = createAnimatorHeight(new View[]{walkieTalkieButton, conversationButton}, actionButtonHeight, translateButtonHeight, durationShort);
-        Animator animationTextHeight = createAnimatorHeight(new View[]{walkieTalkieText, conversationText}, textActionButtonHeight, Tools.convertDpToPixels(activity,2), durationShort);   //we should set final size to 2dp because too small size causes UI problems
+        Animator animationTextHeight = createAnimatorHeight(new View[]{walkieTalkieText, conversationText}, textActionButtonHeight, Tools.convertDpToPixels(activity,2), durationShort);   //we set final size to 2dp because too small size causes UI problems
 
         Animator animationAppear = createAnimatorAlpha(new View[]{walkieTalkieButtonSmall, conversationButtonSmall}, walkieTalkieButtonSmall.getAlpha(), 1, duration);
 
@@ -432,7 +435,7 @@ public class CustomAnimator {
             animatorSet.play(animationAppear).after(animationTextMargin);
         }
 
-        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        animatorSet.setInterpolator(new DecelerateInterpolator(2));
 
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
@@ -501,7 +504,7 @@ public class CustomAnimator {
         animatorSet.play(animationTextMargin).with(animationButtonBottomMargin).with(animationButtonTopMargin).with(animationButtonHeight).with(animationTextHeight);
         animatorSet.play(animationAppear).after(animationTextMargin);
 
-        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        animatorSet.setInterpolator(new DecelerateInterpolator(2));
 
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
@@ -549,7 +552,7 @@ public class CustomAnimator {
         animatorSet.play(animatorToolbar).with(animatorTranslation)/*.with(animationAppear)*/;
         animatorSet.play(animationAppear).after(600).after(animatorToolbar);
 
-        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        animatorSet.setInterpolator(new DecelerateInterpolator(2));
 
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
@@ -602,7 +605,7 @@ public class CustomAnimator {
         animatorSet.play(animatorToolbar).with(animatorTranslation).with(animationDisappear);
         animatorSet.play(animationAppear).after(700).after(animatorToolbar);
 
-        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        animatorSet.setInterpolator(new DecelerateInterpolator(2));
 
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
@@ -750,6 +753,62 @@ public class CustomAnimator {
         });
         animationAppearance.start();
         return animationAppearance;
+    }
+
+    public void animateSwitchLanguages(Context context, CardView firstLanguageContainer, CardView secondLanguageContainer, AppCompatImageButton invertLanguagesButton, Listener listener){
+        int duration = context.getResources().getInteger(R.integer.durationStandard);
+
+        firstLanguageContainer.setClickable(false);
+        secondLanguageContainer.setClickable(false);
+        invertLanguagesButton.setClickable(false);
+
+        float finalFirstLanguageX = secondLanguageContainer.getX()-secondLanguageContainer.getTranslationX();
+        float finalSecondLanguageX = firstLanguageContainer.getX()-firstLanguageContainer.getTranslationX();
+
+        float finalFirstTranslationX = finalFirstLanguageX - (firstLanguageContainer.getX()-firstLanguageContainer.getTranslationX());
+        float finalSecondTranslationX = finalSecondLanguageX - (secondLanguageContainer.getX()-secondLanguageContainer.getTranslationX());
+
+        AnimatorSet animatorSet = new AnimatorSet();
+
+        Animator firstLanguageTranslationAnimator = createAnimatorTranslationX(new View[]{firstLanguageContainer}, firstLanguageContainer.getTranslationX(), finalFirstTranslationX, duration);
+        Animator secondLanguageTranslationAnimator = createAnimatorTranslationX(new View[]{secondLanguageContainer}, secondLanguageContainer.getTranslationX(), finalSecondTranslationX, duration);
+
+        animatorSet.play(firstLanguageTranslationAnimator).with(secondLanguageTranslationAnimator);
+
+        animatorSet.setInterpolator(new DecelerateInterpolator(2));
+
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(@NonNull Animator animation) {
+                if (listener != null) {
+                    listener.onAnimationStart();
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(@NonNull Animator animation) {
+                firstLanguageContainer.setTranslationX(0);
+                secondLanguageContainer.setTranslationX(0);
+                firstLanguageContainer.setClickable(true);
+                secondLanguageContainer.setClickable(true);
+                invertLanguagesButton.setClickable(true);
+                if (listener != null) {
+                    listener.onAnimationEnd();
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(@NonNull Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(@NonNull Animator animation) {
+
+            }
+        });
+
+        animatorSet.start();
     }
 
 
@@ -1279,6 +1338,26 @@ public class CustomAnimator {
         Animator animationBottomMargin = ObjectAnimator.ofFloat(view, "elevation", initialPixels, finalPixels);
         animationBottomMargin.setDuration(duration);
         return animationBottomMargin;
+    }
+
+    public Animator createAnimatorTranslationX(View view, float initialPixels, float finalPixels, int duration){
+        Animator animationBottomMargin = ObjectAnimator.ofFloat(view, "translationX", initialPixels, finalPixels);
+        animationBottomMargin.setDuration(duration);
+        return animationBottomMargin;
+    }
+
+    public Animator createAnimatorTranslationX(View[] views, float initialPixels, float finalPixels, int duration){
+        ValueAnimator animation = ValueAnimator.ofFloat(initialPixels, finalPixels);
+        animation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(@NonNull ValueAnimator animation) {
+                for (View view : views) {
+                    view.setTranslationX((float) animation.getAnimatedValue());
+                }
+            }
+        });
+        animation.setDuration(duration);
+        return animation;
     }
 
     public Animator createAnimatorTranslationY(View view, int initialPixels, int finalPixels, int duration){

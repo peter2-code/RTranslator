@@ -18,6 +18,9 @@
     <string name="connection">З\'єднання</string>
     <string name="translate">Переклад</string>
     <string name="fix">виправити</string>
+    <string name="automatic">Aвтоматичний</string>
+    <string name="chat">Чат</string>
+    <string name="select_tts">Виберіть TTS</string>
 
     <string name="notification_channel_name">використання у фоновому режимі</string>
 
@@ -45,6 +48,7 @@
 
     <string name="hint_edit_text_message">Напишіть повідомлення</string>
     <string name="hint_user_name">Ім\'я</string>
+    <string name="hint_text">Вставте текст</string>
 
     <string name="error_missing_location_permissions">Неможливо використовувати режим Розмови без дозволів на місцезнаходження та Bluetooth, перейдіть у налаштування для їх надання або перевстановіть додаток</string>
     <string name="error_missing_mic_permissions">Без дозволу на мікрофон розпізнавання мови не працюватиме, перейдіть у налаштування для надання дозволу або перевстановіть додаток</string>
@@ -79,6 +83,7 @@
     <string name="error_storage">Мало місця для зберігання, можливе невдача завантаження</string>
 
     <string name="title_graph">ДОЛАРІВ (USD) ВИТРАЧАЮТЬ КОЖНУ ГОДИНУ</string>
+    <string name="title_image_selector">зображення користувача</string>
 
     <string name="home_walkietalkie_mode">Режим WalkieTalkie</string>
     <string name="home_conversation_mode">Режим Розмови</string>
@@ -132,6 +137,5 @@
     <string name="conversation_mode_running" >Режим Розмови працює...</string>
     <string name="walkietalkie_mode" >WalkieTalkie</string>
     <string name="walkietalkie_mode_running" >Режим WalkieTalkie працює...</string>
-    <string name="title_image_selector">зображення користувача</string>
 
 </resources>

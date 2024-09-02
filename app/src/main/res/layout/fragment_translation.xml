@@ -114,12 +114,13 @@
             app:layout_constraintGuide_percent="0.87" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView6"
+            android:id="@+id/firstLanguageSelectorContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:backgroundTint="@color/primary_very_dark"
+            android:elevation="2dp"
             app:cardCornerRadius="24dp"
             app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -172,7 +173,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView7"
+            android:id="@+id/secondLanguageSelectorContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -180,6 +181,7 @@
             android:backgroundTint="@color/primary_very_dark"
             app:cardCornerRadius="24dp"
             app:cardElevation="0dp"
+            android:elevation="1dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="0.45"
@@ -235,10 +237,11 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@android:color/transparent"
             android:tint="@color/primary_very_dark"
-            app:layout_constraintBottom_toBottomOf="@+id/cardView6"
+            android:elevation="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/firstLanguageSelectorContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/cardView6"
+            app:layout_constraintTop_toTopOf="@+id/firstLanguageSelectorContainer"
             app:srcCompat="@drawable/invert_arrows" />
 
         <androidx.appcompat.widget.AppCompatImageButton
@@ -392,7 +395,8 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:focusable="true">
 
                         <EditText
                             android:id="@+id/multiAutoCompleteTextView"
@@ -405,7 +409,8 @@
                             android:paddingBottom="4dp"
                             android:backgroundTint="@android:color/transparent"
                             android:gravity="start|top"
-                            android:hint="Insert text"
+                            android:focusableInTouchMode="true"
+                            android:hint="@string/hint_text"
                             android:imeOptions="actionGo"
                             android:inputType="textCapSentences|textMultiLine|textAutoCorrect"
                             android:textSize="18sp"
@@ -499,73 +504,75 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:alpha="0"
-                        android:visibility="invisible">
+                        android:visibility="invisible"
+                        android:focusable="true">
 
-                    <EditText
-                        android:id="@+id/multiAutoCompleteTextView2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="18dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="0dp"
-                        android:backgroundTint="@android:color/transparent"
-                        android:editable="true"
-                        android:gravity="start|top"
-                        android:inputType="none"
-                        android:scrollbars="vertical"
-                        android:textColor="@color/black"
-                        android:textIsSelectable="true"
-                        android:textSize="18sp"
-                        android:paddingBottom="4dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0"
-                        tools:text="Output text" />
-
-                        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                            android:id="@+id/ttsButtonOutput"
-                            android:layout_width="wrap_content"
+                        <EditText
+                            android:id="@+id/multiAutoCompleteTextView2"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="4dp"
-                            android:backgroundTint="@color/accent_white"
-                            android:src="@drawable/sound_icon"
-                            app:borderWidth="0dp"
-                            app:elevation="0dp"
-                            app:fabSize="mini"
+                            android:layout_marginStart="18dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="0dp"
+                            android:backgroundTint="@android:color/transparent"
+                            android:focusableInTouchMode="true"
+                            android:editable="true"
+                            android:gravity="start|top"
+                            android:inputType="none"
+                            android:scrollbars="vertical"
+                            android:textColor="@color/black"
+                            android:textIsSelectable="true"
+                            android:textSize="18sp"
+                            android:paddingBottom="4dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/multiAutoCompleteTextView2"
-                            app:layout_constraintVertical_bias="1.0"
-                            app:rippleColor="@color/very_light_gray"
-                            app:tint="@color/very_very_dark_gray" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.0"
+                            tools:text="Output text" />
 
-                        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                            android:id="@+id/copyButtonOutput"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="4dp"
-                            android:backgroundTint="@color/accent_white"
-                            android:src="@drawable/copy_icon"
-                            app:borderWidth="0dp"
-                            app:elevation="0dp"
-                            app:fabSize="mini"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="1.0"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/multiAutoCompleteTextView2"
-                            app:layout_constraintVertical_bias="1.0"
-                            app:rippleColor="@color/very_light_gray"
-                            app:tint="@color/very_very_dark_gray" />
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:id="@+id/ttsButtonOutput"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginBottom="4dp"
+                                android:backgroundTint="@color/accent_white"
+                                android:src="@drawable/sound_icon"
+                                app:borderWidth="0dp"
+                                app:elevation="0dp"
+                                app:fabSize="mini"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/multiAutoCompleteTextView2"
+                                app:layout_constraintVertical_bias="1.0"
+                                app:rippleColor="@color/very_light_gray"
+                                app:tint="@color/very_very_dark_gray" />
+
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:id="@+id/copyButtonOutput"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginBottom="4dp"
+                                android:backgroundTint="@color/accent_white"
+                                android:src="@drawable/copy_icon"
+                                app:borderWidth="0dp"
+                                app:elevation="0dp"
+                                app:fabSize="mini"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="1.0"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/multiAutoCompleteTextView2"
+                                app:layout_constraintVertical_bias="1.0"
+                                app:rippleColor="@color/very_light_gray"
+                                app:tint="@color/very_very_dark_gray" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
@@ -598,12 +605,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/primary"
-                        android:maxWidth="130dp"
+                        android:maxWidth="150dp"
                         android:text="@string/translate"
                         android:textColor="@color/white"
                         android:theme="@style/Theme.MaterialComponents"
                         android:visibility="visible"
                         android:outlineProvider="none"
+                        android:lines="1"
                         app:elevation="0dp"
                         app:cornerRadius="20dp"
                         app:layout_constraintBottom_toBottomOf="@+id/buttonMicLeft"

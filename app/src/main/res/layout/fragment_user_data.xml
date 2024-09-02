@@ -216,7 +216,7 @@
                 android:paddingEnd="14dp"
                 android:paddingVertical="6dp"
                 android:stateListAnimator="@null"
-                android:text="select TTS"
+                android:text="@string/select_tts"
                 android:textColor="@color/accent_white"
                 app:cornerRadius="20dp"
                 app:icon="@drawable/sound_icon"

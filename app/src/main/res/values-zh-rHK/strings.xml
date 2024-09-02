@@ -16,12 +16,14 @@
     <string name="connection">連接</string>
     <string name="translate">翻譯</string>
     <string name="fix">修復</string>
+    <string name="automatic">自動的</string>
+    <string name="chat">聊天</string>
+    <string name="select_tts">選擇 TTS</string>
 
     <string name="notification_channel_name">背景通知</string>
 
     <string name="age_check_box">我聲明我已滿 14 歲</string>
-    <string name="privacy_check_box">我聲明我已閱讀        <a href="https://github.com/niedev/RTranslator/blob/v2.00/privacy/Privacy_Policy_en.md">隱私政策</a>
-    </string>
+    <string name="privacy_check_box">我聲明我已閱讀 <a href="https://github.com/niedev/RTranslator/blob/v2.00/privacy/Privacy_Policy_en.md">隱私政策</a></string>
 
     <string name="toast_working_background">RTranslator 將在背景中運行</string>
     <string name="toast_download_completed">下載完成</string>
@@ -45,6 +47,7 @@
 
     <string name="hint_edit_text_message">撰寫訊息</string>
     <string name="hint_user_name">姓名</string>
+    <string name="hint_text">插入文字</string>
 
     <string name="error_missing_location_permissions">無法在沒有位置和藍牙權限的情況下使用對話模式，請前往設定授予權限，或重新安裝應用程式</string>
     <string name="error_missing_mic_permissions">沒有麥克風權限，語音辨識無法運作，請前往設定授予權限或重新安裝應用程式</string>
@@ -79,6 +82,7 @@
     <string name="error_storage">存儲空間不足，下載可能失敗</string>
 
     <string name="title_graph">每小時花費的美元 (USD)</string>
+    <string name="title_image_selector">用户頭像</string>
 
     <string name="home_walkietalkie_mode">對講機模式</string>
     <string name="home_conversation_mode">對話模式</string>
@@ -130,6 +134,4 @@
     <string name="conversation_mode_running" >對話模式正在運行...</string>
     <string name="walkietalkie_mode" >對講機模式</string>
     <string name="walkietalkie_mode_running" >對講機模式正在運行...</string>
-    <string name="title_image_selector">用户頭像</string>
-
 </resources>

@@ -81,7 +81,8 @@ public abstract class VoiceTranslationService extends GeneralService {
     Notification notification;
     protected Recorder.Callback mVoiceCallback;
     protected Handler clientHandler;
-    protected Recorder mVoiceRecorder;
+    @Nullable
+    protected Recorder mVoiceRecorder;   //this will be null if the user has not granted mic permission
     protected UtteranceProgressListener ttsListener;
     @Nullable
     protected TTS tts;
@@ -338,8 +339,10 @@ public abstract class VoiceTranslationService extends GeneralService {
         super.onDestroy();
         // Stop listening to voice
         stopVoiceRecorder();
-        mVoiceRecorder.destroy();
-        mVoiceRecorder = null;
+        if(mVoiceRecorder != null) {
+            mVoiceRecorder.destroy();
+            mVoiceRecorder = null;
+        }
         //stop tts
         if(tts != null) {
             tts.stop();
@@ -397,7 +400,7 @@ public abstract class VoiceTranslationService extends GeneralService {
                 case STOP_MIC:
                     if (data.getBoolean("permanent")) {
                         isMicMute = true;
-                        if(mVoiceRecorder.isRecording()) {
+                        if(mVoiceRecorder != null && mVoiceRecorder.isRecording()) {
                             endVoice();
                         }else {
                             stopVoiceRecorder();
@@ -435,7 +438,7 @@ public abstract class VoiceTranslationService extends GeneralService {
                     bundle.putBoolean("isBluetoothHeadsetConnected", isBluetoothHeadsetConnected());
                     bundle.putBoolean("isMicAutomatic", isMicAutomatic);
                     bundle.putBoolean("isMicActivated", isMicActivated);
-                    if(mVoiceRecorder.isRecording()){
+                    if(mVoiceRecorder != null && mVoiceRecorder.isRecording()){
                         if(manualRecognizingFirstLanguage) {
                             bundle.putInt("listeningMic", FIRST_LANGUAGE);
                         } else if(manualRecognizingSecondLanguage) {

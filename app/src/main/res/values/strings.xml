@@ -34,6 +34,9 @@
     <string name="connection">Connection</string>
     <string name="translate">Translate</string>
     <string name="fix">fix</string>
+    <string name="automatic">Automatic</string>
+    <string name="chat">Chat</string>
+    <string name="select_tts">Select TTS</string>
 
     <string name="notification_channel_name">use in background notification</string>
 
@@ -61,6 +64,7 @@
 
     <string name="hint_edit_text_message">Write a message</string>
     <string name="hint_user_name">Name</string>
+    <string name="hint_text">Insert text</string>
 
     <string name="error_missing_location_permissions">It is not possible to use the Conversation mode without location and bluetooth permissions, go to the settings to grant them, or reinstall the app</string>
     <string name="error_missing_mic_permissions">Without the microphone permission the voice recognition does not work, go to the settings to grant the permission or reinstall the app</string>
@@ -95,6 +99,7 @@
     <string name="error_storage">Low storage space, the download may fail</string>
 
     <string name="title_graph">DOLLARS (USD) SPENT EVERY HOUR</string>
+    <string name="title_image_selector">user image</string>
 
     <string name="home_walkietalkie_mode">WalkieTalkie Mode</string>
     <string name="home_conversation_mode">Conversation Mode</string>
@@ -149,6 +154,5 @@
     <string name="conversation_mode_running" >Conversation mode is running...</string>
     <string name="walkietalkie_mode" >WalkieTalkie</string>
     <string name="walkietalkie_mode_running" >WalkieTalkie mode is running...</string>
-    <string name="title_image_selector">user image</string>
 
 </resources>
