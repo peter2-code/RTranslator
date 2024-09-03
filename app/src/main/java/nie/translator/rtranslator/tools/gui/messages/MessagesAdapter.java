@@ -72,6 +72,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((ReceivedHolder) holder).sender.setText(message.getMessage().getSender().getName());
             }
             ((MessageHolder) holder).setText(message.getMessage().getText());
+            //holder.itemView.requestLayout();
         }
     }
 
@@ -115,8 +116,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setMessage(int index, GuiMessage message) {
         mResults.set(index, message);
-        notifyDataSetChanged();  // not animation
-        //notifyItemChanged(index);  //animation
+        notifyItemRangeChanged(0, getItemCount());
     }
 
     public int getMessageIndex(long messageID){
@@ -153,11 +153,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     /** The layout for each item in the RecicleView list*/
     private static class ReceivedHolder extends RecyclerView.ViewHolder implements MessageHolder {
         TextView text;
-
         LinearLayout containerSender;
         TextView textSender;
         TextView sender;
-
 
         ReceivedHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.component_message_received, parent, false));
