@@ -483,7 +483,7 @@ public class VoiceTranslationActivity extends GeneralActivity {
                 if(NotificationManagerCompat.from(VoiceTranslationActivity.this).areNotificationsEnabled()) {
                     intent.putExtra("notification", notification);
                 }else{
-                    Toast.makeText(VoiceTranslationActivity.this, getResources().getString(R.string.toast_missing_notification_permission), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(VoiceTranslationActivity.this, getResources().getString(R.string.toast_missing_notification_permission), Toast.LENGTH_LONG).show();
                 }
                 startService(intent);
                 responseListener.onSuccess();
@@ -511,7 +511,7 @@ public class VoiceTranslationActivity extends GeneralActivity {
                         if(NotificationManagerCompat.from(VoiceTranslationActivity.this).areNotificationsEnabled()) {
                             intent.putExtra("notification", notification);
                         }else{
-                            Toast.makeText(VoiceTranslationActivity.this, getResources().getString(R.string.toast_missing_notification_permission), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(VoiceTranslationActivity.this, getResources().getString(R.string.toast_missing_notification_permission), Toast.LENGTH_LONG).show();
                         }
                         startService(intent);
                         responseListener.onSuccess();
