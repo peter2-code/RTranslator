@@ -48,8 +48,8 @@
         <nie.translator.rtranslator.settings.SupportLanguagesQuality
             android:defaultValue="false"
             android:key="languagesNNQualityLow"
-            android:title="Supporto lingue a bassa qualità"
-            android:summary="Permette di supportare anche le lingue che hanno una bassa qualità di traduzione o riconoscimento vocale"
+            android:title="@string/preference_title_languages_quality"
+            android:summary="@string/preference_description_languages_quality"
             app:iconSpaceReserved="false" />
         <nie.translator.rtranslator.settings.SupportTtsQualityPreference
             android:defaultValue="false"
