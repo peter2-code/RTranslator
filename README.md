@@ -51,15 +51,19 @@ Also, RTranslator works even in the background, with the phone on standby or whe
 <a href="https://www.producthunt.com/posts/rtranslator?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-rtranslator" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=274849&theme=light" alt="RTranslator - World's first open-source simultaneous translation app. | Product Hunt" style="width: 250px; height: 80px;" /></a>
 <br /><br />
 
-<h3>What's new in version 2.0</h3>
+<h3>What's new in version 2.1</h3>
 
-The Google API's have been replaced by <a href="https://ai.meta.com/research/no-language-left-behind/">Meta\'s NLLB</a> for translation and <a href="https://openai.com/index/whisper/">OpenAi\'s Whisper</a> for speech recognition. These AI models run directly on your phone, so now the app is totally free and with no configuration required!
+- New GUI! Designed by [Chiara Chindamo](https://www.linkedin.com/in/chiara-chindamo-946053234/).
 
-A classic text translation mode has been added.
+- Added speak and copy buttons to the text translation mode.
 
-Bluetooth LE device search has been improved.
+- Added the option to manually control the mics in WalkieTalkie mode.
 
-Fixed some bugs.
+- Added the option to use low-quality languages.
+
+- Fixed some bugs.
+
+For the full list of changes see [here](https://github.com/niedev/RTranslator/releases/tag/2.1.0).
 <br /><br />
 
 <h3>Performance requirements</h3>
