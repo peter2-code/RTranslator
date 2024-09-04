@@ -14,7 +14,7 @@ Connect to someone who has the app, connect Bluetooth headphones, put the phone 
 
 The Conversation mode is the main feature of RTranslator. In this mode, you can connect with another phone that uses this app. If the user accepts your connection request:
 
-- When you talk, your phone (or the Bluetooth headset, if connected) will capture the audio.
+- When you talk, your phone (or the **Bluetooth headset**, if connected) will capture the audio.
 
 - The audio captured will be converted into text and sent to the interlocutor's phone.
 
@@ -31,7 +31,7 @@ Each user can have more than one connected phone so that you can translate conve
 
 If conversation mode is useful for having a long conversation with someone, this mode instead is designed for quick conversations, such as asking for information on the street or talking to a shop assistant.
 
-This mode only translates conversations between two people, it doesn't work with Bluetooth headsets, and you have to talk in turns. It's not a real simultaneous translation, but it can work with only one phone.
+This mode only translates conversations between two people, it doesn't work with Bluetooth headsets, and you have to talk in turns. It's not a real simultaneous translation, but it can work with **only one phone**.
 
 In this mode, the smartphone microphone will listen in two languages (selectable in the same screen of the walkie talkie mode) simultaneously. <br />
 The app will detect in which language the interlocutor is speaking, translate the audio into the other language, convert the text into audio, and then reproduce it from the phone speaker. When the TTS has finished, it will automatically resume listening.
@@ -90,7 +90,11 @@ The initial download will get the models from GitHub, however <a href="https://w
 
 The languages supported are as follows:
 
-Arabic, Bulgarian, Catalan, Chinese, Czech, Danish, German, Greek, English, Spanish, Finnish, French, Croatian, Italian, Japanese, Korean, Dutch, Polish, Portuguese, Romanian, Russian, Slovak, Swedish, Tamil, Thai, Turkish, Ukrainian, Urdu, Vietnamese.
+Arabic, Bulgarian, Catalan, Chinese, Croatian, Czech, Danish, Dutch, English, Finnish, French, Galician,  German, Greek, Italian, Japanese, Korean, Macedonian, Polish, Portuguese, Romanian, Russian, Slovak, Spanish, Swedish, Tamil, Thai, Turkish, Ukrainian, Urdu, Vietnamese.
+<br /><br />
+If your language is not on the list, from version 2.1 of RTranslator you can go into the settings and enable "**Support low quality languages**" to add the following languages (which have lower quality for translation and speech recognition):
+
+Afrikaans, Akan (only text), Amharic, Assamese, Bambara (only text), Bangla, Bashkir, Basque, Belarusian, Bosnian, Dzongkha (only text), Esperanto (only text), Estonian, Ewe (only text), Faroese, Fijian (only text), Georgian, Guarani (only text), Gujarati, Hausa, Hebrew, Hindi, Hungarian, Javanese (only text), Kannada, Kashmiri (only text), Kazakh, Kikuyu (only text), Kinyarwanda (only text), Korean, Kyrgyz (only text), Lao, Limburghish (only text), Lingala, Lithuanian, Luxembourghish, Macedonian, Tagalog (only text), Tibetan.
 <br /><br />
 
 
