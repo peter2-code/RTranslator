@@ -53,7 +53,7 @@ Also, RTranslator works even in the background, with the phone on standby or whe
 
 <h3>What's new in version 2.1</h3>
 
-- New GUI! Designed by [Chiara Chindamo](https://www.linkedin.com/in/chiara-chindamo-946053234/).
+- **New GUI!** Designed by [Chiara Chindamo](https://www.linkedin.com/in/chiara-chindamo-946053234/).
 
 - Added speak and copy buttons to the text translation mode.
 
