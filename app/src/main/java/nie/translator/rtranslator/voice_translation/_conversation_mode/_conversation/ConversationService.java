@@ -184,7 +184,7 @@ public class ConversationService extends VoiceTranslationService {
                                             speak(conversationMessage.getPayload().getText(), conversationMessage.getPayload().getLanguage());
                                         }
                                         message.setText(conversationMessage.getPayload().getText());   // updating the text with the new translated text (and without the language code)
-                                        GuiMessage guiMessage = new GuiMessage(message, messageID, false, true);
+                                        GuiMessage guiMessage = new GuiMessage(message, messageID, false, isFinal);
                                         notifyMessage(guiMessage);
                                         // we save every new message in the exchanged messages so that the fragment can restore them
                                         addOrUpdateMessage(guiMessage);

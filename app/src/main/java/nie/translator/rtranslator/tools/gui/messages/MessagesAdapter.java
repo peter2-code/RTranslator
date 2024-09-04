@@ -16,6 +16,7 @@
 
 package nie.translator.rtranslator.tools.gui.messages;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,8 +71,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ((ReceivedHolder) holder).text.setVisibility(View.GONE);
                 ((ReceivedHolder) holder).containerSender.setVisibility(View.VISIBLE);
                 ((ReceivedHolder) holder).sender.setText(message.getMessage().getSender().getName());
+                Log.d("recyclerview", "RecyclerView bind sender");
             }
             ((MessageHolder) holder).setText(message.getMessage().getText());
+            Log.d("recyclerview", "RecyclerView bind text");
             //holder.itemView.requestLayout();
         }
     }
@@ -103,7 +106,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public boolean onFailedToRecycleView(@NonNull RecyclerView.ViewHolder holder) {
-        return true;
+        return super.onFailedToRecycleView(holder);
     }
 
     public void addMessage(GuiMessage message) {
@@ -116,7 +119,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setMessage(int index, GuiMessage message) {
         mResults.set(index, message);
-        notifyItemRangeChanged(0, getItemCount());
+        //notifyItemRangeChanged(0, getItemCount());
+        notifyItemChanged(index);
     }
 
     public int getMessageIndex(long messageID){

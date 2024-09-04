@@ -85,6 +85,10 @@
             android:launchMode="singleTask"
             android:theme="@style/Theme.Speech" />
         <activity android:name="nie.translator.rtranslator.GeneralActivity" />
+        <activity android:name="nie.translator.rtranslator.tools.ImageActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.Speech"/>
 
         <service android:name="nie.translator.rtranslator.voice_translation._conversation_mode._conversation.ConversationService"
             android:foregroundServiceType="microphone"/>

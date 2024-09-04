@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import nie.translator.rtranslator.access.AccessActivity;
 import nie.translator.rtranslator.tools.CustomLocale;
 import nie.translator.rtranslator.tools.ErrorCodes;
+import nie.translator.rtranslator.tools.ImageActivity;
 import nie.translator.rtranslator.voice_translation.VoiceTranslationActivity;
 import nie.translator.rtranslator.voice_translation.neural_networks.NeuralNetworkApi;
 import nie.translator.rtranslator.voice_translation.neural_networks.translation.Translator;
@@ -37,6 +38,7 @@ import androidx.core.splashscreen.SplashScreen;
 
 
 public class LoadingActivity extends GeneralActivity {
+    private final boolean START_IMAGE = false;
     private Handler mainHandler;
     private boolean isVisible = false;
     private Global global;
@@ -136,12 +138,26 @@ public class LoadingActivity extends GeneralActivity {
     }
 
     private void startVoiceTranslationActivity() {
+        if(!START_IMAGE) {
+            startingActivity = true;
+            Intent intent = new Intent(LoadingActivity.this, VoiceTranslationActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        }else{
+            startImageActivity();
+        }
+    }
+
+    private void startImageActivity() {
         startingActivity = true;
-        Intent intent = new Intent(LoadingActivity.this, VoiceTranslationActivity.class);
+        Intent intent = new Intent(LoadingActivity.this, ImageActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
+
     }
 
     private void notifyGoogleTTSErrorDialog() {

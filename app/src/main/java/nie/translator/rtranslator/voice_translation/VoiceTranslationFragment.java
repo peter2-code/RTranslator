@@ -31,6 +31,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,11 +49,11 @@ import nie.translator.rtranslator.tools.gui.messages.MessagesAdapter;
 
 public abstract class VoiceTranslationFragment extends Fragment implements MicrophoneComunicable {
     //gui
+    public static final int TIME_FOR_SCROLLING = 50;
     protected VoiceTranslationActivity activity;
     protected Global global;
     protected MessagesAdapter mAdapter;
     protected RecyclerView mRecyclerView;
-    protected RecyclerView.SmoothScroller smoothScroller;
     protected TextView description;
     protected View.OnClickListener micClickListener;
 
@@ -76,13 +77,16 @@ public abstract class VoiceTranslationFragment extends Fragment implements Micro
         LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
         layoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(layoutManager);
-        smoothScroller = new LinearSmoothScroller(activity) {
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator(){
             @Override
-            protected int calculateTimeForScrolling(int dx) {
-                return 100;
+            public boolean animateChange(RecyclerView.ViewHolder oldHolder, RecyclerView.ViewHolder newHolder, int fromX, int fromY, int toX, int toY) {
+                dispatchChangeFinished(oldHolder, true);
+                dispatchChangeFinished(newHolder, false);
+                return true;
             }
-        };
-        //smoothScroller = new LinearSmoothScroller(activity);
+        });
+        //mRecyclerView.setItemAnimator(null);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     protected abstract void connectToService();

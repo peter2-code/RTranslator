@@ -34,6 +34,9 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -476,12 +479,23 @@ public class ConversationMainFragment extends VoiceTranslationFragment {
             if (message != null) {
                 int messageIndex = mAdapter.getMessageIndex(message.getMessageID());
                 if(messageIndex != -1){
-                    mAdapter.setMessage(messageIndex, message);
+                    if((!mRecyclerView.isAnimating() && !mRecyclerView.getLayoutManager().isSmoothScrolling()) || message.isFinal()) {
+                        if (message.isFinal()) {
+                            if (mRecyclerView.getItemAnimator() != null) {
+                                mRecyclerView.getItemAnimator().endAnimations();
+                            }
+                        }
+                        mAdapter.setMessage(messageIndex, message);
+                    }
                 }else{
+                    if(mRecyclerView.getItemAnimator() != null) {
+                        mRecyclerView.getItemAnimator().endAnimations();
+                    }
                     mAdapter.addMessage(message);
-                    //smooth scroll
-                    smoothScroller.setTargetPosition(mAdapter.getItemCount() - 1);
-                    mRecyclerView.getLayoutManager().startSmoothScroll(smoothScroller);
+                    //we do an eventual automatic scroll (only if we are at the bottom of the recyclerview)
+                    if(((LinearLayoutManager) mRecyclerView.getLayoutManager()).findLastVisibleItemPosition() == mAdapter.getItemCount()-2){
+                        mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount()-1);
+                    }
                 }
             }
         }

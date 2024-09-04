@@ -266,7 +266,7 @@
         style="@style/CustomCardViewStyle"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:cardBackgroundColor="@color/white"
+        app:cardBackgroundColor="@color/accent_white"
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false"
         app:layout_constraintBottom_toBottomOf="parent"
