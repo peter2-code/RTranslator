@@ -144,7 +144,7 @@ Here are the results of my optimizations:
 |RAM Consumption| 2.5 GB  | 1.3GB &nbsp;&nbsp;(1.9x improvement)  |
 |Execution time for 75 tokens| 8s  | 2s &nbsp;&nbsp;(4x improvement)  |
 
-|         | Whisper onnx model optimized with Olive <br /> (full int8, with kv-cache)  | RTranslator Whisper onnx model <br /> (partial int8, with kv-cache, separated parts)  |
+|         | Whisper onnx model optimized with [Olive](https://github.com/microsoft/Olive) <br /> (full int8, with kv-cache)  | RTranslator Whisper onnx model <br /> (partial int8, with kv-cache, separated parts)  |
 |---------| -------------------------------------------------------------- | ------------------------------------------------------------- |
 |RAM Consumption| 1.4 GB  | 0.9 GB &nbsp;&nbsp;(1.5x improvement)|
 |Execution time for 11s audio| 1.9s  | 1.6s &nbsp;&nbsp;(1.2x improvement)|
