@@ -47,8 +47,18 @@ This mode is just a classic text translator, but always useful.
 RTranslator uses <a href="https://ai.meta.com/research/no-language-left-behind/">Meta\'s NLLB</a> for translation and <a href="https://openai.com/index/whisper/">OpenAi\'s Whisper</a> for speech recognition, both are (<a href='https://github.com/niedev/RTranslator?tab=readme-ov-file#libraries-and-models'>almost</a>) open-source and state of the art AIs, have excellent quality and run directly on the phone, ensuring absolute privacy and the possibility of using RTranslator even offline without loss of quality.
 
 Also, RTranslator works even in the background, with the phone on standby or when using other apps (only when you use Conversation or WalkieTalkie modes). However, some phones limit the power in the background so in that case it is better to avoid it and keep the app open with the screen on.
+<br /><br />
 
-<a href="https://www.producthunt.com/posts/rtranslator?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-rtranslator" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=274849&theme=light" alt="RTranslator - World's first open-source simultaneous translation app. | Product Hunt" style="width: 250px; height: 80px;" /></a>
+<h3>Product Hunt Launch!</h3>
+
+[<img align="left" width="600" src="https://github.com/user-attachments/assets/e32ab15b-bd29-4ae0-ba33-fc213f4592b8">](https://www.producthunt.com/products/rtranslator)
+<BR CLEAR="all">
+
+**On Sunday, September 22nd, RTranslator will be launching on Product Hunt!**
+
+If you want to be notified when the launch happens to review, comment, and support the project, click on the badge below and on "Notify me".
+
+<a href="https://www.producthunt.com/products/rtranslator?utm_source=badge-follow&utm_medium=badge&utm_souce=badge-rtranslator" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/follow.svg?product_id=447558&theme=light" alt="RTranslator - World&#0039;s&#0032;first&#0032;open&#0045;source&#0032;simultaneous&#0032;translation&#0032;app&#0046; | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 <br /><br />
 
 <h3>What's new in version 2.1</h3>
