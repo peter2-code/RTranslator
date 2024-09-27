@@ -261,6 +261,10 @@
         <code_NLLB>kik_Latn</code_NLLB>
     </language>
     <language>
+        <code>ga</code>
+        <code_NLLB>gle_Latn</code_NLLB>
+    </language>
+    <language>
         <code>rw</code>
         <code_NLLB>kin_Latn</code_NLLB>
     </language>
