@@ -766,6 +766,24 @@ public class Translator extends NeuralNetworkApi {
                 }
                 android.util.Log.i("result", partialResult);
                 j++;
+                //early stop if the decoder is generating in loop
+                if(input.getInputIDs().length > 30){  //if the input is long
+                    if(j > 3*input.getInputIDs().length) {
+                        break;
+                    }
+                }else if(input.getInputIDs().length > 20){  //if the input is medium length
+                    if(j > 4*input.getInputIDs().length){
+                        break;
+                    }
+                }else if(input.getInputIDs().length > 10){  //if the input is short
+                    if(j > 5*input.getInputIDs().length){
+                        break;
+                    }
+                }else if(input.getInputIDs().length > 5){  //if the input is very short
+                    if(j > 8*input.getInputIDs().length){
+                        break;
+                    }
+                }
             }
             if(result != null) {
                 result.close();
