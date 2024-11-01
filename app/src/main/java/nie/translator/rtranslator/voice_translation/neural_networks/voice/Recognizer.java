@@ -561,11 +561,10 @@ public class Recognizer extends NeuralNetworkApi {
         String regex = "<\\|[^>]*\\|> ";    //with this regex we remove all substrings of the form "<|something|> "
         correctedText = correctedText.replaceAll(regex, "");
 
+        //we remove eventual white space from both ends of the text
+        correctedText = correctedText.trim();
+
         if(correctedText.length() >= 2) {
-            //if the text start with a white space we remove it
-            if (text.charAt(0) == ' ') {
-                correctedText = text.substring(1);
-            }
             //if the correctedText start with a lower case letter we make it upper case
             char firstChar = correctedText.charAt(0);
             if (Character.isLowerCase(firstChar)) {

@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -480,10 +481,11 @@ public class Translator extends NeuralNetworkApi {
             //tokenization
             long time = System.currentTimeMillis();
             TokenizerResult input = null;
+            String correctedSubText = correctText(textSplit.get(i), inputLanguage.getLocale());
             if (mode == MADLAD_CACHE) {
-                input = tokenizer.tokenize(inputLanguage.getCode(), outputLanguage.getCode(), textSplit.get(i));
+                input = tokenizer.tokenize(inputLanguage.getCode(), outputLanguage.getCode(), correctedSubText);
             } else {  //if mode == NLLB_CACHE
-                input = tokenizer.tokenize(getNllbLanguageCode(inputLanguage.getCode()), getNllbLanguageCode(outputLanguage.getCode()), textSplit.get(i));
+                input = tokenizer.tokenize(getNllbLanguageCode(inputLanguage.getCode()), getNllbLanguageCode(outputLanguage.getCode()), correctedSubText);
             }
             android.util.Log.i("performance", "Tokenization done in: " + (System.currentTimeMillis() - time) + "ms");
             //encoder execution
@@ -508,10 +510,11 @@ public class Translator extends NeuralNetworkApi {
                 executeCacheDecoderGreedy(input, encoderResult, completeOutput, outputLanguage, new TranslateListener() {
                     @Override
                     public void onTranslatedText(String text, long resultID, boolean isFinal, CustomLocale languageOfText) {
+                        //we return the partial results
                         String outputText;
                         if(joinedStringOutput[0].equals("")){
                             outputText = joinedStringOutput[0] + text;
-                        }else {
+                        } else {
                             outputText = joinedStringOutput[0] + " " + text;
                         }
                         if (saveResults) {
@@ -527,6 +530,7 @@ public class Translator extends NeuralNetworkApi {
 
                     @Override
                     public void onFailure(int[] reasons, long value) {
+                        //we do not return the partial results and notify an error
                         if (responseListener != null) {
                             mainHandler.post(() -> responseListener.onFailure(reasons, value));
                         } else {
@@ -1112,6 +1116,41 @@ public class Translator extends NeuralNetworkApi {
 
     public long getCurrentResultID(){
         return currentResultID;
+    }
+
+    private String correctText(String text, Locale locale){
+        String correctedText = text;
+        String language = locale.getLanguage();
+        //we add an eventual period if missing (or in general a terminator symbol)
+        if(!language.equals("th")) {
+            correctedText = correctedText.trim();   //we remove eventual white space from both ends of the text
+            if(correctedText.length() >= 2) {
+                if (!Character.isLetterOrDigit(correctedText.charAt(correctedText.length() - 1))) {
+                    return correctedText;
+                }
+                return correctedText + getSentenceTerminator(locale);
+            }
+        }
+        return text;
+    }
+
+    private static String getSentenceTerminator(Locale locale) {
+        // Assuming most languages use a period (.)
+        // Add custom cases for specific languages as needed
+        String language = locale.getLanguage();
+        switch (language) {
+            case "zh": // Chinese
+            case "ja": // Japanese
+            case "ko": // Korean
+                return "。"; // Ideographic full stop
+            case "hi": // Hindi
+                return "।";
+            case "my": // Burmese
+                return "။"; // Burmese full stop
+            // Add other cases as needed for more languages
+            default:
+                return ".";
+        }
     }
 
 
