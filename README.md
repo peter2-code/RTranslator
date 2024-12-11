@@ -12,7 +12,8 @@ RTranslator是一个（几乎）开源，免费和离线的Android实时翻译�
 
 <h3>Conversation mode 对话模式</h3>
 
-The Conversation mode is the main feature of RTranslator. In this mode, you can connect with another phone that uses this app. If the user accepts your connection request:
+对话模式是RTranslator的主要功能。在此模式下，您可以与使用此应用程序的另一部手机连接。如果用户接受您的连接请求：
+
 
 - When you talk, your phone (or the **Bluetooth headset**, if connected) will capture the audio.
 
