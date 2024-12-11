@@ -15,27 +15,27 @@ RTranslator是一个（几乎）开源，免费和离线的Android实时翻译�
 对话模式是RTranslator的主要功能。在此模式下，您可以与使用此应用程序的另一部手机连接。如果用户接受您的连接请求：
 
 
-- When you talk, your phone (or the **Bluetooth headset**, if connected) will capture the audio.
+- 当您通话时，您的手机（或蓝牙耳机，如果已连接）将捕获音频。
 
-- The audio captured will be converted into text and sent to the interlocutor's phone.
+- 捕获的音频将被转换为文本并发送到对话者的手机。
 
-- The interlocutors' phone will translate the text received into his language.
+- 对话者的手机将把收到的文本翻译成他的语言。
 
-- The interlocutors' phone will convert the translated text into audio and will reproduce it from its speaker (or by the Bluetooth headset of the interlocutor if connected to his phone). 
+- 对话者的电话将翻译的文本转换成音频，并将从其扬声器（或通过对话者的蓝牙耳机，如果连接到他的电话）再现它。
 
-All this in both directions.
+所有这一切都是双向的。
 
-Each user can have more than one connected phone so that you can translate conversations between more than two people and in any combination.
+每个用户可以有多个连接的电话，这样你就可以翻译两个以上的人之间的对话，并在任何组合。
 <br /><br />
 
-<h3>WalkieTalkie mode</h3>
+<h3>WalkieTalkie mode对讲机模式</h3>
 
-If conversation mode is useful for having a long conversation with someone, this mode instead is designed for quick conversations, such as asking for information on the street or talking to a shop assistant.
+如果对话模式对于与某人进行长时间对话很有用，则此模式是为快速对话而设计的，例如在街上询问信息或与店员交谈。
 
-This mode only translates conversations between two people, it doesn't work with Bluetooth headsets, and you have to talk in turns. It's not a real simultaneous translation, but it can work with **only one phone**.
+该模式仅翻译两个人之间的对话，不适用于蓝牙耳机，并且必须轮流交谈。这不是一个真实的同声传译，但它可以工作，只有一个电话。
 
-In this mode, the smartphone microphone will listen in two languages (selectable in the same screen of the walkie talkie mode) simultaneously. <br />
-The app will detect in which language the interlocutor is speaking, translate the audio into the other language, convert the text into audio, and then reproduce it from the phone speaker. When the TTS has finished, it will automatically resume listening.
+在此模式下，智能手机麦克风将同时收听两种语言（可在对讲机模式的同一屏幕中选择）。 <br />
+该应用程序将检测对话者正在使用哪种语言，将音频翻译成另一种语言，将文本转换为音频，然后从手机扬声器中再现。当TTS结束时，它将自动恢复收听。
 <br /><br />
 
 <h3>Text translation mode</h3>
