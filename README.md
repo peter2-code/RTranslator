@@ -72,7 +72,7 @@ For the full list of changes see [here](https://github.com/niedev/RTranslator/re
 
 我已经优化了AI模型，以最大限度地减少RAM消耗和执行时间，尽管如此，为了能够在没有崩溃风险的情况下使用应用程序，您需要至少6GB RAM的手机，并且要有足够好的执行时间，您需要具有足够快的CPU的手机。
 
-如果你有一个相当蹩脚的手机（或者如果你想要最大的速度），你总是可以使用1.0版的RTranslator <a href="https://github.com/niedev/RTranslator/tree/v1.00">version 1.0 of RTranslator</a> （但由于它使用谷歌API，它不是免费的，需要一些初始设置）。
+如果你有一个相当蹩脚的手机（或者如果你想要最大的速度），你总是可以使用 <a href="https://github.com/niedev/RTranslator/tree/v1.00">1.0版的RTranslator</a> （但由于它使用谷歌API，它不是免费的，需要一些初始设置）。
 <br /><br />
 
 
@@ -84,7 +84,7 @@ For the full list of changes see [here](https://github.com/niedev/RTranslator/re
 
 在第一次启动时，RTranslator将自动下载翻译和语音识别模型（1.2GB），一旦完成，您就可以开始翻译。
 
-最初的下载将从GitHub获得模型，但是在某些地区GitHub非常慢，那些有这种问题的人可以从计算机单独下载模型（或者通常以他们喜欢的任何方式）并按照本指南手动将它们插入应用程序。 <a href="https://github.com/niedev/RTranslator/blob/v2.00/Sideloading.md">this guide</a>.
+最初的下载将从GitHub获得模型，但是在某些地区GitHub非常慢，那些有这种问题的人可以从计算机单独下载模型（或者通常以他们喜欢的任何方式）并按照 <a href="https://github.com/niedev/RTranslator/blob/v2.00/Sideloading.md">本指南</a> 手动将它们插入应用程序。 
 
 If you have a GitHub account and want to be notified when a new release comes out you can do so by clicking, at the top of the page, on "Watch" -> "Custom" -> "Releases" -> "Apply".
 <br /><br />
