@@ -38,53 +38,53 @@ RTranslator是一个（几乎）开源，免费和离线的Android实时翻译�
 该应用程序将检测对话者正在使用哪种语言，将音频翻译成另一种语言，将文本转换为音频，然后从手机扬声器中再现。当TTS结束时，它将自动恢复收听。
 <br /><br />
 
-<h3>Text translation mode</h3>
+<h3>文本翻译模式</h3>
 
-This mode is just a classic text translator, but always useful.
+这个模式只是一个经典的文本翻译器，但总是有用的。
 <br /><br />
 
 <h3>General</h3>
 
-RTranslator uses <a href="https://ai.meta.com/research/no-language-left-behind/">Meta\'s NLLB</a> for translation and <a href="https://openai.com/index/whisper/">OpenAi\'s Whisper</a> for speech recognition, both are (<a href='https://github.com/niedev/RTranslator?tab=readme-ov-file#libraries-and-models'>almost</a>) open-source and state of the art AIs, have excellent quality and run directly on the phone, ensuring absolute privacy and the possibility of using RTranslator even offline without loss of quality.
+RTranslator使用 <a href="https://ai.meta.com/research/no-language-left-behind/">Meta\'s NLLB</a> 进行翻译，使用 <a href="https://openai.com/index/whisper/">OpenAi\'s Whisper</a> 进行语音识别,两者都是（几乎）开源和最先进的AI，具有出色的质量，直接在手机上运行，确保绝对的隐私，甚至离线使用RTranslator的可能性，而不会损失质量。
 
-Also, RTranslator works even in the background, with the phone on standby or when using other apps (only when you use Conversation or WalkieTalkie modes). However, some phones limit the power in the background so in that case it is better to avoid it and keep the app open with the screen on.
+此外，RTranslator甚至可以在后台工作，手机处于待机状态或使用其他应用程序时（仅当您使用对话或对讲机模式时）。然而，有些手机会限制后台的电源，所以在这种情况下，最好避免它，并在屏幕上保持应用程序打开。
 <br />
 
 <a href="https://www.producthunt.com/posts/rtranslator-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-rtranslator&#0045;2" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=487672&theme=light" alt="RTranslator - Open&#0045;source&#0032;and&#0032;offline&#0032;simultaneous&#0032;translator&#0032;for&#0032;Android | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 <br /><br />
 
-<h3>What's new in version 2.1</h3>
+<h3>2.1版的新功能</h3>
 
-- **New GUI!** Designed by [Chiara Chindamo](https://www.linkedin.com/in/chiara-chindamo-946053234/).
+- 新GUI！由Chiara Chindamo设计。 [Chiara Chindamo](https://www.linkedin.com/in/chiara-chindamo-946053234/).
 
-- Added speak and copy buttons to the text translation mode.
+- 在文本翻译模式中增加了朗读和复制按钮。
 
-- Added the option to manually control the mics in WalkieTalkie mode.
+- 在WalkieTalkie模式下增加了手动控制键盘的选项。
 
-- Added the option to use low-quality languages.
+- 添加了使用低质量语言的选项。
 
-- Fixed some bugs.
+- 修复了一些bug。
 
 For the full list of changes see [here](https://github.com/niedev/RTranslator/releases/tag/2.1.0).
 <br /><br />
 
-<h3>Performance requirements</h3>
+<h3>性能要求</h3>
 
-I have optimized the AI models a lot to minimize RAM consumption and execution time, despite this however to be able to use the app without the risk of crashing you need a phone with at least **6GB of RAM**, and to have a good enough execution time you need a phone with a fast enough CPU.
+我已经优化了AI模型，以最大限度地减少RAM消耗和执行时间，尽管如此，为了能够在没有崩溃风险的情况下使用应用程序，您需要至少6GB RAM的手机，并且要有足够好的执行时间，您需要具有足够快的CPU的手机。
 
-If you have a pretty crappy phone (or if you want maximum speed) you can always use <a href="https://github.com/niedev/RTranslator/tree/v1.00">version 1.0 of RTranslator</a> (but since it uses Google APIs it's not free and needs some initial setup).
+如果你有一个相当蹩脚的手机（或者如果你想要最大的速度），你总是可以使用1.0版的RTranslator <a href="https://github.com/niedev/RTranslator/tree/v1.00">version 1.0 of RTranslator</a> （但由于它使用谷歌API，它不是免费的，需要一些初始设置）。
 <br /><br />
 
 
-<h3>Download</h3>
+<h3>下载</h3>
 
-To install the app, download the latest version of the app apk file from https://github.com/niedev/RTranslator/releases/ and install it (ignore the other files, those will be downloaded automatically by the app on the first start).
+要安装应用程序，请从https://github.com/niedev/RTranslator/releases/下载最新版本的应用程序apk文件并安装它（忽略其他文件，这些文件将在第一次启动时由应用程序自动下载）。
 
 <a href='https://github.com/niedev/RTranslator/releases'><img alt='Get it on GitHub' src='https://github.com/niedev/RTranslator/blob/v2.00/images/get_it_on_github.png' style="width: 180px; height: 58px;" /></a>
 
-On the first launch, RTranslator will automatically download the models for translation and speech recognition (1.2GB) and once done you can start translating.
+在第一次启动时，RTranslator将自动下载翻译和语音识别模型（1.2GB），一旦完成，您就可以开始翻译。
 
-The initial download will get the models from GitHub, however <a href="https://www.reddit.com/r/China/comments/v8fv0p/why_is_github_so_slow_in_china_recently/">in some regions GitHub is very slow</a>, those who have problems of this kind can download the models separately from a computer (or in general in whatever way they prefer) and insert them manually into the app following <a href="https://github.com/niedev/RTranslator/blob/v2.00/Sideloading.md">this guide</a>.
+最初的下载将从GitHub获得模型，但是在某些地区GitHub非常慢，那些有这种问题的人可以从计算机单独下载模型（或者通常以他们喜欢的任何方式）并按照本指南手动将它们插入应用程序。 <a href="https://github.com/niedev/RTranslator/blob/v2.00/Sideloading.md">this guide</a>.
 
 If you have a GitHub account and want to be notified when a new release comes out you can do so by clicking, at the top of the page, on "Watch" -> "Custom" -> "Releases" -> "Apply".
 <br /><br />
