@@ -1,8 +1,8 @@
 <img src="https://github.com/niedev/RTranslator/blob/v2.00/images/logo_beta_cut.png" width="280">
 
-RTranslator是一个（几乎）开源，免费和离线的Android实时翻译应用程序。
+RTranslator is an (<a href='https://github.com/niedev/RTranslator?tab=readme-ov-file#libraries-and-models'>almost</a>) open-source, free, and offline real-time translation app for Android.
 
-连接到拥有该应用程序的人，连接蓝牙耳机，把手机放在口袋里，你就可以像对方说你的语言一样进行对话。
+Connect to someone who has the app, connect Bluetooth headphones, put the phone in your pocket and you can have a conversation as if the other person spoke your language.
 <br /><br />
 
 ![Conversation mode](https://github.com/niedev/RTranslator/blob/v2.00/images/Conversation_image.png)
@@ -10,79 +10,80 @@ RTranslator是一个（几乎）开源，免费和离线的Android实时翻译�
 ![WalkieTalkie mode and Costs](https://github.com/niedev/RTranslator/blob/v2.00/images/TextTranslation_and_WalkieTalkie.png)
 <br /><br />
 
-<h3>Conversation mode 对话模式</h3>
+<h3>Conversation mode</h3>
 
-对话模式是RTranslator的主要功能。在此模式下，您可以与使用此应用程序的另一部手机连接。如果用户接受您的连接请求：
+The Conversation mode is the main feature of RTranslator. In this mode, you can connect with another phone that uses this app. If the user accepts your connection request:
 
+- When you talk, your phone (or the **Bluetooth headset**, if connected) will capture the audio.
 
-- 当您通话时，您的手机（或蓝牙耳机，如果已连接）将捕获音频。
+- The audio captured will be converted into text and sent to the interlocutor's phone.
 
-- 捕获的音频将被转换为文本并发送到对话者的手机。
+- The interlocutors' phone will translate the text received into his language.
 
-- 对话者的手机将把收到的文本翻译成他的语言。
+- The interlocutors' phone will convert the translated text into audio and will reproduce it from its speaker (or by the Bluetooth headset of the interlocutor if connected to his phone). 
 
-- 对话者的电话将翻译的文本转换成音频，并将从其扬声器（或通过对话者的蓝牙耳机，如果连接到他的电话）再现它。
+All this in both directions.
 
-所有这一切都是双向的。
-
-每个用户可以有多个连接的电话，这样你就可以翻译两个以上的人之间的对话，并在任何组合。
+Each user can have more than one connected phone so that you can translate conversations between more than two people and in any combination.
 <br /><br />
 
-<h3>WalkieTalkie mode对讲机模式</h3>
+<h3>WalkieTalkie mode</h3>
 
-如果对话模式对于与某人进行长时间对话很有用，则此模式是为快速对话而设计的，例如在街上询问信息或与店员交谈。
+If conversation mode is useful for having a long conversation with someone, this mode instead is designed for quick conversations, such as asking for information on the street or talking to a shop assistant.
 
-该模式仅翻译两个人之间的对话，不适用于蓝牙耳机，并且必须轮流交谈。这不是一个真实的同声传译，但它可以工作，只有一个电话。
+This mode only translates conversations between two people, it doesn't work with Bluetooth headsets, and you have to talk in turns. It's not a real simultaneous translation, but it can work with **only one phone**.
 
-在此模式下，智能手机麦克风将同时收听两种语言（可在对讲机模式的同一屏幕中选择）。 <br />
-该应用程序将检测对话者正在使用哪种语言，将音频翻译成另一种语言，将文本转换为音频，然后从手机扬声器中再现。当TTS结束时，它将自动恢复收听。
+In this mode, the smartphone microphone will listen in two languages (selectable in the same screen of the walkie talkie mode) simultaneously. <br />
+The app will detect in which language the interlocutor is speaking, translate the audio into the other language, convert the text into audio, and then reproduce it from the phone speaker. When the TTS has finished, it will automatically resume listening.
 <br /><br />
 
-<h3>文本翻译模式</h3>
+<h3>Text translation mode</h3>
 
-这个模式只是一个经典的文本翻译器，但总是有用的。
+This mode is just a classic text translator, but always useful.
 <br /><br />
 
 <h3>General</h3>
 
-RTranslator使用 <a href="https://ai.meta.com/research/no-language-left-behind/">Meta\'s NLLB</a> 进行翻译，使用 <a href="https://openai.com/index/whisper/">OpenAi\'s Whisper</a> 进行语音识别,两者都是（几乎）开源和最先进的AI，具有出色的质量，直接在手机上运行，确保绝对的隐私，甚至离线使用RTranslator的可能性，而不会损失质量。
+RTranslator uses <a href="https://ai.meta.com/research/no-language-left-behind/">Meta\'s NLLB</a> for translation and <a href="https://openai.com/index/whisper/">OpenAi\'s Whisper</a> for speech recognition, both are (<a href='https://github.com/niedev/RTranslator?tab=readme-ov-file#libraries-and-models'>almost</a>) open-source and state of the art AIs, have excellent quality and run directly on the phone, ensuring absolute privacy and the possibility of using RTranslator even offline without loss of quality.
 
-此外，RTranslator甚至可以在后台工作，手机处于待机状态或使用其他应用程序时（仅当您使用对话或对讲机模式时）。然而，有些手机会限制后台的电源，所以在这种情况下，最好避免它，并在屏幕上保持应用程序打开。
+Also, RTranslator works even in the background, with the phone on standby or when using other apps (only when you use Conversation or WalkieTalkie modes). However, some phones limit the power in the background so in that case it is better to avoid it and keep the app open with the screen on.
 <br />
 
 <a href="https://www.producthunt.com/posts/rtranslator-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-rtranslator&#0045;2" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=487672&theme=light" alt="RTranslator - Open&#0045;source&#0032;and&#0032;offline&#0032;simultaneous&#0032;translator&#0032;for&#0032;Android | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 <br /><br />
 
-<h3>2.1版的新功能</h3>
+<h3>What's new in version 2.1</h3>
 
-- 新GUI！由Chiara Chindamo设计。 [Chiara Chindamo](https://www.linkedin.com/in/chiara-chindamo-946053234/).
+- **New GUI!** Designed by [Chiara Chindamo](https://www.linkedin.com/in/chiara-chindamo-946053234/).
 
-- 在文本翻译模式中增加了朗读和复制按钮。
+- Added speak and copy buttons to the text translation mode.
 
-- 在WalkieTalkie模式下增加了手动控制键盘的选项。
+- Added the option to manually control the mics in WalkieTalkie mode.
 
-- 添加了使用低质量语言的选项。
+- Added the option to use low-quality languages.
 
-- 修复了一些bug。
+- Fixed some bugs.
 
 For the full list of changes see [here](https://github.com/niedev/RTranslator/releases/tag/2.1.0).
 <br /><br />
 
-<h3>性能要求</h3>
+<h3>Performance requirements</h3>
 
-我已经优化了AI模型，以最大限度地减少RAM消耗和执行时间，尽管如此，为了能够在没有崩溃风险的情况下使用应用程序，您需要至少6GB RAM的手机，并且要有足够好的执行时间，您需要具有足够快的CPU的手机。
+I have optimized the AI models a lot to minimize RAM consumption and execution time, despite this however to be able to use the app without the risk of crashing you need a phone with at least **6GB of RAM**, and to have a good enough execution time you need a phone with a fast enough CPU.
 
-如果你有一个相当蹩脚的手机（或者如果你想要最大的速度），你总是可以使用 <a href="https://github.com/niedev/RTranslator/tree/v1.00">1.0版的RTranslator</a> （但由于它使用谷歌API，它不是免费的，需要一些初始设置）。
+If you have a pretty crappy phone (or if you want maximum speed) you can always use <a href="https://github.com/niedev/RTranslator/tree/v1.00">version 1.0 of RTranslator</a> (but since it uses Google APIs it's not free and needs some initial setup).
 <br /><br />
 
 
-<h3>下载</h3>
+<h3>Download</h3>
 
-要安装应用程序，请从https://github.com/niedev/RTranslator/releases/下载最新版本的应用程序apk文件并安装它（忽略其他文件，这些文件将在第一次启动时由应用程序自动下载）。
+To install the app, download the latest version of the app apk file from https://github.com/niedev/RTranslator/releases/ and install it (ignore the other files, those will be downloaded automatically by the app on the first start).
 
-在第一次启动时，RTranslator将自动下载翻译和语音识别模型（1.2GB），一旦完成，您就可以开始翻译。
+<a href='https://github.com/niedev/RTranslator/releases'><img alt='Get it on GitHub' src='https://github.com/niedev/RTranslator/blob/v2.00/images/get_it_on_github.png' style="width: 180px; height: 58px;" /></a>
 
-最初的下载将从GitHub获得模型，但是在某些地区GitHub非常慢，那些有这种问题的人可以从计算机单独下载模型（或者通常以他们喜欢的任何方式）并按照 <a href="https://github.com/niedev/RTranslator/blob/v2.00/Sideloading.md">本指南</a> 手动将它们插入应用程序。 
+On the first launch, RTranslator will automatically download the models for translation and speech recognition (1.2GB) and once done you can start translating.
+
+The initial download will get the models from GitHub, however <a href="https://www.reddit.com/r/China/comments/v8fv0p/why_is_github_so_slow_in_china_recently/">in some regions GitHub is very slow</a>, those who have problems of this kind can download the models separately from a computer (or in general in whatever way they prefer) and insert them manually into the app following <a href="https://github.com/niedev/RTranslator/blob/v2.00/Sideloading.md">this guide</a>.
 
 If you have a GitHub account and want to be notified when a new release comes out you can do so by clicking, at the top of the page, on "Watch" -> "Custom" -> "Releases" -> "Apply".
 <br /><br />
