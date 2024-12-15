@@ -80,8 +80,6 @@ For the full list of changes see [here](https://github.com/niedev/RTranslator/re
 
 要安装应用程序，请从https://github.com/niedev/RTranslator/releases/下载最新版本的应用程序apk文件并安装它（忽略其他文件，这些文件将在第一次启动时由应用程序自动下载）。
 
-<a href='https://github.com/niedev/RTranslator/releases'><img alt='Get it on GitHub' src='https://github.com/niedev/RTranslator/blob/v2.00/images/get_it_on_github.png' style="width: 180px; height: 58px;" /></a>
-
 在第一次启动时，RTranslator将自动下载翻译和语音识别模型（1.2GB），一旦完成，您就可以开始翻译。
 
 最初的下载将从GitHub获得模型，但是在某些地区GitHub非常慢，那些有这种问题的人可以从计算机单独下载模型（或者通常以他们喜欢的任何方式）并按照 <a href="https://github.com/niedev/RTranslator/blob/v2.00/Sideloading.md">本指南</a> 手动将它们插入应用程序。 
